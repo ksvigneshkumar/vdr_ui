@@ -22,7 +22,7 @@ export default function AnalyticsLayoutWrapper({ children }) {
     }, [router]);
 
     return (
-        <>
+        <div className="flex-1 flex flex-col md:flex-row w-full h-full min-w-0 overflow-hidden pt-16 md:pt-0 relative">
             <AnalyticsSidebar isOpen={isSidebarOpen} />
 
             {/* Main Content Area */}
@@ -35,10 +35,10 @@ export default function AnalyticsLayoutWrapper({ children }) {
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
                 </div>
 
-                <div className="flex-1 overflow-y-auto w-full h-full">
+                <div className="flex-1 overflow-y-auto w-full h-full pb-24 md:pb-0">
                     {children}
                 </div>
             </main>
-        </>
+        </div>
     );
 }

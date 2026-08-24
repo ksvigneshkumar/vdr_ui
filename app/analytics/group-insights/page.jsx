@@ -96,8 +96,8 @@ function CalendarRangePicker({ value, onApply, onClear }) {
 
             {open && (
                 <div
-                    className="absolute top-full mt-2 left-0 z-40 bg-white border border-gray-200 rounded-lg shadow-md p-4 select-none"
-                    style={{ minWidth: 300 }}
+                    className="absolute top-full mt-2 left-0 sm:left-auto z-40 bg-white border border-gray-200 rounded-lg shadow-md p-4 select-none max-w-[calc(100vw-32px)] overflow-x-auto sm:max-w-none"
+                    style={{ minWidth: "min(300px, calc(100vw - 32px))" }}
                     onClick={e => e.stopPropagation()}
                 >
                     {/* Header */}
@@ -247,8 +247,7 @@ function LineChart({ data, groupName }) {
             <svg
                 ref={svgRef}
                 viewBox={`0 0 ${W} ${H}`}
-                className="w-full h-full cursor-crosshair"
-                style={{ minHeight: 220 }}
+                className="w-full h-auto cursor-crosshair max-h-[300px]"
                 onMouseMove={handleMouseMove}
                 onMouseLeave={handleMouseLeave}
             >
@@ -347,7 +346,10 @@ function LineChart({ data, groupName }) {
             {tooltip && tooltip.point.logins > 0 && (
                 <div
                     className="fixed z-50 pointer-events-none"
-                    style={{ left: tooltip.screenX + 14, top: tooltip.screenY - 10 }}
+                    style={{ 
+                        left: typeof window !== 'undefined' ? Math.min(tooltip.screenX + 14, window.innerWidth - 260) : tooltip.screenX + 14, 
+                        top: tooltip.screenY - 10 
+                    }}
                 >
                     <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-3 min-w-[180px] max-w-[240px]">
                         {/* Date header */}
@@ -662,12 +664,12 @@ export default function GroupInsightsPage() {
     }, [selectedGroup, fetchLoginData]);
 
     return (
-        <div className="p-8 max-w-6xl">
+        <div className="p-4 md:p-8 max-w-6xl w-full mx-auto">
 
-            <h1 className="text-2xl font-bold text-gray-900 mb-6">Group Insights</h1>
+            <h1 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 md:mb-6">Group Insights</h1>
 
             {/* ── Filter Bar ── */}
-            <div className="flex flex-wrap items-center gap-3 mb-6">
+            <div className="flex flex-wrap items-center gap-2 md:gap-3 mb-4 md:mb-6">
                 <button className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors text-gray-500">
                     <SlidersHorizontal size={16} />
                 </button>
@@ -749,7 +751,7 @@ export default function GroupInsightsPage() {
                     )}
                 </div>
 
-                <div className="px-4 pb-4 relative min-h-[200px]">
+                <div className="px-4 pb-4 relative min-h-[150px] sm:min-h-[200px]">
                     {loadingChart ? (
                         <div className="flex items-center justify-center h-48">
                             <div className="w-6 h-6 border-2 border-gray-200 border-t-rose-400 rounded-full animate-spin" />
@@ -761,16 +763,16 @@ export default function GroupInsightsPage() {
             </div>
 
             {/* ── Summary Stats ── */}
-            <div className="bg-white border border-gray-200 rounded-lg shadow-sm px-6 py-5">
+            <div className="bg-white border border-gray-200 rounded-lg shadow-sm px-4 md:px-6 py-4 md:py-5 mb-8 md:mb-0">
                 <h3 className="text-[13px] font-bold text-gray-500 uppercase tracking-wider mb-4">Summary</h3>
-                <div className="flex flex-wrap gap-6">
+                <div className="grid grid-cols-2 gap-4 sm:flex sm:flex-wrap sm:gap-6">
 
                     {/* Logins — clickable → modal */}
                     <button
                         onClick={() => setShowLoginModal(true)}
                         className="flex items-center gap-3 group cursor-pointer text-left hover:opacity-75 transition-opacity"
                     >
-                        <div className="w-9 h-9 rounded-lg bg-rose-50 flex items-center justify-center text-rose-500 group-hover:bg-rose-100 transition-colors">
+                        <div className="w-9 h-9 rounded-lg bg-rose-50 flex items-center justify-center text-rose-500 group-hover:bg-rose-100 transition-colors shrink-0">
                             <LogIn size={16} />
                         </div>
                         <div>
@@ -781,13 +783,13 @@ export default function GroupInsightsPage() {
                         </div>
                     </button>
 
-                    <div className="w-px h-10 bg-gray-100 self-center" />
+                    <div className="hidden sm:block w-px h-10 bg-gray-100 self-center" />
 
                     <button
                         onClick={() => setShowDownloadModal(true)}
                         className="flex items-center gap-3 group cursor-pointer text-left hover:opacity-75 transition-opacity"
                     >
-                        <div className="w-9 h-9 rounded-lg bg-violet-50 flex items-center justify-center text-violet-500 group-hover:bg-violet-100 transition-colors">
+                        <div className="w-9 h-9 rounded-lg bg-violet-50 flex items-center justify-center text-violet-500 group-hover:bg-violet-100 transition-colors shrink-0">
                             <Download size={16} />
                         </div>
                         <div>
@@ -798,25 +800,13 @@ export default function GroupInsightsPage() {
                         </div>
                     </button>
 
-                    <div className="w-px h-10 bg-gray-100 self-center" />
-
-                    {/* <div className="flex items-center gap-3 group">
-                        <div className="w-9 h-9 rounded-lg bg-amber-50 flex items-center justify-center text-amber-500 group-hover:bg-amber-100 transition-colors">
-                            <FileSearch size={16} />
-                        </div>
-                        <div>
-                            <p className="text-[11px] text-gray-400 font-medium">Fence Viewed</p>
-                            <p className="text-[15px] font-bold text-gray-800">0</p>
-                        </div>
-                    </div> */}
-
-                    <div className="w-px h-10 bg-gray-100 self-center" />
+                    <div className="hidden sm:block w-px h-10 bg-gray-100 self-center" />
 
                     <button
                         onClick={() => setShowViewsModal(true)}
                         className="flex items-center gap-3 group cursor-pointer text-left hover:opacity-75 transition-opacity"
                     >
-                        <div className="w-9 h-9 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-500 group-hover:bg-emerald-100 transition-colors">
+                        <div className="w-9 h-9 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-500 group-hover:bg-emerald-100 transition-colors shrink-0">
                             <Eye size={16} />
                         </div>
                         <div>
@@ -827,17 +817,17 @@ export default function GroupInsightsPage() {
                         </div>
                     </button>
 
-                    <div className="w-px h-10 bg-gray-100 self-center" />
+                    <div className="hidden sm:block w-px h-10 bg-gray-100 self-center" />
 
                     <button
                         onClick={() => setShowQuestionsModal(true)}
                         className="flex items-center gap-3 group cursor-pointer text-left hover:opacity-75 transition-opacity"
                     >
-                        <div className="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500 group-hover:bg-blue-100 transition-colors">
+                        <div className="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500 group-hover:bg-blue-100 transition-colors shrink-0">
                             <MessageCircleQuestion size={16} />
                         </div>
                         <div>
-                            <p className="text-[11px] text-gray-400 font-medium">Questions Asked</p>
+                            <p className="text-[11px] text-gray-400 font-medium whitespace-nowrap">Questions</p>
                             <p className="text-[15px] font-bold text-gray-800 underline decoration-dotted underline-offset-2">
                                 {loadingChart ? "..." : totalQuestions}
                             </p>
@@ -855,7 +845,7 @@ export default function GroupInsightsPage() {
                     onClick={() => setShowViewsModal(false)}
                 >
                     <div
-                        className="bg-white rounded-lg shadow-md w-full max-w-lg max-h-[80vh] flex flex-col overflow-hidden"
+                        className="bg-white rounded-lg shadow-md w-[95%] sm:w-full max-w-lg max-h-[85vh] sm:max-h-[80vh] flex flex-col overflow-hidden"
                         onClick={e => e.stopPropagation()}
                         style={{ animation: "slideUp 0.2s ease" }}
                     >
@@ -873,7 +863,7 @@ export default function GroupInsightsPage() {
                                 <X size={14} />
                             </button>
                         </div>
-                        <div className="overflow-y-auto flex-1">
+                        <div className="overflow-auto flex-1">
                             {docViewList.length === 0 ? (
                                 <p className="px-6 py-10 text-center text-[13px] text-gray-400">
                                     No document views found for this group
@@ -933,7 +923,7 @@ export default function GroupInsightsPage() {
                     onClick={() => setShowQuestionsModal(false)}
                 >
                     <div
-                        className="bg-white rounded-lg shadow-md w-full max-w-lg max-h-[80vh] flex flex-col overflow-hidden"
+                        className="bg-white rounded-lg shadow-md w-[95%] sm:w-full max-w-lg max-h-[85vh] sm:max-h-[80vh] flex flex-col overflow-hidden"
                         onClick={e => e.stopPropagation()}
                         style={{ animation: "slideUp 0.2s ease" }}
                     >
@@ -954,7 +944,7 @@ export default function GroupInsightsPage() {
                         </div>
 
                         {/* Table */}
-                        <div className="overflow-y-auto flex-1">
+                        <div className="overflow-auto flex-1">
                             {questionList.length === 0 ? (
                                 <p className="px-6 py-10 text-center text-[13px] text-gray-400">
                                     No questions found for this group
@@ -1034,7 +1024,7 @@ export default function GroupInsightsPage() {
                         </div>
 
                         {/* Table */}
-                        <div className="overflow-y-auto flex-1">
+                        <div className="overflow-auto flex-1">
                             {downloadList.length === 0 ? (
                                 <p className="px-6 py-10 text-center text-[13px] text-gray-400">
                                     No download data found for this group

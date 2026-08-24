@@ -388,14 +388,14 @@ export default function FolderActivityPage() {
     const hasActiveFilters = selectedFolderScope !== 'all' || selectedUserEmail !== 'all' || selectedActivityType !== 'all' || startDate !== '' || endDate !== '' || searchQuery !== '';
 
     return (
-        <div className="p-8 bg-white min-h-full font-sans">
+        <div className="p-4 sm:p-8 bg-white min-h-full font-sans w-full max-w-full overflow-hidden">
             {/* Header Section */}
-            <div className="flex items-center justify-between mb-8">
-                <div className="flex items-center gap-4">
-                    <h1 className="text-xl font-bold text-gray-900 tracking-tight">Folder Activity Audit Logs</h1>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-4 w-full justify-between">
+                    <h1 className="text-lg sm:text-xl font-bold text-gray-900 tracking-tight">Folder Activity Audit Logs</h1>
                     <button
                         onClick={handleExport}
-                        className="flex items-center gap-2 px-3 py-1.5 border border-orange-300 rounded text-xs font-semibold text-gray-700 hover:bg-orange-50 transition-colors"
+                        className="flex items-center gap-2 px-3 py-1.5 border border-orange-300 rounded text-xs font-semibold text-gray-700 hover:bg-orange-50 transition-colors self-start sm:self-auto"
                     >
                         EXPORT CSV
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500">
@@ -538,7 +538,8 @@ export default function FolderActivityPage() {
             </div>
 
             {/* Table Section */}
-            <div className="w-full bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
+            <div className="w-full bg-white border border-slate-200 rounded-lg overflow-x-auto shadow-sm">
+                <div className="min-w-[800px]">
                 {/* Table Header */}
                 <div className="grid grid-cols-6 gap-4 px-6 py-4 bg-white text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200">
                     <div
@@ -610,9 +611,10 @@ export default function FolderActivityPage() {
                         </div>
                     )}
                 </div>
+                </div>
 
                 {/* Pagination */}
-                <div className="flex items-center justify-between px-6 py-4 bg-white text-xs text-slate-500">
+                <div className="flex flex-wrap sm:flex-nowrap items-center justify-between px-6 py-4 bg-white text-xs text-slate-500 gap-4">
                     <div className="flex items-center gap-2">
                         <span>Items per page:</span>
                         <select
@@ -660,7 +662,7 @@ export default function FolderActivityPage() {
                     onClick={() => setShowModal(false)}
                 >
                     <div
-                        className="bg-white rounded-lg sm:rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] w-full max-w-4xl mx-auto max-h-[85vh] flex flex-col overflow-hidden relative"
+                        className="bg-white rounded-lg sm:rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] w-[95%] sm:w-full max-w-4xl mx-auto max-h-[85vh] flex flex-col overflow-hidden relative"
                         onClick={e => e.stopPropagation()}
                         style={{ animation: "slideUpToCenter 0.3s cubic-bezier(0.16, 1, 0.3, 1)" }}
                     >
@@ -692,7 +694,7 @@ export default function FolderActivityPage() {
                         </div>
 
                         {/* Content */}
-                        <div className="overflow-y-auto flex-1 relative min-h-[350px] p-6">
+                        <div className="overflow-auto flex-1 relative min-h-[350px] p-6">
                             {loadingModal ? (
                                 <div className="absolute inset-0 flex items-center justify-center bg-white z-10">
                                     <div className="w-6 h-6 border-2 border-gray-300 border-t-orange-500 rounded-full animate-spin"></div>

@@ -200,13 +200,13 @@ export default function GroupUsersPage() {
     };
 
     return (
-        <div className="p-8 bg-white min-h-full font-sans">
+        <div className="p-4 sm:p-8 bg-white min-h-full font-sans w-full max-w-full overflow-hidden">
             {/* Header Section */}
-            <div className="flex items-center gap-4 mb-8">
-                <h1 className="text-xl font-bold text-gray-900 tracking-tight">Groups & Users</h1>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
+                <h1 className="text-lg sm:text-xl font-bold text-gray-900 tracking-tight">Groups & Users</h1>
                 <button 
                     onClick={handleExport}
-                    className="flex items-center gap-2 px-3 py-1.5 border border-orange-300 rounded text-xs font-semibold text-gray-700 hover:bg-orange-50 transition-colors"
+                    className="flex items-center self-start sm:self-auto gap-2 px-3 py-1.5 border border-orange-300 rounded text-xs font-semibold text-gray-700 hover:bg-orange-50 transition-colors"
                 >
                     EXPORT
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500">
@@ -216,10 +216,12 @@ export default function GroupUsersPage() {
             </div>
 
             {/* Filter Section */}
-            <div className="flex items-center gap-4 mb-6">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500 shrink-0">
-                    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
-                </svg>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6">
+                <div className="hidden sm:block">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500 shrink-0">
+                        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+                    </svg>
+                </div>
                 
                 <div className="flex items-center gap-3">
                     <div className="flex flex-col">
@@ -294,7 +296,7 @@ export default function GroupUsersPage() {
                 </div>
 
                 {/* Pagination */}
-                <div className="flex items-center justify-end gap-6 py-4 text-xs text-gray-400">
+                <div className="flex flex-wrap sm:flex-nowrap items-center justify-between sm:justify-end gap-4 sm:gap-6 py-4 text-xs text-gray-400">
                     <div className="flex items-center gap-2">
                         <span>Items per page:</span>
                         <select 
@@ -346,7 +348,7 @@ export default function GroupUsersPage() {
                     onClick={() => setShowLoginModal(false)}
                 >
                     <div
-                        className="bg-white rounded-lg shadow-md w-full max-w-lg max-h-[80vh] flex flex-col overflow-hidden"
+                        className="bg-white rounded-lg shadow-md w-[95%] sm:w-full max-w-lg max-h-[85vh] sm:max-h-[80vh] flex flex-col overflow-hidden"
                         onClick={e => e.stopPropagation()}
                         style={{ animation: "slideUp 0.2s ease" }}
                     >
@@ -385,7 +387,7 @@ export default function GroupUsersPage() {
                         </div>
 
                         {/* Content */}
-                        <div className="overflow-y-auto flex-1 relative min-h-[350px]">
+                        <div className="overflow-auto flex-1 relative min-h-[350px]">
                             {loadingModal ? (
                                 <div className="absolute inset-0 flex items-center justify-center bg-white z-10">
                                     <div className="w-6 h-6 border-2 border-gray-300 border-t-[var(--brand)] rounded-full animate-spin"></div>
@@ -456,33 +458,38 @@ export default function GroupUsersPage() {
                                                     ))}
                                                 </div>
 
-                                                <div className="flex-1 relative h-full flex flex-col ml-14 border-l border-gray-200">
-                                                    <div className="absolute inset-0 pb-8 flex flex-col justify-between z-0">
-                                                        {yTicks.map((_, i) => (
-                                                            <div key={i} className="w-full h-[1px] border-b border-dashed border-gray-200"></div>
-                                                        ))}
-                                                    </div>
+                                                <div className="flex-1 relative h-full flex flex-col ml-14 border-l border-gray-200 overflow-x-auto scrollbar-hide">
+                                                    <div className="min-w-max h-full relative flex flex-col px-4">
+                                                        {/* Background lines */}
+                                                        <div className="absolute inset-0 pb-8 flex flex-col justify-between z-0 w-full pointer-events-none">
+                                                            {yTicks.map((_, i) => (
+                                                                <div key={i} className="w-full h-[1px] border-b border-dashed border-gray-200"></div>
+                                                            ))}
+                                                        </div>
 
-                                                    <div className="absolute inset-0 pb-8 flex items-end justify-around px-8 z-10 overflow-x-auto">
-                                                        {userLoginList.map((d, i) => (
-                                                            <div key={i} className="flex flex-col items-center group relative h-full justify-end w-20 shrink-0">
-                                                                <div className="opacity-0 group-hover:opacity-100 absolute -top-8 bg-gray-800 text-white text-[11px] px-2 py-1 rounded transition-opacity whitespace-nowrap pointer-events-none z-20">
-                                                                    {d.name}: {d.count}
+                                                        {/* Bars */}
+                                                        <div className="flex-1 pb-8 flex items-end justify-start gap-6 z-10">
+                                                            {userLoginList.map((d, i) => (
+                                                                <div key={i} className="flex flex-col items-center group relative h-full justify-end w-16 shrink-0">
+                                                                    <div className="opacity-0 group-hover:opacity-100 absolute -top-8 bg-gray-800 text-white text-[11px] px-2 py-1 rounded transition-opacity whitespace-nowrap pointer-events-none z-20">
+                                                                        {d.name}: {d.count}
+                                                                    </div>
+                                                                    <div 
+                                                                        className="w-10 bg-rose-400/90 transition-all duration-500 ease-out hover:bg-rose-500 hover:scale-x-105 cursor-pointer rounded-t-[1px]" 
+                                                                        style={{ height: `${(d.count / chartMax) * 100}%` }}
+                                                                    ></div>
                                                                 </div>
-                                                                <div 
-                                                                    className="w-12 bg-rose-400/90 transition-all duration-500 ease-out hover:bg-rose-500 hover:scale-x-105 cursor-pointer rounded-t-[1px]" 
-                                                                    style={{ height: `${(d.count / chartMax) * 100}%` }}
-                                                                ></div>
-                                                            </div>
-                                                        ))}
-                                                    </div>
+                                                            ))}
+                                                        </div>
 
-                                                    <div className="absolute bottom-0 left-0 right-0 h-8 flex items-center justify-around px-8 border-t border-gray-200 bg-white z-20">
-                                                        {userLoginList.map((d, i) => (
-                                                            <div key={i} className="text-[11px] text-gray-500 truncate w-20 text-center shrink-0" title={d.name}>
-                                                                {d.name.split(' ')[0]}
-                                                            </div>
-                                                        ))}
+                                                        {/* Bottom Labels */}
+                                                        <div className="absolute bottom-0 left-0 right-0 h-8 flex items-center justify-start gap-6 border-t border-gray-200 bg-white z-20 px-4">
+                                                            {userLoginList.map((d, i) => (
+                                                                <div key={i} className="text-[11px] text-gray-500 truncate w-16 text-center shrink-0" title={d.name}>
+                                                                    {d.name.split(' ')[0]}
+                                                                </div>
+                                                            ))}
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>

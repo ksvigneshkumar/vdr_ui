@@ -3,7 +3,7 @@ import AnalyticsLayoutWrapper from '@/components/analytics/AnalyticsLayoutWrappe
 
 export default function AnalyticsLayout({ children }) {
   return (
-    <div className="h-screen w-full bg-white flex overflow-hidden font-sans">
+    <div className="h-[100dvh] w-full bg-white flex overflow-hidden font-sans">
       <MainSidebar />
       <AnalyticsLayoutWrapper>
         {children}
