@@ -171,15 +171,15 @@ export default function InviteMemberPage() {
                     <button onClick={() => router.push(`/groups/${groupSlug}`)} className="w-9 h-9 shrink-0 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-50 transition-all shadow-sm">
                         <FaArrowLeft size={14} />
                     </button>
-                    <div className="min-w-0">
-                        <p className="text-[10px] md:text-xs font-semibold text-slate-400 uppercase tracking-wider mb-0.5 truncate">
+                    <div>
+                        <p className="text-[10px] md:text-xs font-semibold text-slate-400 uppercase tracking-wider mb-0.5">
                             {loading ? "Loading..." : groupData?.name || "Group"} &rsaquo; Members
                         </p>
                         <h1 className="text-lg md:text-2xl font-semibold text-slate-800 tracking-tight flex items-center gap-2 md:gap-3">
                             <span className="w-7 h-7 md:w-9 md:h-9 shrink-0 rounded-lg md:rounded-xl bg-[var(--brand)] text-white flex items-center justify-center shadow-sm">
                                 <FaUserPlus className="text-[12px] md:text-[15px]" />
                             </span>
-                            <span className="truncate">Invite Members</span>
+                            Invite Members
                         </h1>
                     </div>
                 </div>
