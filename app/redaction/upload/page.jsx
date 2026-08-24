@@ -61,15 +61,17 @@ export default function RedactionUploadPage() {
   };
 
   return (
-    <div className="flex flex-col p-6 w-full h-full bg-[#FAFBFD]">
-      <h1 className="text-2xl font-bold text-slate-800 mb-6">Upload Document</h1>
+    <div className="flex flex-col p-4 sm:p-6 lg:p-8 w-full h-full bg-[#FAFBFD] overflow-y-auto">
+      <div className="flex items-center justify-between mb-4 sm:mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold text-slate-800 tracking-tight">Upload Document</h1>
+      </div>
       
-      <div className="flex-1 flex items-center justify-center">
+      <div className="flex-1 flex items-center justify-center py-4">
         <div 
-          className={`w-full max-w-2xl h-80 border-2 border-dashed rounded-lg flex flex-col items-center justify-center p-8 transition-colors cursor-pointer ${
+          className={`w-full max-w-2xl min-h-[280px] sm:h-80 border-2 border-dashed rounded-2xl flex flex-col items-center justify-center p-6 sm:p-8 transition-colors cursor-pointer text-center ${
             isDragging 
               ? "border-[var(--brand)] bg-[var(--brand)]/5" 
-              : "border-slate-300 bg-white hover:bg-slate-50 hover:border-slate-400"
+              : "border-slate-300 bg-white hover:bg-slate-50 hover:border-slate-400 shadow-2xs"
           }`}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
@@ -87,17 +89,17 @@ export default function RedactionUploadPage() {
           {uploading ? (
             <div className="flex flex-col items-center">
               <div className="w-12 h-12 border-4 border-slate-200 border-t-[var(--brand)] rounded-full animate-spin mb-4" />
-              <p className="text-slate-600 font-medium text-lg">Uploading...</p>
+              <p className="text-slate-700 font-bold text-base sm:text-lg">Uploading...</p>
             </div>
           ) : (
             <>
-              <div className="w-20 h-20 rounded-full bg-[var(--brand)]/10 flex items-center justify-center mb-6">
-                <FaCloudUploadAlt className="w-10 h-10 text-[var(--brand)]" />
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-[var(--brand)]/10 flex items-center justify-center mb-4 sm:mb-6">
+                <FaCloudUploadAlt className="w-8 h-8 sm:w-10 sm:h-10 text-[var(--brand)]" />
               </div>
-              <h3 className="text-xl font-bold text-slate-800 mb-2">Drag & Drop files here</h3>
-              <p className="text-slate-500 mb-6">or click to browse your computer</p>
+              <h3 className="text-lg sm:text-xl font-bold text-slate-800 mb-1.5">Drag & Drop files here</h3>
+              <p className="text-xs sm:text-sm text-slate-500 mb-5">or click to browse from your device</p>
               
-              <button className="px-6 py-2.5 bg-[var(--brand)] text-white font-bold rounded-lg hover:opacity-90 transition-opacity shadow-sm shadow-[var(--brand)]/20">
+              <button className="px-5 sm:px-6 py-2.5 bg-[var(--brand)] text-white text-xs sm:text-sm font-bold rounded-xl hover:opacity-90 transition-opacity shadow-xs">
                 Browse Files
               </button>
             </>
@@ -106,16 +108,16 @@ export default function RedactionUploadPage() {
       </div>
       
       {uploadStatus === 'success' && (
-        <div className="fixed bottom-6 right-6 bg-emerald-500 text-white px-6 py-3 rounded-lg shadow-sm font-bold flex items-center gap-2 animate-in fade-in slide-in-from-bottom-4">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          File uploaded successfully
+        <div className="fixed bottom-6 right-4 sm:right-6 bg-emerald-600 text-white px-5 py-3 rounded-xl shadow-lg font-bold text-xs sm:text-sm flex items-center gap-2 animate-in fade-in slide-in-from-bottom-4 z-50">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span>File uploaded successfully</span>
         </div>
       )}
       
       {uploadStatus && uploadStatus !== 'success' && (
-        <div className="fixed bottom-6 right-6 bg-red-500 text-white px-6 py-3 rounded-lg shadow-sm font-bold flex items-center gap-2 animate-in fade-in slide-in-from-bottom-4 z-50">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-          {uploadStatus}
+        <div className="fixed bottom-6 right-4 sm:right-6 bg-rose-600 text-white px-5 py-3 rounded-xl shadow-lg font-bold text-xs sm:text-sm flex items-center gap-2 animate-in fade-in slide-in-from-bottom-4 z-50">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          <span>{uploadStatus}</span>
         </div>
       )}
     </div>

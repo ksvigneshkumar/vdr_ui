@@ -644,9 +644,9 @@ function DocumentViewerContent() {
     }
   };
 
-  /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-     Save Redaction â€” Overwrite Original
-  â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ──────────────────────────────────────────
+     Save Redaction — Overwrite Original
+  ────────────────────────────────────────── */
   const overwriteOriginal = async () => {
     const raw = localStorage.getItem("vdr_session");
     if (!raw) throw new Error("Session not found");
@@ -763,9 +763,9 @@ function DocumentViewerContent() {
     }
   };
 
-  /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  /* ──────────────────────────────────────────
      Apply save (dispatches to correct handler)
-  â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  ────────────────────────────────────────── */
   const handleApplySave = async () => {
     if (!saveMode) return;
     setIsSaving(true);
@@ -790,9 +790,9 @@ function DocumentViewerContent() {
     }
   };
 
-  /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  /* ──────────────────────────────────────────
      Loading / error screens (original)
-  â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  ────────────────────────────────────────── */
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full w-full py-24">
@@ -812,11 +812,11 @@ function DocumentViewerContent() {
   const pageIsRedacted = isPageRedacted(currentPage);
   const pageSelections = selections.filter((s) => s.page === currentPage);
 
-  /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  /* ──────────────────────────────────────────
      Render
-  â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  ────────────────────────────────────────── */
   return (
-    <div className="flex flex-col items-center w-full h-full bg-[#FAFBFD]">
+    <div className="flex flex-col items-center w-full h-full bg-[#FAFBFD] overflow-y-auto">
 
       
       <div
@@ -832,7 +832,7 @@ function DocumentViewerContent() {
           zIndex: 10,
         }}
       >
-        {/* â”€â”€ Toolbar controls (all file types) â”€â”€ */}
+        {/* ── Toolbar controls (all file types) ── */}
         {(() => {
           // Context-aware label and nav disabled states per file type
           const isMultiPage = numPages > 1;
@@ -931,10 +931,13 @@ function DocumentViewerContent() {
 
               <div style={toolbarDivider} />
 
-              {/* Search â€” disabled for images */}
+              {/* Search Toggle */}
               <button
-                onClick={() => !searchDisabled && setSearchOpen((o) => !o)}
-                title={searchDisabled ? "Search is not supported for images" : "Search"}
+                onClick={() => {
+                  setSearchOpen((prev) => !prev);
+                  if (searchOpen) setSearchQuery("");
+                }}
+                title={searchDisabled ? "Search is not supported for images" : "Search in Document"}
                 disabled={searchDisabled}
                 style={toolbarBtnStyle(searchOpen && !searchDisabled, searchDisabled)}
               >
@@ -951,7 +954,7 @@ function DocumentViewerContent() {
                       setSearchQuery(e.target.value);
                       setActiveMatchIndex(0);
                     }}
-                    placeholder="Search textâ€¦"
+                    placeholder="Search text…"
                     style={{
                       background: "#f8fafc",
                       border: "1px solid #cbd5e1",
@@ -1076,41 +1079,41 @@ function DocumentViewerContent() {
         </div>
       )}
 
-      {/* â”€â”€ Document name / pagination header (original, PDF-only nav buttons kept) â”€â”€ */}
-      <div className="w-full max-w-5xl flex items-center justify-between px-4 py-3">
+      {/* ── Document name / pagination header (original, PDF-only nav buttons kept) ── */}
+      <div className="w-full max-w-5xl flex flex-col sm:flex-row items-start sm:items-center justify-between px-4 py-3 gap-2">
         <h1
-          className="text-lg font-bold text-slate-800 truncate"
+          className="text-base sm:text-lg font-bold text-slate-800 truncate max-w-full"
           title={doc?.name}
         >
           <FaFileAlt className="inline mr-2 text-slate-400" />
           {doc?.name}
         </h1>
         {fileType === "pdf" && (
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 shrink-0">
             <button
               onClick={() => goToPage(currentPage - 1)}
               disabled={currentPage <= 1}
-              className="p-2 rounded-lg border border-slate-300 text-slate-600 disabled:opacity-30 hover:bg-slate-100 transition-colors"
+              className="p-2 rounded-xl border border-slate-200 text-slate-600 disabled:opacity-30 hover:bg-slate-100 transition-colors"
             >
-              <FaChevronLeft />
+              <FaChevronLeft className="w-3.5 h-3.5" />
             </button>
-            <span className="text-sm font-medium text-slate-600">
+            <span className="text-xs sm:text-sm font-medium text-slate-600">
               Page {currentPage} of {numPages || "?"}
             </span>
             <button
               onClick={() => goToPage(currentPage + 1)}
               disabled={currentPage >= numPages}
-              className="p-2 rounded-lg border border-slate-300 text-slate-600 disabled:opacity-30 hover:bg-slate-100 transition-colors"
+              className="p-2 rounded-xl border border-slate-200 text-slate-600 disabled:opacity-30 hover:bg-slate-100 transition-colors"
             >
-              <FaChevronRight />
+              <FaChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
         )}
       </div>
 
-      {/* â”€â”€ Page Content â”€â”€ */}
+      {/* ── Page Content ── */}
       <div
-        className="relative flex-1 w-full max-w-5xl flex items-start justify-center bg-white border border-slate-200 rounded-xl shadow-sm overflow-auto p-4 mx-4 mb-4"
+        className="relative flex-1 w-full max-w-5xl flex items-start justify-center bg-white border border-slate-200 rounded-xl shadow-sm overflow-auto p-2 sm:p-4 mx-2 sm:mx-4 mb-4"
         style={{ minHeight: "500px" }}
       >
         {/* â”€â”€ PDF viewer (original, unchanged) â”€â”€ */}

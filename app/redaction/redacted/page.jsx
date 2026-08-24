@@ -85,46 +85,48 @@ export default function RedactedFilesPage() {
   };
 
   return (
-    <div className="flex w-full h-full bg-[#FAFBFD] p-6 flex-col overflow-y-auto">
-      <h1 className="text-2xl font-bold text-slate-800 mb-6">Redacted Files</h1>
+    <div className="flex w-full h-full bg-[#FAFBFD] p-4 sm:p-6 lg:p-8 flex-col overflow-y-auto">
+      <div className="flex items-center justify-between mb-4 sm:mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold text-slate-800 tracking-tight">Redacted Files</h1>
+      </div>
       
       {loading ? (
         <div className="flex items-center justify-center h-48">
           <div className="w-8 h-8 border-4 border-slate-200 border-t-[var(--brand)] rounded-full animate-spin" />
         </div>
       ) : files.length === 0 ? (
-        <div className="text-center text-slate-500 py-10 bg-white rounded-xl border border-slate-200 shadow-sm">
+        <div className="text-center text-slate-500 py-10 bg-white rounded-2xl border border-slate-200 shadow-2xs">
           No redacted files found in the bucket.
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
           {files.map((file, idx) => (
-            <div key={idx} className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col hover:border-[var(--brand)] hover:shadow-md transition-all group">
+            <div key={idx} className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-2xs flex flex-col hover:border-[var(--brand)] hover:shadow-md transition-all group">
               <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center gap-3 overflow-hidden">
-                  <div className="w-10 h-10 rounded-lg bg-rose-50 text-rose-500 flex items-center justify-center flex-shrink-0">
+                <div className="flex items-center gap-3 overflow-hidden min-w-0">
+                  <div className="w-10 h-10 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center flex-shrink-0">
                     <FaFilePdf className="w-5 h-5" />
                   </div>
-                  <div className="overflow-hidden flex-1">
-                    <h3 className="font-semibold text-slate-800 truncate" title={file.name}>{file.name}</h3>
-                    <p className="text-xs text-slate-500 truncate">
-                      {formatBytes(file.metadata?.size || 0)} â€¢ {new Date(file.created_at).toLocaleDateString()}
+                  <div className="overflow-hidden flex-1 min-w-0">
+                    <h3 className="font-semibold text-slate-800 text-sm truncate" title={file.name}>{file.name}</h3>
+                    <p className="text-xs text-slate-500 truncate mt-0.5">
+                      {formatBytes(file.metadata?.size || 0)} • {new Date(file.created_at).toLocaleDateString()}
                     </p>
                   </div>
                 </div>
               </div>
-              <div className="mt-auto pt-3 border-t border-slate-100 flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="mt-auto pt-3 border-t border-slate-100 flex flex-wrap sm:flex-nowrap justify-end gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                 <button 
                   onClick={() => handleView(file)}
-                  className="px-3 py-1.5 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-[var(--brand-soft)] hover:text-[var(--brand)] rounded-lg transition-colors flex items-center gap-1.5"
+                  className="flex-1 sm:flex-initial justify-center px-3 py-2 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-[var(--brand)] hover:text-white rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs"
                 >
-                  <FaEye /> View Document
+                  <FaEye /> <span>View Document</span>
                 </button>
                 <button 
                   onClick={() => handleDelete(file)}
-                  className="px-3 py-1.5 text-xs font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-lg transition-colors flex items-center gap-1.5"
+                  className="px-3 py-2 text-xs font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-xl transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
                 >
-                  <FaTrash /> Delete
+                  <FaTrash /> <span>Delete</span>
                 </button>
               </div>
             </div>

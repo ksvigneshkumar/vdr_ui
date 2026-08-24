@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-const qB = { then: (r) => r({data:[],error:null}), single: async()=>({data:null,error:null}), maybeSingle: async()=>({data:null,error:null}) }; qB.eq = () => qB; qB.order = () => qB; qB.select = () => qB; qB.insert = () => qB; qB.update = () => qB; qB.delete = () => qB; const supabase = { auth: { getSession: async () => ({ data: { session: null } }), signOut: async () => ({}) }, storage: { from: () => ({ createSignedUrl: async () => ({ data: { signedUrl: "" } }), upload: async () => ({ data: {}, error: null }), remove: async () => ({}), getPublicUrl: () => ({ data: { publicUrl: "" } }) }) }, from: () => qB };
+const qB = { then: (r) => r({ data: [], error: null }), single: async () => ({ data: null, error: null }), maybeSingle: async () => ({ data: null, error: null }) }; qB.eq = () => qB; qB.order = () => qB; qB.select = () => qB; qB.insert = () => qB; qB.update = () => qB; qB.delete = () => qB; const supabase = { auth: { getSession: async () => ({ data: { session: null } }), signOut: async () => ({}) }, storage: { from: () => ({ createSignedUrl: async () => ({ data: { signedUrl: "" } }), upload: async () => ({ data: {}, error: null }), remove: async () => ({}), getPublicUrl: () => ({ data: { publicUrl: "" } }) }) }, from: () => qB };
 import { fetchCompany, fetchUsers, fetchGroups, fetchUserGroups } from '../actions';
 import { useDialog } from '@/components/ui/DialogProvider';
 
@@ -97,9 +97,11 @@ export default function ManageUsersPage() {
   // Right-Click Context Menu trigger
   const handleContextMenu = (e, user) => {
     e.preventDefault();
+    const menuHeight = 150;
+    const openUpwards = e.clientY + menuHeight > window.innerHeight;
     setContextMenu({
-      x: e.clientX,
-      y: e.clientY,
+      x: Math.max(10, Math.min(e.clientX, window.innerWidth - 190)),
+      y: openUpwards ? Math.max(10, e.clientY - menuHeight) : e.clientY,
       user
     });
   };
@@ -327,72 +329,53 @@ export default function ManageUsersPage() {
   };
 
   return (
-    <div className="p-8 max-w-7xl mx-auto relative min-h-screen">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto relative min-h-full font-sans">
       {/* Dynamic Toasts */}
       {successMsg && (
-        <div className="fixed top-6 right-6 z-50 bg-slate-900 text-white px-5 py-3.5 rounded-xl shadow-md flex items-center gap-3 border border-slate-800 animate-slide-in">
-          <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center text-white text-xs">âœ“</div>
-          <span className="text-sm font-semibold">{successMsg}</span>
+        <div className="fixed top-20 sm:top-6 right-4 sm:right-6 z-50 bg-slate-900 text-white px-5 py-3.5 rounded-2xl shadow-xl flex items-center gap-3 border border-slate-800 animate-slide-in">
+          <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center text-white text-xs font-bold">✓</div>
+          <span className="text-xs sm:text-sm font-semibold">{successMsg}</span>
         </div>
       )}
 
-      {/* Title & Search Row */}
-      <div className="flex items-center justify-between gap-4 mb-6">
-        <h1 className="text-2xl font-black text-slate-900 tracking-tight">
-          Manage Users
-        </h1>
-
-        {/* Right side container: Export + Search */}
+      {/* Title & Actions / Search Toolbar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-5 sm:mb-6">
         <div className="flex items-center gap-3">
+          <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+            Manage Users
+          </h1>
+          <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200/80">
+            {users.length}
+          </span>
           {selectedUserIds.length > 0 && (
-            <span className="text-xs text-slate-400 font-semibold">
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[var(--brand)]/10 text-[var(--brand)] border border-[var(--brand)]/20">
               {selectedUserIds.length} selected
             </span>
           )}
+        </div>
 
-          {/* Invite Button */}
-          <button
-            onClick={() => setIsAddModalOpen(true)}
-            className="px-5 py-2 rounded-full bg-[var(--brand)] text-white font-bold text-xs tracking-wide transition-all active:scale-95 flex items-center gap-1.5 shadow-sm hover:opacity-90"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            Invite
-          </button>
-
+        {/* Action Controls & Search Input */}
+        <div className="flex items-center gap-2.5">
           {/* Export Button */}
           <button
             onClick={handleExportCSV}
-            className="px-5 py-2 rounded-full border border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 text-slate-700 font-bold text-xs tracking-wide transition-all active:scale-95 flex items-center gap-1.5 shadow-sm"
+            className="h-9 px-4 rounded-full bg-white hover:bg-slate-50 active:bg-slate-100 border border-slate-200 text-slate-700 font-bold text-xs transition-all flex items-center justify-center gap-2 shadow-xs cursor-pointer whitespace-nowrap"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
-            Export
+            <span>Export</span>
           </button>
 
-          {/* Resend Invite Button */}
-          <button
-            onClick={handleResendInvite}
-            disabled={selectedUserIds.length === 0}
-            className={`px-5 py-2 rounded-full border font-bold text-xs tracking-wide transition-all flex items-center gap-1.5 shadow-sm ${
-              selectedUserIds.length > 0
-                ? 'border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 text-slate-700 active:scale-95'
-                : 'border-slate-100 bg-slate-50 text-slate-400 cursor-not-allowed opacity-70'
-            }`}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-            Resend Invite
-          </button>
-
-          {/* Search Input */}
-          <div className="relative w-72">
+          {/* Search bar */}
+          <div className="relative w-full sm:w-60 lg:w-72">
             <input
               type="text"
-              placeholder="Search"
+              placeholder="Search users..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-11 pr-5 py-2.5 bg-white border border-slate-200 rounded-full text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-[var(--brand)] focus:ring-4 focus:ring-[var(--brand)]/10 transition-all duration-300 shadow-inner-sm"
+              className="w-full h-9 pl-9 pr-8 bg-white border border-slate-200 focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/10 rounded-full text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none transition-all shadow-xs font-medium"
             />
             <svg
-              className="absolute left-4 top-3 text-slate-400"
+              className="absolute left-3 top-2.5 text-slate-400 pointer-events-none"
               xmlns="http://www.w3.org/2000/svg"
               width="14"
               height="14"
@@ -404,121 +387,154 @@ export default function ManageUsersPage() {
               <circle cx="11" cy="11" r="8" />
               <line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery('')}
+                className="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600 text-xs font-bold"
+              >
+                ✕
+              </button>
+            )}
           </div>
         </div>
       </div>
-
-
-
-      {/* Main Administrative Table */}
       {loading ? (
-        <div className="bg-white border border-gray-100 rounded-lg p-12 shadow-sm flex flex-col items-center justify-center gap-4">
+        <div className="bg-white border border-slate-200 rounded-2xl p-12 shadow-2xs flex flex-col items-center justify-center gap-4">
           <div className="w-10 h-10 border-4 border-[var(--brand)]/20 border-t-[var(--brand)] rounded-full animate-spin"></div>
           <p className="text-sm text-slate-400 font-semibold">Fetching users...</p>
         </div>
+      ) : filteredUsers.length === 0 ? (
+        <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center shadow-2xs">
+          <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /></svg>
+          </div>
+          <p className="text-sm text-slate-400 font-semibold">No users found</p>
+        </div>
       ) : (
-        <div className="bg-white rounded-lg border border-slate-200/60 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md">
-          <div className="overflow-x-auto">
-            {filteredUsers.length === 0 ? (
-              <div className="p-12 text-center">
-                <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /></svg>
-                </div>
-                <p className="text-sm text-slate-400 font-semibold">No users found</p>
-              </div>
-            ) : (
-              <table className="w-full text-left border-collapse select-none">
-                <thead>
-                  <tr className="bg-slate-50/50 text-slate-400 font-extrabold text-[11px] tracking-wider border-b border-slate-300">
-                    {/* Master Checkbox */}
-                    <th className="py-4 px-6 w-12">
-                      <input
-                        type="checkbox"
-                        checked={filteredUsers.length > 0 && selectedUserIds.length === filteredUsers.length}
-                        onChange={handleSelectAll}
-                        className="w-4 h-4 rounded border-slate-300 text-[var(--brand)] focus:ring-[var(--brand)]/20 cursor-pointer"
-                      />
-                    </th>
-                    <th className="py-4 px-4">NAME</th>
-                    <th className="py-4 px-6">ORGANIZATION</th>
-                    <th className="py-4 px-6">EMAIL</th>
-                    <th className="py-4 px-6">MOBILE</th>
-                    <th className="py-4 px-6">EXPIRY DATE</th>
-                    <th className="py-4 px-6">
-                      <div className="flex items-center gap-1 cursor-pointer hover:text-slate-700">
-                        STATUS <span className="text-[9px] text-slate-300 font-bold">▼</span>
-                      </div>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-300">
-                  {filteredUsers.map(user => {
-                    const isSelected = selectedUserIds.includes(user.id);
-                    const isUserActive = user.status === 'active';
+        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-2xs overflow-hidden transition-all duration-300 hover:shadow-md">
+          <div className="overflow-x-auto no-scrollbar">
+            <table className="w-full text-left border-collapse select-none min-w-[740px]">
+              <thead>
+                <tr className="bg-slate-50/80 text-slate-400 font-extrabold text-[11px] tracking-wider border-b border-slate-200">
+                  {/* Master Checkbox */}
+                  <th className="py-3.5 sm:py-4 px-4 sm:px-5 w-10">
+                    <input
+                      type="checkbox"
+                      checked={filteredUsers.length > 0 && selectedUserIds.length === filteredUsers.length}
+                      onChange={handleSelectAll}
+                      className="w-4 h-4 rounded border-slate-300 text-[var(--brand)] focus:ring-[var(--brand)]/20 cursor-pointer"
+                    />
+                  </th>
+                  <th className="py-3.5 sm:py-4 px-3 sm:px-4">NAME</th>
+                  <th className="py-3.5 sm:py-4 px-4 sm:px-5">ORGANIZATION</th>
+                  <th className="py-3.5 sm:py-4 px-4 sm:px-5">EMAIL</th>
+                  <th className="py-3.5 sm:py-4 px-4 sm:px-5">MOBILE</th>
+                  <th className="py-3.5 sm:py-4 px-4 sm:px-5">EXPIRY DATE</th>
+                  <th className="py-3.5 sm:py-4 px-4 sm:px-5">STATUS</th>
+                  <th className="py-3.5 sm:py-4 px-3 sm:px-4 text-center w-12">ACTIONS</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {filteredUsers.map(user => {
+                  const isSelected = selectedUserIds.includes(user.id);
+                  const isUserActive = user.status === 'active';
 
-                    return (
-                      <tr
-                        key={user.id}
-                        onContextMenu={(e) => handleContextMenu(e, user)}
-                        className={`hover:bg-slate-50/60 transition-colors duration-200 cursor-context-menu ${isSelected ? 'bg-slate-50/80' : ''
-                          } ${!isUserActive ? 'opacity-70' : ''}`}
-                      >
-                        {/* Checkbox */}
-                        <td className="py-4.5 px-6">
-                          <input
-                            type="checkbox"
-                            checked={isSelected}
-                            onChange={() => handleSelectUser(user.id)}
-                            className="w-4 h-4 rounded border-slate-300 text-[var(--brand)] focus:ring-[var(--brand)]/20 cursor-pointer"
-                          />
-                        </td>
+                  return (
+                    <tr
+                      key={user.id}
+                      onContextMenu={(e) => handleContextMenu(e, user)}
+                      className={`hover:bg-slate-50/60 transition-colors duration-200 cursor-context-menu ${isSelected ? 'bg-slate-50/80' : ''
+                        } ${!isUserActive ? 'opacity-70' : ''}`}
+                    >
+                      {/* Checkbox */}
+                      <td className="py-3 sm:py-4 px-4 sm:px-5">
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={() => handleSelectUser(user.id)}
+                          className="w-4 h-4 rounded border-slate-300 text-[var(--brand)] focus:ring-[var(--brand)]/20 cursor-pointer"
+                        />
+                      </td>
 
-                        {/* Name */}
-                        <td className="py-4.5 px-4 font-bold text-slate-900 text-[13.5px]">
-                          <span className="hover:text-[var(--brand)] transition-colors">{user.name}</span>
-                        </td>
+                      {/* Name */}
+                      <td className="py-3 sm:py-4 px-3 sm:px-4">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-7 h-7 rounded-full bg-[var(--brand)]/10 text-[var(--brand)] font-bold text-[11px] flex items-center justify-center shrink-0">
+                            {user.name?.charAt(0)?.toUpperCase() || 'U'}
+                          </div>
+                          <span className="font-bold text-slate-900 text-xs sm:text-[13px] hover:text-[var(--brand)] transition-colors truncate max-w-[160px]">
+                            {user.name}
+                          </span>
+                        </div>
+                      </td>
 
-                        {/* Org */}
-                        <td className="py-4.5 px-6 text-[13px] text-slate-600 font-bold">
-                          {companyName}
-                        </td>
+                      {/* Org */}
+                      <td className="py-3 sm:py-4 px-4 sm:px-5 text-xs sm:text-[13px] text-slate-600 font-bold">
+                        {user.company_name || companyName}
+                      </td>
 
-                        {/* Email */}
-                        <td className="py-4.5 px-6 text-[13px] text-slate-500 font-medium">
-                          {user.email}
-                        </td>
+                      {/* Email */}
+                      <td className="py-3 sm:py-4 px-4 sm:px-5 text-xs sm:text-[13px] text-slate-500 font-medium">
+                        {user.email}
+                      </td>
 
-                        {/* Mobile */}
-                        <td className="py-4.5 px-6 text-[13px] text-slate-500 font-medium">
-                          {user.phone_number ? `+91 ${user.phone_number}` : '--'}
-                        </td>
+                      {/* Mobile */}
+                      <td className="py-3 sm:py-4 px-4 sm:px-5 text-xs sm:text-[13px] text-slate-500 font-medium">
+                        {user.phone_number ? `+91 ${user.phone_number}` : '--'}
+                      </td>
 
-                        {/* Expiry Date */}
-                        <td className="py-4.5 px-6 text-[13px] text-slate-500 font-semibold">
-                          {formatExpiryDate(user.created_at)}
-                        </td>
+                      {/* Expiry Date */}
+                      <td className="py-3 sm:py-4 px-4 sm:px-5 text-xs sm:text-[13px] text-slate-500 font-semibold">
+                        {formatExpiryDate(user.created_at)}
+                      </td>
 
-                        {/* Status */}
-                        <td className="py-4.5 px-6">
-                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-extrabold border ${isUserActive
+                      {/* Status */}
+                      <td className="py-3 sm:py-4 px-4 sm:px-5">
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-extrabold border ${isUserActive
                             ? 'bg-emerald-50 text-emerald-700 border-emerald-100/60'
                             : 'bg-slate-100 text-slate-600 border-slate-200'
-                            }`}>
-                            <span className={`w-1.5 h-1.5 rounded-full ${isUserActive ? 'bg-emerald-500' : 'bg-slate-400'}`}></span>
-                            {isUserActive ? 'Active' : 'Inactive'}
-                          </span>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            )}
+                          }`}>
+                          <span className={`w-1.5 h-1.5 rounded-full ${isUserActive ? 'bg-emerald-500' : 'bg-slate-400'}`}></span>
+                          {isUserActive ? 'Active' : 'Inactive'}
+                        </span>
+                      </td>
+
+                      {/* Quick 3-dots Action Menu */}
+                      <td className="py-3 sm:py-4 px-3 sm:px-4 text-center">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const rect = e.currentTarget.getBoundingClientRect();
+                            const menuHeight = 150;
+                            const openUpwards = rect.bottom + menuHeight > window.innerHeight;
+                            setContextMenu({
+                              x: Math.max(10, Math.min(rect.right - 180, window.innerWidth - 190)),
+                              y: openUpwards ? Math.max(10, rect.top - menuHeight) : rect.bottom + 4,
+                              user
+                            });
+                          }}
+                          className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition-colors"
+                          title="Actions"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                            <circle cx="12" cy="5" r="2" />
+                            <circle cx="12" cy="12" r="2" />
+                            <circle cx="12" cy="19" r="2" />
+                          </svg>
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         </div>
       )}
 
-      {/* Instructions Overlay */}
+      {/* Instructions Overlay at the bottom */}
       <div className="mt-6 text-center">
         <p className="text-[11px] text-slate-400 font-semibold tracking-wide flex items-center justify-center gap-1.5">
           <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" /></svg>
@@ -526,41 +542,57 @@ export default function ManageUsersPage() {
         </p>
       </div>
 
-      {/* CUSTOM RIGHT-CLICK CONTEXT MENU */}
+      {/* CUSTOM CONTEXT MENU PORTAL */}
       {contextMenu && (
-        <div
-          className="fixed z-50 bg-white border border-slate-200/80 rounded-lg shadow-md py-2 w-44 text-left border-slate-100/50 animate-scale-up"
-          style={{ left: `${contextMenu.x}px`, top: `${contextMenu.y}px` }}
-        >
-          {/* Edit */}
-          <button
-            onClick={() => openEditModal(contextMenu.user)}
-            className="w-full px-4 py-2.5 text-xs font-extrabold text-slate-700 hover:bg-slate-50 hover:text-slate-900 flex items-center gap-2.5 transition-colors"
+        <>
+          {/* Backdrop to close when clicking outside */}
+          <div
+            className="fixed inset-0 z-40 bg-transparent"
+            onClick={() => setContextMenu(null)}
+          />
+          <div
+            className="fixed z-50 bg-white border border-slate-200/90 rounded-2xl shadow-xl py-2 w-44 text-left border-slate-100 animate-scale-up"
+            style={{ left: `${contextMenu.x}px`, top: `${contextMenu.y}px` }}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
-            Edit
-          </button>
+            {/* Edit */}
+            <button
+              onClick={() => {
+                openEditModal(contextMenu.user);
+                setContextMenu(null);
+              }}
+              className="w-full px-4 py-2.5 text-xs font-extrabold text-slate-700 hover:bg-slate-50 hover:text-slate-900 flex items-center gap-2.5 transition-colors cursor-pointer"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
+              Edit
+            </button>
 
-          {/* Toggle Active/Inactive */}
-          <button
-            onClick={() => handleToggleStatus(contextMenu.user)}
-            className="w-full px-4 py-2.5 text-xs font-extrabold text-slate-700 hover:bg-slate-50 hover:text-slate-900 flex items-center gap-2.5 transition-colors"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>
-            {contextMenu.user.status === 'active' ? 'Inactive' : 'Active'}
-          </button>
+            {/* Toggle Active/Inactive */}
+            <button
+              onClick={() => {
+                handleToggleStatus(contextMenu.user);
+                setContextMenu(null);
+              }}
+              className="w-full px-4 py-2.5 text-xs font-extrabold text-slate-700 hover:bg-slate-50 hover:text-slate-900 flex items-center gap-2.5 transition-colors cursor-pointer"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>
+              {contextMenu.user.status === 'active' ? 'Inactive' : 'Active'}
+            </button>
 
-          <div className="border-t border-slate-100 my-1"></div>
+            <div className="border-t border-slate-100 my-1"></div>
 
-          {/* Remove */}
-          <button
-            onClick={() => handleDeleteUser(contextMenu.user.id)}
-            className="w-full px-4 py-2.5 text-xs font-extrabold text-rose-600 hover:bg-rose-50 flex items-center gap-2.5 transition-colors"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" /><path d="M10 11v6" /><path d="M14 11v6" /></svg>
-            Remove
-          </button>
-        </div>
+            {/* Remove */}
+            <button
+              onClick={() => {
+                handleDeleteUser(contextMenu.user.id);
+                setContextMenu(null);
+              }}
+              className="w-full px-4 py-2.5 text-xs font-extrabold text-rose-600 hover:bg-rose-50 flex items-center gap-2.5 transition-colors cursor-pointer"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" /><path d="M10 11v6" /><path d="M14 11v6" /></svg>
+              Remove
+            </button>
+          </div>
+        </>
       )}
 
       {/* ADD / EDIT USER DIALOG MODAL */}
@@ -576,7 +608,7 @@ export default function ManageUsersPage() {
           />
 
           {/* Modal Container */}
-          <div className="relative w-full max-w-lg bg-white rounded-lg border border-slate-100 shadow-md p-6.5 z-10 animate-fade-in">
+          <div className="relative w-full max-w-lg bg-white rounded-2xl border border-slate-100 shadow-2xl p-5 sm:p-6.5 z-10 animate-fade-in max-h-[92vh] overflow-y-auto my-auto">
             <h3 className="text-lg font-black text-slate-900 tracking-tight">
               {isAddModalOpen ? 'Add User' : 'Edit User'}
             </h3>
