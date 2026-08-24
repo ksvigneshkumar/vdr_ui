@@ -19,7 +19,7 @@ const TRASH_ICON = (
     </svg>
 );
 
-export default function GroupsSidebar({ isOpen = true }) {
+export default function GroupsSidebar({ isOpen = true, onToggle }) {
     const pathname = usePathname();
     const [navItems, setNavItems] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -113,7 +113,11 @@ export default function GroupsSidebar({ isOpen = true }) {
 
     return (
         <>
-            <aside className={`${isOpen ? 'w-64 border-r border-gray-200' : 'w-0 border-r-0'} transition-all duration-300 bg-white flex flex-col h-screen sticky top-0 shrink-0 font-sans`}>
+            {/* Mobile Overlay */}
+            {isOpen && (
+                <div className="md:hidden fixed inset-0 top-16 bg-black/20 z-[35]" onClick={onToggle}></div>
+            )}
+            <aside className={`fixed md:sticky ${isOpen ? 'translate-x-0 w-64 border-r border-gray-200' : '-translate-x-full md:translate-x-0 md:w-0 md:border-r-0'} transition-transform md:transition-all duration-300 bg-white flex flex-col h-[calc(100vh-4rem)] md:h-screen top-16 md:top-0 z-40 shrink-0 font-sans`}>
                 <div className="flex-1 overflow-y-auto">
                     <div className="p-5 border-b border-gray-100 flex items-center justify-between">
                         <h2 className="text-[14px] font-bold font-sans text-gray-800 tracking-tight uppercase">Active Members</h2>

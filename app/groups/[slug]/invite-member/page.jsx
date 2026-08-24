@@ -166,26 +166,26 @@ export default function InviteMemberPage() {
         <div className="flex-1 flex flex-col h-screen overflow-hidden font-sans bg-[#F8FAFC] relative">
             <div className="absolute top-0 left-0 w-full h-96 pointer-events-none" />
 
-            <div className="pt-10 px-10 pb-6 shrink-0 relative z-10">
-                <div className="flex items-center gap-4 mb-6">
-                    <button onClick={() => router.push(`/groups/${groupSlug}`)} className="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-50 transition-all shadow-sm">
+            <div className="pt-6 md:pt-10 px-4 md:px-10 pb-4 md:pb-6 shrink-0 relative z-10">
+                <div className="flex items-center gap-3 md:gap-4 mb-4 md:mb-6">
+                    <button onClick={() => router.push(`/groups/${groupSlug}`)} className="w-9 h-9 shrink-0 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-50 transition-all shadow-sm">
                         <FaArrowLeft size={14} />
                     </button>
-                    <div>
-                        <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-0.5">
+                    <div className="min-w-0">
+                        <p className="text-[10px] md:text-xs font-semibold text-slate-400 uppercase tracking-wider mb-0.5 truncate">
                             {loading ? "Loading..." : groupData?.name || "Group"} &rsaquo; Members
                         </p>
-                        <h1 className="text-2xl font-semibold text-slate-800 tracking-tight flex items-center gap-3">
-                            <span className="w-9 h-9 rounded-xl bg-[var(--brand)] text-white flex items-center justify-center shadow-sm">
-                                <FaUserPlus size={15} />
+                        <h1 className="text-lg md:text-2xl font-semibold text-slate-800 tracking-tight flex items-center gap-2 md:gap-3">
+                            <span className="w-7 h-7 md:w-9 md:h-9 shrink-0 rounded-lg md:rounded-xl bg-[var(--brand)] text-white flex items-center justify-center shadow-sm">
+                                <FaUserPlus className="text-[12px] md:text-[15px]" />
                             </span>
-                            Invite Members
+                            <span className="truncate">Invite Members</span>
                         </h1>
                     </div>
                 </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto px-10 pb-12">
+            <div className="flex-1 overflow-y-auto px-4 md:px-10 pb-6 md:pb-12">
                 <div className="max-w-2xl mx-auto">
                     {successMsg && <div className="bg-emerald-50 border border-emerald-200 rounded-lg px-6 py-4 mb-6 flex items-center gap-3 text-emerald-700 font-medium text-sm"><FaCheckCircle size={16} />{successMsg}</div>}
                     {errorMsg && <div className="bg-rose-50 border border-rose-200 rounded-lg px-6 py-4 mb-6 flex items-center gap-3 text-rose-700 font-medium text-sm">⚠️ {errorMsg}</div>}
@@ -220,22 +220,22 @@ export default function InviteMemberPage() {
                         </div>
                     )}
 
-                    <div className="bg-white border border-gray-200/80 rounded-xl shadow-sm p-8 hover:border-gray-300 transition-all">
+                    <div className="bg-white border border-gray-200/80 rounded-xl shadow-sm p-5 md:p-8 hover:border-gray-300 transition-all">
 
                         <div className="flex bg-slate-100 p-1 rounded-xl mb-6">
                             <button
                                 type="button"
                                 onClick={() => setInviteMode('single')}
-                                className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${inviteMode === 'single' ? 'bg-white text-[var(--brand)] shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                                className={`flex-1 py-2 text-[11px] sm:text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 sm:gap-2 ${inviteMode === 'single' ? 'bg-white text-[var(--brand)] shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                             >
-                                <FaEnvelope size={13} /> Single Invite
+                                <FaEnvelope className="text-[11px] sm:text-[13px]" /> Single Invite
                             </button>
                             <button
                                 type="button"
                                 onClick={() => setInviteMode('bulk')}
-                                className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${inviteMode === 'bulk' ? 'bg-white text-[var(--brand)] shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                                className={`flex-1 py-2 text-[11px] sm:text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 sm:gap-2 ${inviteMode === 'bulk' ? 'bg-white text-[var(--brand)] shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                             >
-                                <FaUsers size={14} /> Bulk Invite
+                                <FaUsers className="text-[12px] sm:text-[14px]" /> Bulk Invite
                             </button>
                         </div>
 
@@ -250,13 +250,13 @@ export default function InviteMemberPage() {
                                 </div>
                             ) : (
                                 <div>
-                                    <div className="flex items-center justify-between mb-2">
+                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0 mb-2">
                                         <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">Candidate Emails <span className="text-rose-400">*</span></label>
                                         <button
                                             type="button"
                                             onClick={() => fileInputRef.current?.click()}
                                             disabled={parsingFile}
-                                            className="text-xs font-bold text-[var(--brand)] flex items-center gap-1.5 hover:text-[var(--brand-dark)] transition-colors border border-slate-200 px-3 py-1.5 rounded-lg hover:bg-slate-50 shadow-sm"
+                                            className="text-xs font-bold text-[var(--brand)] flex items-center justify-center gap-1.5 hover:text-[var(--brand-dark)] transition-colors border border-slate-200 px-3 py-1.5 rounded-lg hover:bg-slate-50 shadow-sm w-full sm:w-auto"
                                         >
                                             {parsingFile ? <FaSpinner size={12} className="animate-spin" /> : <FaFileUpload size={12} />}
                                             {parsingFile ? "Extracting..." : "Upload File"}
@@ -279,21 +279,21 @@ export default function InviteMemberPage() {
                                 <textarea value={inviteDescription} onChange={(e) => setInviteDescription(e.target.value)} rows={3} className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium focus:border-[var(--brand)] outline-none resize-none" />
                             </div>
 
-                            <div className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-4 flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center shrink-0"><FaFileSignature size={14} /></div>
+                            <div className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-4 flex items-start sm:items-center justify-between gap-4">
+                                <div className="flex items-start sm:items-center gap-3">
+                                    <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 mt-0.5 sm:mt-0"><FaFileSignature size={14} /></div>
                                     <div>
                                         <p className="text-sm font-bold text-slate-800">Require NDA Agreement</p>
-                                        <p className="text-xs text-slate-500 font-medium">If enabled, user must sign NDA to complete registration.</p>
+                                        <p className="text-xs text-slate-500 font-medium mt-0.5 sm:mt-0">If enabled, user must sign NDA to complete registration.</p>
                                     </div>
                                 </div>
-                                <label className="relative inline-flex items-center cursor-pointer">
+                                <label className="relative inline-flex items-center cursor-pointer shrink-0 mt-1 sm:mt-0">
                                     <input type="checkbox" className="sr-only peer" checked={requireNda} onChange={(e) => setRequireNda(e.target.checked)} />
                                     <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--brand)]"></div>
                                 </label>
                             </div>
 
-                            <div className="flex items-center gap-3 pt-2">
+                            <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center gap-3 pt-2">
                                 <button type="button" onClick={() => router.push(`/groups/${groupSlug}`)} className="flex-1 bg-white border border-slate-200 text-slate-700 py-3 rounded-xl font-semibold text-sm hover:bg-slate-50 transition-all">Cancel</button>
                                 <button type="submit" disabled={inviting || (inviteMode === 'single' ? !inviteEmail.trim() : !bulkEmails.trim())} className="flex-1 bg-[var(--brand)] text-white py-3 rounded-xl font-semibold text-sm hover:bg-[var(--brand-dark)] transition-all flex justify-center items-center gap-2">
                                     {inviting ? "Sending..." : <><FaPaperPlane size={13} /> Send Invitation{inviteMode === 'bulk' && 's'}</>}
