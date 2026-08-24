@@ -77,6 +77,8 @@ function UnifiedWorkspace() {
     // Modals & Dropdowns
     const [isDownloadMenuOpen, setIsDownloadMenuOpen] = useState(false);
     const [isExportIndexMenuOpen, setIsExportIndexMenuOpen] = useState(false);
+    const [isMobileActionsOpen, setIsMobileActionsOpen] = useState(false);
+    const [mobileItemActionSheet, setMobileItemActionSheet] = useState(null);
     const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
     const [isNewFolderOpen, setIsNewFolderOpen] = useState(false);
     const [newFolderName, setNewFolderName] = useState('');
@@ -479,10 +481,10 @@ function UnifiedWorkspace() {
     };
 
     // ── DOWNLOADS (Hitting the new Download API) ─────────────────────────────
-    const executeDownloadWrapper = async (actionType) => {
+    const executeDownloadWrapper = async (actionType, singleItem = null) => {
         setIsDownloadMenuOpen(false);
-        for (let id of selectedIds) {
-            const file = files.find(f => f.id === id);
+        const targetItems = singleItem ? [singleItem] : files.filter(f => selectedIds.has(f.id));
+        for (let file of targetItems) {
             if (!file || file.type === 'folder') continue;
 
             setDownloading(prev => ({ ...prev, [file.id]: true }));
@@ -765,8 +767,8 @@ function UnifiedWorkspace() {
             <input type="file" multiple ref={fileInputRef} onChange={handleFileChange} className="hidden" />
 
             <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-                {/* ── LIGHT HEADER (Search + Profile) ── */}
-                <div className="flex items-center justify-between gap-4 px-6 py-3 bg-white text-slate-800 shrink-0 shadow-sm border-b border-slate-200 relative z-20">
+                {/* ── DESKTOP HEADER (Search + Profile) (hidden md:flex) ── */}
+                <div className="hidden md:flex items-center justify-between gap-4 px-6 py-3 bg-white text-slate-800 shrink-0 shadow-sm border-b border-slate-200 relative z-20">
                     {/* Search Bar */}
                     <div className="relative flex-1 max-w-xl">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -802,48 +804,201 @@ function UnifiedWorkspace() {
                     </div>
                 </div>
 
-                {/* ── TOP ACTION BAR (Custom Organized Layout) ── */}
-                <div className="flex flex-wrap items-center gap-1 px-6 py-2.5 bg-white border-b border-slate-200">
+                {/* ── MOBILE SEARCH & ACTION BAR (flex md:hidden) ── */}
+                <div className="flex md:hidden items-center justify-between gap-2 px-3 py-2 bg-white border-b border-slate-100 shrink-0">
+                    {/* Compact Clean Search Bar */}
+                    <div className="relative flex-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        <input 
+                            type="text" 
+                            placeholder="Search files..." 
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200/80 rounded-xl text-xs font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[var(--brand)] transition-all shadow-2xs"
+                        />
+                    </div>
+
+                    {/* Mobile Actions Dropdown */}
+                    <div className="relative shrink-0">
+                        <button
+                            type="button"
+                            onClick={() => setIsMobileActionsOpen(!isMobileActionsOpen)}
+                            className="h-8 px-3 rounded-xl bg-[var(--brand)] text-white font-bold text-xs flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all cursor-pointer"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                            <span>Actions</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className={`transition-transform ${isMobileActionsOpen ? 'rotate-180' : ''}`}><polyline points="6 9 12 15 18 9" /></svg>
+                        </button>
+
+                        {/* Mobile Actions Dropdown Popover */}
+                        {isMobileActionsOpen && (
+                            <>
+                                <div className="fixed inset-0 z-40 bg-slate-900/10" onClick={() => setIsMobileActionsOpen(false)}></div>
+                                <div className="absolute right-0 top-full mt-1.5 w-56 bg-white border border-slate-200 rounded-2xl shadow-xl p-1.5 z-50 animate-scale-up flex flex-col">
+                                    {!['trash', 'bookmarks', 'downloads'].includes(currentView) && canUploadHere && (
+                                        <button onClick={() => { setIsMobileActionsOpen(false); setInitialUploadFiles([]); setIsUploadModalOpen(true); }} className="w-full text-left px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-[var(--brand)] flex items-center gap-2.5 rounded-xl transition-colors cursor-pointer">
+                                            <FaUpload className="text-xs text-[var(--brand)]" />
+                                            <span>Upload Files</span>
+                                        </button>
+                                    )}
+                                    {!['trash', 'bookmarks', 'downloads'].includes(currentView) && canCreateFolder && (
+                                        <button onClick={() => { setIsMobileActionsOpen(false); setIsNewFolderOpen(true); }} className="w-full text-left px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-[var(--brand)] flex items-center gap-2.5 rounded-xl transition-colors cursor-pointer">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-[var(--brand)]"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" /></svg>
+                                            <span>Add Folder</span>
+                                        </button>
+                                    )}
+                                    {!['trash', 'bookmarks', 'downloads'].includes(currentView) && (
+                                        <>
+                                            <button onClick={() => { setIsMobileActionsOpen(false); exportIndexToExcel(files, deletedIds, session?.companyName || session?.workspaceName || session?.name || 'PIBI VDR • CONFIDENTIAL DATA ROOM'); showToast("Document Index Exported as Excel (.xlsx)"); }} className="w-full text-left px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-2.5 rounded-xl transition-colors cursor-pointer">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" className="text-emerald-600"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M8 13h2"/><path d="M8 17h2"/><path d="M14 13h2"/><path d="M14 17h2"/></svg>
+                                                <span>Export as Excel</span>
+                                            </button>
+                                            <button onClick={async () => { setIsMobileActionsOpen(false); try { await exportIndexToPDF(files, deletedIds, session?.companyName || session?.workspaceName || session?.name || 'PIBI VDR • CONFIDENTIAL DATA ROOM'); showToast("Document Index Exported as PDF"); } catch (err) { showToast("PDF export error: " + err.message, "error"); } }} className="w-full text-left px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-rose-50 hover:text-rose-700 flex items-center gap-2.5 rounded-xl transition-colors cursor-pointer">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" className="text-rose-600"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M10 12v5"/><path d="M14 12v5"/></svg>
+                                                <span>Export as PDF</span>
+                                            </button>
+                                            <button onClick={async () => { setIsMobileActionsOpen(false); await executeRebuildIndex(null, null, false); showToast("Index successfully rebuilt"); }} className="w-full text-left px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-[var(--brand)] flex items-center gap-2.5 rounded-xl transition-colors cursor-pointer">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-slate-500"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
+                                                <span>Rebuild Index</span>
+                                            </button>
+
+                                            {/* RENAME SELECTED */}
+                                            {hasAnyRenameAccess && selectedIds.size === 1 && (
+                                                <button onClick={() => { 
+                                                    setIsMobileActionsOpen(false); 
+                                                    const item = files.find(f => f.id === [...selectedIds][0]); 
+                                                    if (item) { 
+                                                        setRenameValue(item.name); 
+                                                        setIsRenameModalOpen(true); 
+                                                    } 
+                                                }} className="w-full text-left px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-[var(--brand)] flex items-center gap-2.5 rounded-xl transition-colors cursor-pointer border-t border-slate-100">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-slate-600"><path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" /></svg>
+                                                    <span>Rename Selected</span>
+                                                </button>
+                                            )}
+
+                                            {/* DOWNLOAD SELECTED */}
+                                            {hasAnyDownloadAccess && selectedIds.size > 0 && (
+                                                <>
+                                                    {canDownloadOriginalSelected && (
+                                                        <button onClick={() => { setIsMobileActionsOpen(false); executeDownloadWrapper('original'); }} className="w-full text-left px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-[var(--brand)] flex items-center gap-2.5 rounded-xl transition-colors cursor-pointer">
+                                                            <FaDownload className="text-xs text-emerald-600" />
+                                                            <span>Download ({selectedIds.size})</span>
+                                                        </button>
+                                                    )}
+                                                    {canDownloadSecureSelected && (
+                                                        <button onClick={() => { setIsMobileActionsOpen(false); executeDownloadWrapper('secure'); }} className="w-full text-left px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-[var(--brand)] flex items-center gap-2.5 rounded-xl transition-colors cursor-pointer">
+                                                            <FaShieldAlt className="text-xs text-[var(--brand)]" />
+                                                            <span>Download Secure ({selectedIds.size})</span>
+                                                        </button>
+                                                    )}
+                                                </>
+                                            )}
+
+                                            {/* MOVE SELECTED */}
+                                            {canMergeFolder && selectedIds.size > 0 && (
+                                                <button onClick={() => { setIsMobileActionsOpen(false); setIsMoveModalOpen(true); }} className="w-full text-left px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-[var(--brand)] flex items-center gap-2.5 rounded-xl transition-colors cursor-pointer">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-slate-600"><polyline points="5 9 2 12 5 15" /><polyline points="9 5 12 2 15 5" /><line x1="2" y1="12" x2="22" y2="12" /><line x1="12" y1="2" x2="12" y2="22" /></svg>
+                                                    <span>Move ({selectedIds.size})</span>
+                                                </button>
+                                            )}
+
+                                            {/* DELETE SELECTED */}
+                                            {hasAnyDeleteAccess && selectedIds.size > 0 && canDeleteSelected && (
+                                                <button onClick={() => { setIsMobileActionsOpen(false); setIsDeleteModalOpen(true); }} className="w-full text-left px-3.5 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 flex items-center gap-2.5 rounded-xl transition-colors cursor-pointer">
+                                                    <FaTrash className="text-xs text-rose-500" />
+                                                    <span>Delete ({selectedIds.size})</span>
+                                                </button>
+                                            )}
+                                        </>
+                                    )}
+                                    {currentView === 'trash' && (
+                                        <>
+                                            <button disabled={selectedIds.size === 0} onClick={() => { setIsMobileActionsOpen(false); executeRecover(); }} className="w-full text-left px-3.5 py-2 text-xs font-bold text-emerald-600 hover:bg-emerald-50 flex items-center gap-2.5 rounded-xl transition-colors cursor-pointer">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" /></svg>
+                                                <span>Recover Selected</span>
+                                            </button>
+                                            <button disabled={selectedIds.size === 0} onClick={() => { setIsMobileActionsOpen(false); setIsPermDeleteModalOpen(true); }} className="w-full text-left px-3.5 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 flex items-center gap-2.5 rounded-xl transition-colors cursor-pointer">
+                                                <FaTrash className="text-xs" />
+                                                <span>Permanently Delete</span>
+                                            </button>
+                                        </>
+                                    )}
+                                </div>
+                            </>
+                        )}
+                    </div>
+                </div>
+
+                {/* ── MOBILE SELECTION BAR (When items selected on mobile) ── */}
+                {selectedIds.size > 0 && (
+                    <div className="flex md:hidden items-center justify-between px-4 py-2.5 bg-[var(--brand)] text-white shadow-md text-xs font-bold shrink-0 animate-fade-in">
+                        <span className="font-extrabold tracking-wide">{selectedIds.size} selected</span>
+                        <div className="flex items-center gap-1.5">
+                            {hasAnyDownloadAccess && (
+                                <button onClick={() => executeDownloadWrapper('original')} className="p-1.5 rounded-lg hover:bg-white/20 active:bg-white/30 text-white transition-colors cursor-pointer" title="Download">
+                                    <FaDownload className="text-xs" />
+                                </button>
+                            )}
+                            {canMergeFolder && (
+                                <button onClick={() => setIsMoveModalOpen(true)} className="p-1.5 rounded-lg hover:bg-white/20 active:bg-white/30 text-white transition-colors cursor-pointer" title="Move">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="5 9 2 12 5 15" /><polyline points="9 5 12 2 15 5" /><line x1="2" y1="12" x2="22" y2="12" /><line x1="12" y1="2" x2="12" y2="22" /></svg>
+                                </button>
+                            )}
+                            {hasAnyDeleteAccess && (
+                                <button onClick={() => setIsDeleteModalOpen(true)} className="p-1.5 rounded-lg hover:bg-white/20 active:bg-white/30 text-rose-100 hover:text-white transition-colors cursor-pointer" title="Delete">
+                                    <FaTrash className="text-xs" />
+                                </button>
+                            )}
+                            <button onClick={() => setSelectedIds(new Set())} className="p-1.5 rounded-lg hover:bg-white/20 active:bg-white/30 text-white/80 hover:text-white transition-colors ml-1 cursor-pointer" title="Clear Selection">
+                                ✕
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                {/* ── DESKTOP TOP ACTION BAR (Clean Single Horizontal Row - hidden md:flex) ── */}
+                <div className="hidden md:flex w-full max-w-full items-center gap-2 px-6 py-2.5 bg-white border-b border-slate-200/80 overflow-x-auto no-scrollbar shrink-0 shadow-2xs whitespace-nowrap">
                     {!['trash', 'bookmarks', 'downloads'].includes(currentView) && canUploadHere && (
-                        <button onClick={() => { setInitialUploadFiles([]); setIsUploadModalOpen(true); }} className="flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-bold bg-[var(--brand)] text-white hover:opacity-90 shadow-sm rounded-lg transition-colors whitespace-nowrap">
-                            <FaUpload className="text-[12px]" />
-                            Upload
+                        <button onClick={() => { setInitialUploadFiles([]); setIsUploadModalOpen(true); }} className="h-8 sm:h-8.5 px-3.5 rounded-xl bg-[var(--brand)] text-white font-bold text-xs flex items-center gap-1.5 shadow-xs hover:opacity-90 active:scale-95 transition-all shrink-0 cursor-pointer">
+                            <FaUpload className="text-[11px]" />
+                            <span>Upload</span>
                         </button>
                     )}
                     {!['trash', 'bookmarks', 'downloads'].includes(currentView) && canCreateFolder && (
-                        <button onClick={() => setIsNewFolderOpen(true)} className="flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-bold bg-[var(--brand)] text-white hover:opacity-90 shadow-sm rounded-lg transition-colors whitespace-nowrap">
+                        <button onClick={() => setIsNewFolderOpen(true)} className="h-8 sm:h-8.5 px-3.5 rounded-xl bg-[var(--brand)] text-white font-bold text-xs flex items-center gap-1.5 shadow-xs hover:opacity-90 active:scale-95 transition-all shrink-0 cursor-pointer">
                             <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" /></svg>
-                            Add Folder
+                            <span>Add Folder</span>
                         </button>
                     )}
                     {!['trash', 'bookmarks', 'downloads'].includes(currentView) && (
-                        <div className="relative">
-                            <button onClick={() => setIsExportIndexMenuOpen(!isExportIndexMenuOpen)} className="flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-bold text-[#0B1A30] hover:text-[var(--brand)] rounded-lg transition-colors whitespace-nowrap">
+                        <div className="relative shrink-0">
+                            <button onClick={() => setIsExportIndexMenuOpen(!isExportIndexMenuOpen)} className="h-8 sm:h-8.5 px-3 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 hover:text-[var(--brand)] font-bold text-xs flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                                Export Index
+                                <span>Export Index</span>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className={`transition-transform ${isExportIndexMenuOpen ? 'rotate-180' : ''}`}><polyline points="6 9 12 15 18 9" /></svg>
                             </button>
                             {isExportIndexMenuOpen && (
                                 <>
                                     <div className="fixed inset-0 z-40" onClick={() => setIsExportIndexMenuOpen(false)}></div>
-                                    <div className="absolute top-full left-0 mt-1 w-44 bg-white border border-slate-200 rounded-xl shadow-sm py-1.5 z-50">
-                                        <button onClick={() => { setIsExportIndexMenuOpen(false); exportIndexToExcel(files, deletedIds, session?.companyName || session?.workspaceName || session?.name || 'PIBI VDR • CONFIDENTIAL DATA ROOM'); showToast("Document Index Exported as Excel (.xlsx)"); }} className="w-full text-left px-4 py-2.5 text-[12px] font-bold text-[#0B1A30] hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-2.5 transition-colors">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" className="text-emerald-600"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M8 13h2"/><path d="M8 17h2"/><path d="M14 13h2"/><path d="M14 17h2"/></svg>
-                                        Excel (.xlsx)
-                                    </button>
-                                    <button onClick={async () => { setIsExportIndexMenuOpen(false); try { await exportIndexToPDF(files, deletedIds, session?.companyName || session?.workspaceName || session?.name || 'PIBI VDR • CONFIDENTIAL DATA ROOM'); showToast("Document Index Exported as PDF"); } catch (err) { showToast("PDF export error: " + err.message, "error"); } }} className="w-full text-left px-4 py-2.5 text-[12px] font-bold text-[#0B1A30] hover:bg-rose-50 hover:text-rose-700 flex items-center gap-2.5 transition-colors">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" className="text-rose-600"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M10 12v5"/><path d="M14 12v5"/></svg>
-                                        PDF
-                                    </button>
+                                    <div className="absolute top-full left-0 mt-1.5 w-48 bg-white border border-slate-200/90 rounded-2xl shadow-xl py-1.5 z-50 animate-scale-up">
+                                        <button onClick={() => { setIsExportIndexMenuOpen(false); exportIndexToExcel(files, deletedIds, session?.companyName || session?.workspaceName || session?.name || 'PIBI VDR • CONFIDENTIAL DATA ROOM'); showToast("Document Index Exported as Excel (.xlsx)"); }} className="w-full text-left px-3.5 py-2 text-[12px] font-bold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-2.5 transition-colors cursor-pointer">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" className="text-emerald-600"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M8 13h2"/><path d="M8 17h2"/><path d="M14 13h2"/><path d="M14 17h2"/></svg>
+                                            <span>Excel (.xlsx)</span>
+                                        </button>
+                                        <button onClick={async () => { setIsExportIndexMenuOpen(false); try { await exportIndexToPDF(files, deletedIds, session?.companyName || session?.workspaceName || session?.name || 'PIBI VDR • CONFIDENTIAL DATA ROOM'); showToast("Document Index Exported as PDF"); } catch (err) { showToast("PDF export error: " + err.message, "error"); } }} className="w-full text-left px-3.5 py-2 text-[12px] font-bold text-slate-700 hover:bg-rose-50 hover:text-rose-700 flex items-center gap-2.5 transition-colors cursor-pointer">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" className="text-rose-600"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M10 12v5"/><path d="M14 12v5"/></svg>
+                                            <span>PDF</span>
+                                        </button>
                                     </div>
                                 </>
                             )}
                         </div>
                     )}
                     {!['trash', 'bookmarks', 'downloads'].includes(currentView) && (
-                        <button onClick={async () => { await executeRebuildIndex(null, null, false); showToast("Index successfully rebuilt"); }} className="flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-bold text-[#0B1A30] hover:text-[var(--brand)] rounded-lg transition-colors whitespace-nowrap" title="Force Rebuild Index">
+                        <button onClick={async () => { await executeRebuildIndex(null, null, false); showToast("Index successfully rebuilt"); }} className="h-8 sm:h-8.5 px-3 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 hover:text-[var(--brand)] font-bold text-xs flex items-center gap-1.5 shadow-2xs transition-all shrink-0 cursor-pointer" title="Force Rebuild Index">
                             <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
-                            Rebuild Index
+                            <span>Rebuild Index</span>
                         </button>
                     )}
 
@@ -852,111 +1007,118 @@ function UnifiedWorkspace() {
                         <div className="w-px h-5 bg-slate-200 mx-1 shrink-0"></div>
                     )}
 
+                    {/* Selected Count Indicator */}
+                    {selectedIds.size > 0 && (
+                        <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[var(--brand)]/10 text-[var(--brand)] border border-[var(--brand)]/20 shrink-0 animate-fade-in">
+                            {selectedIds.size} selected
+                        </span>
+                    )}
+
                     {!['trash', 'bookmarks', 'downloads'].includes(currentView) && hasAnyRenameAccess && (
-                        <button disabled={selectedIds.size !== 1} onClick={() => { const item = files.find(f => f.id === [...selectedIds][0]); if (item) { setRenameValue(item.name); setIsRenameModalOpen(true); } }} className={`flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-bold rounded-lg transition-colors whitespace-nowrap ${selectedIds.size !== 1 ? 'text-slate-400 cursor-not-allowed' : 'text-[#0B1A30] hover:text-[var(--brand)]'}`}>
+                        <button disabled={selectedIds.size !== 1} onClick={() => { const item = files.find(f => f.id === [...selectedIds][0]); if (item) { setRenameValue(item.name); setIsRenameModalOpen(true); } }} className={`h-8 sm:h-8.5 px-3 rounded-xl border font-bold text-xs flex items-center gap-1.5 shadow-2xs transition-all shrink-0 ${selectedIds.size === 1 ? 'border-slate-200 bg-white hover:bg-slate-50 text-slate-700 hover:text-[var(--brand)] active:scale-95 cursor-pointer' : 'border-slate-100 bg-slate-50/60 text-slate-300 cursor-not-allowed opacity-60'}`}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" /></svg>
-                            Rename
+                            <span>Rename</span>
                         </button>
                     )}
                     {!['trash', 'bookmarks', 'downloads'].includes(currentView) && hasAnyDownloadAccess && (
-                        <div className="relative">
-                            <button disabled={selectedIds.size === 0} onClick={() => setIsDownloadMenuOpen(!isDownloadMenuOpen)} className={`flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-bold rounded-lg transition-colors whitespace-nowrap ${selectedIds.size === 0 ? 'text-slate-400 cursor-not-allowed' : 'text-[#0B1A30] hover:text-[var(--brand)]'}`}>
+                        <div className="relative shrink-0">
+                            <button disabled={selectedIds.size === 0} onClick={() => setIsDownloadMenuOpen(!isDownloadMenuOpen)} className={`h-8 sm:h-8.5 px-3 rounded-xl border font-bold text-xs flex items-center gap-1.5 shadow-2xs transition-all ${selectedIds.size > 0 ? 'border-slate-200 bg-white hover:bg-slate-50 text-slate-700 hover:text-[var(--brand)] active:scale-95 cursor-pointer' : 'border-slate-100 bg-slate-50/60 text-slate-300 cursor-not-allowed opacity-60'}`}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
-                                Download
+                                <span>Download</span>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className={`transition-transform ${isDownloadMenuOpen ? 'rotate-180' : ''}`}><polyline points="6 9 12 15 18 9" /></svg>
                             </button>
                             {isDownloadMenuOpen && selectedIds.size > 0 && (
                                 <>
                                     <div className="fixed inset-0 z-40" onClick={() => setIsDownloadMenuOpen(false)}></div>
-                                    <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-slate-200 rounded-xl shadow-sm py-1 z-50">
-                                        {canDownloadSecureSelected && <button onClick={() => { setIsDownloadMenuOpen(false); executeDownloadWrapper('secure'); }} className="w-full text-left px-4 py-2 text-[12px] font-bold text-[#0B1A30] hover:text-[var(--brand)]">Download Secure (.html)</button>}
-                                    {canDownloadOriginalSelected && <button onClick={() => executeDownloadWrapper('original')} className="w-full text-left px-4 py-2 text-[12px] font-bold text-[#0B1A30] hover:text-[var(--brand)]">Download Original</button>}
-                                    {!canDownloadSecureSelected && !canDownloadOriginalSelected && <div className="px-4 py-2 text-[12px] font-medium text-slate-400">No permission</div>}
-                                </div>
+                                    <div className="absolute top-full left-0 mt-1.5 w-52 bg-white border border-slate-200/90 rounded-2xl shadow-xl py-1.5 z-50 animate-scale-up">
+                                        {canDownloadSecureSelected && <button onClick={() => { setIsDownloadMenuOpen(false); executeDownloadWrapper('secure'); }} className="w-full text-left px-3.5 py-2 text-[12px] font-bold text-slate-700 hover:bg-slate-50 hover:text-[var(--brand)] cursor-pointer">Download Secure (.html)</button>}
+                                        {canDownloadOriginalSelected && <button onClick={() => { setIsDownloadMenuOpen(false); executeDownloadWrapper('original'); }} className="w-full text-left px-3.5 py-2 text-[12px] font-bold text-slate-700 hover:bg-slate-50 hover:text-[var(--brand)] cursor-pointer">Download Original</button>}
+                                        {!canDownloadSecureSelected && !canDownloadOriginalSelected && <div className="px-3.5 py-2 text-[12px] font-medium text-slate-400">No permission</div>}
+                                    </div>
                                 </>
                             )}
                         </div>
                     )}
                     {currentView !== 'trash' && canMergeFolder && (
-                        <button disabled={selectedIds.size === 0 || !canMergeFolder} onClick={() => setIsMoveModalOpen(true)} className={`flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-bold rounded-lg transition-colors whitespace-nowrap ${selectedIds.size === 0 || !canMergeFolder ? 'text-slate-400 cursor-not-allowed' : 'text-[#0B1A30] hover:text-[var(--brand)]'}`}>
+                        <button disabled={selectedIds.size === 0 || !canMergeFolder} onClick={() => setIsMoveModalOpen(true)} className={`h-8 sm:h-8.5 px-3 rounded-xl border font-bold text-xs flex items-center gap-1.5 shadow-2xs transition-all shrink-0 ${selectedIds.size > 0 && canMergeFolder ? 'border-slate-200 bg-white hover:bg-slate-50 text-slate-700 hover:text-[var(--brand)] active:scale-95 cursor-pointer' : 'border-slate-100 bg-slate-50/60 text-slate-300 cursor-not-allowed opacity-60'}`}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="5 9 2 12 5 15" /><polyline points="9 5 12 2 15 5" /><line x1="2" y1="12" x2="22" y2="12" /><line x1="12" y1="2" x2="12" y2="22" /></svg>
-                            Move Items
+                            <span>Move Items</span>
                         </button>
                     )}
                     {currentView !== 'trash' && hasAnyDeleteAccess && (
-                        <button disabled={selectedIds.size === 0 || !canDeleteSelected} onClick={() => setIsDeleteModalOpen(true)} className={`flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-bold rounded-lg transition-colors whitespace-nowrap ${selectedIds.size === 0 || !canDeleteSelected ? 'text-slate-400 cursor-not-allowed' : 'text-[#0B1A30] hover:text-[var(--brand)]'}`}>
+                        <button disabled={selectedIds.size === 0 || !canDeleteSelected} onClick={() => setIsDeleteModalOpen(true)} className={`h-8 sm:h-8.5 px-3 rounded-xl border font-bold text-xs flex items-center gap-1.5 shadow-2xs transition-all shrink-0 ${selectedIds.size > 0 && canDeleteSelected ? 'border-rose-200 bg-rose-50/60 hover:bg-rose-100 text-rose-600 active:scale-95 cursor-pointer' : 'border-slate-100 bg-slate-50/60 text-slate-300 cursor-not-allowed opacity-60'}`}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14H6L5 6" /><path d="M10 11v6M14 11v6" /><path d="M9 6V4h6v2" /></svg>
-                            Delete
+                            <span>Delete</span>
                         </button>
                     )}
                     {currentView === 'trash' && (
                         <>
-                            <button disabled={selectedIds.size === 0} onClick={executeRecover} className={`flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-bold rounded-lg transition-colors whitespace-nowrap ${selectedIds.size === 0 ? 'text-slate-400 cursor-not-allowed' : 'text-[#0B1A30] hover:text-[var(--brand)]'}`}>
+                            <button disabled={selectedIds.size === 0} onClick={executeRecover} className={`h-8 sm:h-8.5 px-3 rounded-xl border font-bold text-xs flex items-center gap-1.5 shadow-2xs transition-all shrink-0 ${selectedIds.size > 0 ? 'border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 active:scale-95 cursor-pointer' : 'border-slate-100 bg-slate-50/60 text-slate-300 cursor-not-allowed opacity-60'}`}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" /></svg>
-                                Recover
+                                <span>Recover</span>
                             </button>
-                            <button disabled={selectedIds.size === 0} onClick={() => setIsPermDeleteModalOpen(true)} className={`flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-bold rounded-lg transition-colors whitespace-nowrap ${selectedIds.size === 0 ? 'text-slate-400 cursor-not-allowed' : 'text-[#0B1A30] hover:bg-slate-100'}`}>
+                            <button disabled={selectedIds.size === 0} onClick={() => setIsPermDeleteModalOpen(true)} className={`h-8 sm:h-8.5 px-3 rounded-xl border font-bold text-xs flex items-center gap-1.5 shadow-2xs transition-all shrink-0 ${selectedIds.size > 0 ? 'border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 active:scale-95 cursor-pointer' : 'border-slate-100 bg-slate-50/60 text-slate-300 cursor-not-allowed opacity-60'}`}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14H6L5 6" /><path d="M10 11v6M14 11v6" /><path d="M9 6V4h6v2" /></svg>
-                                Permanent Delete
+                                <span>Permanent Delete</span>
                             </button>
                         </>
                     )}
                 </div>
 
-                {/* ── BREADCRUMBS & LIST ── */}
-                <div className="flex-1 flex flex-col p-2 md:p-6 overflow-hidden">
-                    <div className="flex items-center gap-2 mb-4 px-2">
+                {/* ── BREADCRUMBS & LIST CONTAINER ── */}
+                <div className="flex-1 flex flex-col p-2 sm:p-4 lg:p-6 overflow-hidden min-w-0 w-full">
+                    <div className="w-full max-w-full flex items-center gap-1.5 mb-3 px-1 overflow-x-auto no-scrollbar whitespace-nowrap text-xs font-semibold text-slate-600 shrink-0">
                         <button 
                             onDragOver={handleDragOver}
                             onDrop={(e) => handleDropToFolder(e, null)}
                             onClick={() => setCurrentFolderId(null)} 
-                            className={`text-[14px] font-black ${currentFolderId === null ? 'text-slate-800' : 'text-slate-400 hover:text-slate-600'}`}>home</button>
+                            className={`text-xs sm:text-[13px] font-bold ${currentFolderId === null ? 'text-slate-900 bg-slate-100 px-2 py-0.5 rounded-lg' : 'text-slate-400 hover:text-slate-700'}`}>home</button>
                         {breadcrumbPath.map(crumb => (
                             <React.Fragment key={crumb.id}>
-                                <span className="text-slate-300 font-black">&gt;</span>
+                                <span className="text-slate-300 font-bold">&gt;</span>
                                 <button 
                                     onDragOver={handleDragOver}
                                     onDrop={(e) => handleDropToFolder(e, crumb.id)}
                                     onClick={() => setCurrentFolderId(crumb.id)} 
-                                    className={`text-[14px] font-black ${currentFolderId === crumb.id ? 'text-slate-800' : 'text-slate-400 hover:text-slate-600'}`}>{crumb.name}</button>
+                                    className={`text-xs sm:text-[13px] font-bold ${currentFolderId === crumb.id ? 'text-slate-900 bg-slate-100 px-2 py-0.5 rounded-lg' : 'text-slate-400 hover:text-slate-700'}`}>{crumb.name}</button>
                             </React.Fragment>
                         ))}
                     </div>
 
-                    <div className="flex-1 overflow-auto bg-white rounded-lg border border-slate-200 shadow-sm pb-24 no-scrollbar">
-                        <table className="w-full text-left border-collapse min-w-[800px]">
-                            <thead className="bg-white border-b border-slate-300">
+                    {/* ── DESKTOP TABLE VIEW (hidden md:block) ── */}
+                    <div className="hidden md:flex flex-1 overflow-auto bg-white rounded-xl border border-slate-200 shadow-2xs pb-24 no-scrollbar w-full max-w-full flex-col">
+                        <table className="w-full text-left border-collapse min-w-[700px]">
+                            <thead className="bg-slate-50/95 sticky top-0 z-10 backdrop-blur-xs border-b border-slate-200">
                                 <tr>
                                     {selectionEnabled ? (
-                                        <th className="py-4 px-5 w-10">
+                                        <th className="py-3 sm:py-4 px-4 sm:px-5 w-10">
                                             <input type="checkbox" checked={selectedIds.size === filteredItems.length && filteredItems.length > 0} onChange={handleSelectAll} className="w-4 h-4 rounded border-slate-300 accent-slate-900" />
                                         </th>
                                     ) : null}
-                                    <th className="py-4 px-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center w-16">Index</th>
-                                    <th className="py-4 px-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Name</th>
-                                    {currentView !== 'trash' && <th className="py-4 px-3 w-8 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center">Star</th>}
-                                    {currentView !== 'trash' && <th className="py-4 px-3 w-16 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center">Q&amp;A</th>}
-                                    <th className="py-4 px-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center">Version</th>
+                                    <th className="py-3 sm:py-4 px-2 sm:px-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center w-14 sm:w-16">Index</th>
+                                    <th className="py-3 sm:py-4 px-2.5 sm:px-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Name</th>
+                                    {currentView !== 'trash' && <th className="py-3 sm:py-4 px-2 sm:px-3 w-8 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center">Star</th>}
+                                    {currentView !== 'trash' && <th className="py-3 sm:py-4 px-2 sm:px-3 w-12 sm:w-16 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center">Q&amp;A</th>}
+                                    <th className="py-3 sm:py-4 px-2 sm:px-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center">Version</th>
                                     {currentView === 'trash' ? (
                                         <>
-                                            <th className="py-4 px-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Deleted By</th>
-                                            <th className="py-4 px-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Deleted At</th>
-                                            <th className="py-4 px-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center">Days Left</th>
+                                            <th className="py-3 sm:py-4 px-2.5 sm:px-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Deleted By</th>
+                                            <th className="py-3 sm:py-4 px-2.5 sm:px-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Deleted At</th>
+                                            <th className="py-3 sm:py-4 px-2 sm:px-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center">Days Left</th>
                                         </>
                                     ) : (
-                                        <th className="py-4 px-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Created At</th>
+                                        <th className="py-3 sm:py-4 px-2.5 sm:px-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Created At</th>
                                     )}
-                                    <th className="py-4 px-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Size</th>
-                                    {currentView !== 'trash' && <th className="py-4 px-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Permission Details</th>}
-                                    {currentView === 'trash' && <th className="py-4 px-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center">Actions</th>}
+                                    <th className="py-3 sm:py-4 px-2.5 sm:px-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Size</th>
+                                    {currentView !== 'trash' && <th className="py-3 sm:py-4 px-2.5 sm:px-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Actions</th>}
+                                    {currentView === 'trash' && <th className="py-3 sm:py-4 px-2 sm:px-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center">Actions</th>}
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-300">
-                                {paginatedItems.map((item, index) => {
+                                {paginatedItems.map((item) => {
                                     const isChecked = selectedIds.has(item.id);
                                     const isFolder = item.type === 'folder';
                                     const isDL = downloading[item.id];
-                                    const dropdownPositionClass = (index >= paginatedItems.length - 2 && paginatedItems.length > 4) ? 'bottom-full mb-1' : 'top-full mt-1';
 
                                     return (
                                         <tr
@@ -977,7 +1139,6 @@ function UnifiedWorkspace() {
                                                 {item.displayIndex || '—'}
                                             </td>
                                             
-                                            {/* 🔥 THE NAME COLUMN - Fully Restored */}
                                             <td className="py-4 px-3" onClick={isFolder ? (e) => { e.stopPropagation(); setCurrentFolderId(item.id); } : undefined}>
                                                 <div className="flex items-center gap-3">
                                                     <div 
@@ -1050,10 +1211,9 @@ function UnifiedWorkspace() {
                                             )}
                                             <td className="py-4 px-3 text-[12px] font-medium text-slate-500">{item.type === 'folder' ? '--' : (item.size || '2.4 MB')}</td>
                                             
-                                            {/* 🔥 THE ACTIONS COLUMN - Fully Restored */}
-                                            {/* {currentView !== 'trash' && (
+                                            {currentView !== 'trash' && (
                                                 <td className="py-4 px-3">
-                                                    <div className="flex items-center gap-5 text-[15px]">
+                                                    <div className="flex items-center gap-4 text-[15px]">
                                                         {canUser('can_view', item) ? (
                                                             <FaEye className="text-slate-600 cursor-pointer hover:text-brand transition-colors" title="View" onClick={(e) => { e.stopPropagation(); setSelectedIds(new Set([item.id])); setTimeout(() => executeDownloadWrapper('view'), 50); }} />
                                                         ) : (
@@ -1089,157 +1249,22 @@ function UnifiedWorkspace() {
                                                         )}
                                                     </div>
                                                 </td>
-                                            )} */}
-
-                                            {/* 🔥 THE ACTIONS COLUMN - Restyled to Dropdown */}
-                                            {currentView !== 'trash' && (
-                                                <td className="py-4 px-3 text-center">
-                                                    <div className="relative inline-block text-left">
-                                                        <button 
-                                                            className="p-2 text-slate-400 hover:text-[var(--brand)] hover:bg-slate-100 rounded-full transition-colors focus:outline-none"
-                                                            onClick={(e) => {
-                                                                e.preventDefault();
-                                                                e.stopPropagation();
-                                                                setActiveDropdownId(activeDropdownId === item.id ? null : item.id);
-                                                            }}
-                                                        >
-                                                            <FaEllipsisH className="text-[18px]" />
-                                                        </button>
-                                                        
-                                                        {activeDropdownId === item.id && (
-                                                            <>
-                                                                <div 
-                                                                    className="fixed inset-0 z-40" 
-                                                                    onClick={(e) => { e.stopPropagation(); setActiveDropdownId(null); }}
-                                                                ></div>
-                                                                <div 
-                                                                    className={`absolute right-0 ${dropdownPositionClass} w-52 bg-white border border-slate-200 rounded-xl shadow-md py-2 z-[9999] flex flex-col`}
-                                                                    onClick={(e) => e.stopPropagation()}
-                                                                >
-                                                            {/* VIEW */}
-                                                            {canUser('can_view', item) ? (
-                                                                <button onClick={(e) => { e.stopPropagation(); setSelectedIds(new Set([item.id])); setTimeout(() => executeDownloadWrapper('view'), 50); setActiveDropdownId(null); }} className="w-full text-left px-4 py-2 text-[13px] font-semibold text-slate-700 hover:bg-slate-50 hover:text-brand flex items-center gap-3 transition-colors">
-                                                                    <FaEye className="text-[15px]" /> View
-                                                                </button>
-                                                            ) : (
-                                                                <button disabled className="w-full text-left px-4 py-2 text-[13px] font-semibold text-slate-300 flex items-center gap-3 cursor-not-allowed">
-                                                                    <FaEye className="text-[15px]" /> View
-                                                                </button>
-                                                            )}
-
-                                                            {/* EDIT */}
-                                                            {canUser('can_edit', item) && ['xlsx', 'xls', 'csv', 'docx', 'doc', 'txt'].includes(item.type) ? (
-                                                                <button onClick={(e) => { e.stopPropagation(); setSelectedIds(new Set([item.id])); setTimeout(() => executeDownloadWrapper('edit'), 50); setActiveDropdownId(null); }} className="w-full text-left px-4 py-2 text-[13px] font-semibold text-slate-700 hover:bg-slate-50 hover:text-brand flex items-center gap-3 transition-colors">
-                                                                    <FaEdit className="text-[15px]" /> Edit Document
-                                                                </button>
-                                                            ) : (
-                                                                <button disabled className="w-full text-left px-4 py-2 text-[13px] font-semibold text-slate-300 flex items-center gap-3 cursor-not-allowed" title={['pdf'].includes(item.type) ? "PDFs cannot be edited" : "No Edit Access"}>
-                                                                    <FaEdit className="text-[15px]" /> Edit Document
-                                                                </button>
-                                                            )}
-
-                                                            {/* UPLOAD */}
-                                                            {item.type === 'folder' && (
-                                                                canUser('can_upload', item) ? (
-                                                                    <button onClick={(e) => { e.stopPropagation(); setCurrentFolderId(item.id); fileInputRef.current?.click(); setActiveDropdownId(null); }} className="w-full text-left px-4 py-2 text-[13px] font-semibold text-slate-700 hover:bg-slate-50 hover:text-brand flex items-center gap-3 transition-colors">
-                                                                        <FaUpload className="text-[15px]" /> Upload to Folder
-                                                                    </button>
-                                                                ) : (
-                                                                    <button disabled className="w-full text-left px-4 py-2 text-[13px] font-semibold text-slate-300 flex items-center gap-3 cursor-not-allowed">
-                                                                        <FaUpload className="text-[15px]" /> Upload to Folder
-                                                                    </button>
-                                                                )
-                                                            )}
-
-                                                            {/* SECURE DOWNLOAD */}
-                                                            {item.type !== 'folder' && (
-                                                                canUser('can_download_secure', item) ? (
-                                                                    <button onClick={(e) => { e.stopPropagation(); setSelectedIds(new Set([item.id])); setTimeout(() => executeDownloadWrapper('secure'), 50); setActiveDropdownId(null); }} className="w-full text-left px-4 py-2 text-[13px] font-semibold text-slate-700 hover:bg-slate-50 hover:text-brand flex items-center gap-3 transition-colors">
-                                                                        <FaShieldAlt className="text-[15px]" /> Secure Download
-                                                                    </button>
-                                                                ) : (
-                                                                    <button disabled className="w-full text-left px-4 py-2 text-[13px] font-semibold text-slate-300 flex items-center gap-3 cursor-not-allowed">
-                                                                        <FaShieldAlt className="text-[15px]" /> Secure Download
-                                                                    </button>
-                                                                )
-                                                            )}
-
-                                                            {/* ORIGINAL DOWNLOAD */}
-                                                            {item.type !== 'folder' && (
-                                                                canUser('can_download_original', item) ? (
-                                                                    <button onClick={(e) => { e.stopPropagation(); setSelectedIds(new Set([item.id])); setTimeout(() => executeDownloadWrapper('original'), 50); setActiveDropdownId(null); }} className="w-full text-left px-4 py-2 text-[13px] font-semibold text-slate-700 hover:bg-slate-50 hover:text-brand flex items-center gap-3 transition-colors">
-                                                                        <FaDownload className="text-[15px]" /> Download Original
-                                                                    </button>
-                                                                ) : (
-                                                                    <button disabled className="w-full text-left px-4 py-2 text-[13px] font-semibold text-slate-300 flex items-center gap-3 cursor-not-allowed">
-                                                                        <FaDownload className="text-[15px]" /> Download Original
-                                                                    </button>
-                                                                )
-                                                            )}
-                                                            
-                                                            <div className="h-px bg-slate-100 my-1"></div>
-
-                                                            {/* DELETE */}
-                                                            {canUser('can_delete', item) ? (
-                                                                <button onClick={(e) => { e.stopPropagation(); setSelectedIds(new Set([item.id])); setIsDeleteModalOpen(true); setActiveDropdownId(null); }} className="w-full text-left px-4 py-2 text-[13px] font-semibold text-rose-600 hover:bg-rose-50 flex items-center gap-3 transition-colors">
-                                                                    <FaTrash className="text-[15px]" /> Delete
-                                                                </button>
-                                                            ) : (
-                                                                <button disabled className="w-full text-left px-4 py-2 text-[13px] font-semibold text-slate-300 flex items-center gap-3 cursor-not-allowed">
-                                                                    <FaTrash className="text-[15px]" /> Delete
-                                                                </button>
-                                                            )}
-                                                            </div>
-                                                        </>
-                                                    )}
-                                                    </div>
-                                                </td>
                                             )}
+
                                             {currentView === 'trash' && (
                                                 <td className="py-4 px-3 text-center">
-                                                    <div className="relative inline-block text-left">
-                                                        <button 
-                                                            className="p-2 text-slate-400 hover:text-[var(--brand)] hover:bg-slate-100 rounded-full transition-colors focus:outline-none"
-                                                            onClick={(e) => {
-                                                                e.preventDefault();
-                                                                e.stopPropagation();
-                                                                setActiveDropdownId(activeDropdownId === item.id ? null : item.id);
-                                                            }}
-                                                        >
-                                                            <FaEllipsisH className="text-[18px]" />
+                                                    <div className="flex items-center justify-center gap-3">
+                                                        <button onClick={(e) => { e.stopPropagation(); executeRecoverSingle(item); }} className="p-1.5 rounded hover:bg-emerald-50 text-emerald-600 transition-colors" title="Restore">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="w-[15px] h-[15px]">
+                                                                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                                                                <path d="M3 3v5h5" />
+                                                            </svg>
                                                         </button>
-                                                        
-                                                        {activeDropdownId === item.id && (
-                                                            <>
-                                                                <div 
-                                                                    className="fixed inset-0 z-40" 
-                                                                    onClick={(e) => { e.stopPropagation(); setActiveDropdownId(null); }}
-                                                                ></div>
-                                                                <div 
-                                                                    className={`absolute right-0 ${dropdownPositionClass} w-52 bg-white border border-slate-200 rounded-xl shadow-md py-2 z-[9999] flex flex-col`}
-                                                                    onClick={(e) => e.stopPropagation()}
-                                                                >
-                                                                    <button onClick={(e) => { e.stopPropagation(); executeRecoverSingle(item); setActiveDropdownId(null); }} className="w-full text-left px-4 py-2 text-[13px] font-semibold text-emerald-600 hover:bg-emerald-50 flex items-center gap-3 transition-colors">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="w-[15px] h-[15px]">
-                                                                            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-                                                                            <path d="M3 3v5h5" />
-                                                                        </svg>
-                                                                        Restore
-                                                                    </button>
 
-                                                                    <div className="h-px bg-slate-100 my-1"></div>
-
-                                                                    {isGod ? (
-                                                                        <button onClick={(e) => { e.stopPropagation(); executePermanentDeleteSingle(item); setActiveDropdownId(null); }} className="w-full text-left px-4 py-2 text-[13px] font-semibold text-rose-600 hover:bg-rose-50 flex items-center gap-3 transition-colors">
-                                                                            <FaTrash className="text-[15px]" /> Delete Permanently
-                                                                        </button>
-                                                                    ) : (
-                                                                        <button disabled className="w-full text-left px-4 py-2 text-[13px] font-semibold text-slate-300 flex items-center gap-3 cursor-not-allowed" title="Only super admins can permanently delete">
-                                                                            <FaTrash className="text-[15px]" /> Delete Permanently
-                                                                        </button>
-                                                                    )}
-                                                                </div>
-                                                            </>
+                                                        {isGod && (
+                                                            <button onClick={(e) => { e.stopPropagation(); executePermanentDeleteSingle(item); }} className="p-1.5 rounded hover:bg-rose-50 text-rose-600 transition-colors" title="Delete Permanently">
+                                                                <FaTrash className="text-[14px]" />
+                                                            </button>
                                                         )}
                                                     </div>
                                                 </td>
@@ -1250,21 +1275,133 @@ function UnifiedWorkspace() {
                             </tbody>
                         </table>
                     </div>
-                    
-                    {/* Pagination Controls */}
-                    <div className="flex items-center justify-between px-6 py-4 border-t border-slate-200 bg-slate-50/50 mt-auto shrink-0">
-                            <div className="text-[12px] font-medium text-slate-500">
-                                Showing {indexOfFirstItem + 1}–{Math.min(indexOfLastItem, filteredItems.length)} of {filteredItems.length} items
+
+                    {/* ── MOBILE CARD LIST VIEW (flex md:hidden) ── */}
+                    <div className="flex md:hidden flex-1 overflow-y-auto pb-24 no-scrollbar w-full flex-col gap-2.5">
+                        {paginatedItems.length === 0 ? (
+                            <div className="p-10 text-center text-slate-400 font-medium text-xs bg-white rounded-2xl border border-slate-200 shadow-2xs">
+                                No files or folders in this directory
                             </div>
-                            <div className="flex items-center gap-1.5">
-                                <button 
-                                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} 
-                                    disabled={currentPage === 1}
-                                    className={`px-3 py-1.5 rounded-lg text-[12px] font-bold border transition-colors ${currentPage === 1 ? 'border-transparent text-slate-400 bg-transparent cursor-not-allowed' : 'border-slate-200 text-slate-600 bg-white hover:bg-slate-100 shadow-sm'}`}
-                                >
-                                    Previous
-                                </button>
-                                
+                        ) : (
+                            paginatedItems.map((item) => {
+                                const isChecked = selectedIds.has(item.id);
+                                const isFolder = item.type === 'folder';
+                                const isDL = downloading[item.id];
+                                const isBookmarked = bookmarkedIds.has(item.id);
+
+                                return (
+                                    <div
+                                        key={item.id}
+                                        className={`p-3 bg-white rounded-2xl border transition-all flex items-center justify-between gap-3 shadow-2xs ${isChecked ? 'border-[var(--brand)] bg-[var(--brand)]/5 ring-1 ring-[var(--brand)]/20' : 'border-slate-200/90 active:bg-slate-50'}`}
+                                    >
+                                        {/* Left Selection & Icon */}
+                                        <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                                            {selectionEnabled && (
+                                                <input 
+                                                    type="checkbox" 
+                                                    checked={isChecked} 
+                                                    onChange={(e) => {
+                                                        e.stopPropagation();
+                                                        setSelectedIds(prev => {
+                                                            const next = new Set(prev);
+                                                            next.has(item.id) ? next.delete(item.id) : next.add(item.id);
+                                                            return next;
+                                                        });
+                                                    }}
+                                                    className="w-4 h-4 rounded border-slate-300 accent-[var(--brand)] cursor-pointer shrink-0" 
+                                                />
+                                            )}
+
+                                            <div 
+                                                onClick={() => {
+                                                    if (isFolder) setCurrentFolderId(item.id);
+                                                    else if (canUser('can_view', item)) window.open(`/view/${item.id}`, '_blank');
+                                                    else showAlert("You do not have permission to view this file.", "Access Denied");
+                                                }}
+                                                className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0 cursor-pointer text-lg"
+                                            >
+                                                {isFolder ? (
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#fcd34d"><path d="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z" /></svg>
+                                                ) : (
+                                                    getFileIcon(item.name)
+                                                )}
+                                            </div>
+
+                                            {/* Details */}
+                                            <div 
+                                                className="flex-1 min-w-0 cursor-pointer"
+                                                onClick={() => {
+                                                    if (isFolder) setCurrentFolderId(item.id);
+                                                    else if (canUser('can_view', item)) window.open(`/view/${item.id}`, '_blank');
+                                                    else showAlert("You do not have permission to view this file.", "Access Denied");
+                                                }}
+                                            >
+                                                <div className="flex items-center gap-1.5 mb-0.5">
+                                                    <span className="text-[10px] font-mono font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded shrink-0">
+                                                        {item.displayIndex || '—'}
+                                                    </span>
+                                                    <h4 className="text-[13px] font-bold text-slate-800 truncate leading-snug">
+                                                        {item.name}
+                                                    </h4>
+                                                </div>
+                                                <div className="flex items-center gap-1.5 text-[10.5px] text-slate-400 font-medium truncate">
+                                                    <span className="text-slate-600 font-bold">{item.version ? (String(item.version).toUpperCase().startsWith('V') ? item.version : `V${item.version}`) : 'V1'}</span>
+                                                    <span>•</span>
+                                                    <span>{item.type === 'folder' ? 'Folder' : (item.size || '2.4 MB')}</span>
+                                                    <span>•</span>
+                                                    <span>{item.dateCreated || (item.created_at ? new Date(item.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }) : '19 Aug')}</span>
+                                                </div>
+                                                {isDL && <span className="text-[10px] text-emerald-600 font-bold animate-pulse block mt-0.5">Downloading...</span>}
+                                            </div>
+                                        </div>
+
+                                        {/* Right Star & 3-Dots Action Button */}
+                                        <div className="flex items-center gap-0.5 shrink-0">
+                                            {currentView !== 'trash' && (
+                                                <button 
+                                                    type="button"
+                                                    onClick={(e) => handleToggleBookmark(item, e)}
+                                                    className="p-1.5 text-slate-400 hover:text-amber-400 transition-colors cursor-pointer"
+                                                >
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill={isBookmarked ? "#fbbf24" : "none"} stroke={isBookmarked ? "#fbbf24" : "#cbd5e1"} strokeWidth="2.5">
+                                                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                                    </svg>
+                                                </button>
+                                            )}
+
+                                            <button 
+                                                type="button"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setMobileItemActionSheet(item);
+                                                }}
+                                                className="p-2 text-slate-500 hover:text-slate-900 active:bg-slate-100 rounded-xl transition-colors cursor-pointer"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                );
+                            })
+                        )}
+                    </div>
+                    
+                    {/* ── PAGINATION CONTROLS (Responsive) ── */}
+                    <div className="flex items-center justify-between px-3 sm:px-6 py-3 sm:py-4 border-t border-slate-200 bg-white sm:bg-slate-50/50 mt-auto shrink-0 rounded-xl sm:rounded-none">
+                        <div className="text-[11px] sm:text-[12px] font-medium text-slate-500">
+                            Showing {filteredItems.length > 0 ? indexOfFirstItem + 1 : 0}–{Math.min(indexOfLastItem, filteredItems.length)} of {filteredItems.length}
+                        </div>
+                        <div className="flex items-center gap-1 sm:gap-1.5">
+                            <button 
+                                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} 
+                                disabled={currentPage === 1}
+                                className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-[12px] font-bold border transition-colors ${currentPage === 1 ? 'border-transparent text-slate-300 bg-transparent cursor-not-allowed' : 'border-slate-200 text-slate-700 bg-white hover:bg-slate-100 shadow-2xs'}`}
+                            >
+                                Prev
+                            </button>
+                            
+                            {/* Desktop Page Numbers */}
+                            <div className="hidden sm:flex items-center gap-1">
                                 {Array.from({ length: totalPages }).map((_, idx) => (
                                     <button 
                                         key={idx + 1}
@@ -1274,17 +1411,22 @@ function UnifiedWorkspace() {
                                         {idx + 1}
                                     </button>
                                 ))}
-
-                                <button 
-                                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} 
-                                    disabled={currentPage === totalPages}
-                                    className={`px-3 py-1.5 rounded-lg text-[12px] font-bold border transition-colors ${currentPage === totalPages ? 'border-transparent text-slate-400 bg-transparent cursor-not-allowed' : 'border-slate-200 text-slate-600 bg-white hover:bg-slate-100 shadow-sm'}`}
-                                >
-                                    Next
-                                </button>
                             </div>
-                        </div>
 
+                            {/* Mobile Page indicator */}
+                            <span className="sm:hidden text-xs font-bold text-slate-700 px-1">
+                                {currentPage} / {totalPages || 1}
+                            </span>
+
+                            <button 
+                                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} 
+                                disabled={currentPage === totalPages || totalPages === 0}
+                                className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-[12px] font-bold border transition-colors ${currentPage === totalPages || totalPages === 0 ? 'border-transparent text-slate-300 bg-transparent cursor-not-allowed' : 'border-slate-200 text-slate-700 bg-white hover:bg-slate-100 shadow-2xs'}`}
+                            >
+                                Next
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1352,6 +1494,237 @@ function UnifiedWorkspace() {
                 </Modal>
             )}
 
+            {/* ── CLEAN FLOATING ITEM ACTION CARD (MOBILE, TABLET & DESKTOP) ── */}
+            {mobileItemActionSheet && (
+                <div 
+                    className="fixed inset-0 z-[100000] flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4 sm:p-6 animate-fade-in" 
+                    onClick={() => setMobileItemActionSheet(null)}
+                >
+                    <div 
+                        className="w-full max-w-sm sm:max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden animate-scale-up flex flex-col max-h-[82vh] border border-slate-200/80 my-auto"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {/* Card Header */}
+                        <div className="px-4.5 py-3.5 border-b border-slate-100 bg-slate-50/70 flex items-center justify-between gap-3 shrink-0">
+                            <div className="flex items-center gap-3 min-w-0">
+                                <div className="w-10 h-10 rounded-2xl bg-white border border-slate-200/80 flex items-center justify-center shrink-0 text-xl shadow-2xs">
+                                    {mobileItemActionSheet.type === 'folder' ? (
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#fcd34d"><path d="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z" /></svg>
+                                    ) : (
+                                        getFileIcon(mobileItemActionSheet.name)
+                                    )}
+                                </div>
+                                <div className="min-w-0">
+                                    <div className="flex items-center gap-1.5 mb-0.5">
+                                        <span className="text-[10px] font-mono font-bold text-slate-500 bg-slate-200/70 px-1.5 py-0.5 rounded shrink-0">
+                                            {mobileItemActionSheet.displayIndex || '—'}
+                                        </span>
+                                        <h3 className="text-sm font-bold text-slate-900 truncate">
+                                            {mobileItemActionSheet.name}
+                                        </h3>
+                                    </div>
+                                    <div className="text-[11px] text-slate-400 font-medium flex items-center gap-1.5">
+                                        <span className="text-slate-600 font-bold">{mobileItemActionSheet.version ? (String(mobileItemActionSheet.version).toUpperCase().startsWith('V') ? mobileItemActionSheet.version : `V${mobileItemActionSheet.version}`) : 'V1'}</span>
+                                        <span>•</span>
+                                        <span>{mobileItemActionSheet.type === 'folder' ? 'Folder' : (mobileItemActionSheet.size || '2.4 MB')}</span>
+                                        <span>•</span>
+                                        <span>{mobileItemActionSheet.dateCreated || (mobileItemActionSheet.created_at ? new Date(mobileItemActionSheet.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }) : '19 Aug')}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button 
+                                onClick={() => setMobileItemActionSheet(null)}
+                                className="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-700 rounded-full hover:bg-slate-200/60 transition-colors cursor-pointer shrink-0"
+                            >
+                                ✕
+                            </button>
+                        </div>
+
+                        {/* Action Items List Body */}
+                        <div className="p-2.5 sm:p-3 overflow-y-auto flex flex-col gap-1 max-h-[60vh]">
+                            {currentView !== 'trash' && (
+                                <>
+                                    {mobileItemActionSheet.type === 'folder' ? (
+                                        <button 
+                                            onClick={() => { 
+                                                const folderId = mobileItemActionSheet.id;
+                                                setMobileItemActionSheet(null); 
+                                                setCurrentFolderId(folderId); 
+                                            }}
+                                            className="w-full text-left px-3.5 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-100 active:bg-slate-100 flex items-center gap-3 rounded-xl transition-colors cursor-pointer"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" className="text-[var(--brand)]"><path d="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z" /></svg>
+                                            <span>Open Folder</span>
+                                        </button>
+                                    ) : (
+                                        <button 
+                                            onClick={() => { 
+                                                const item = mobileItemActionSheet;
+                                                setMobileItemActionSheet(null); 
+                                                if (canUser('can_view', item)) window.open(`/view/${item.id}`, '_blank');
+                                                else showAlert("You do not have permission to view this file.", "Access Denied");
+                                            }}
+                                            className="w-full text-left px-3.5 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-100 active:bg-slate-100 flex items-center gap-3 rounded-xl transition-colors cursor-pointer"
+                                        >
+                                            <FaEye className="text-base text-[var(--brand)]" />
+                                            <span>View Document</span>
+                                        </button>
+                                    )}
+
+                                    {canUser('can_edit', mobileItemActionSheet) && mobileItemActionSheet.type !== 'folder' && ['xlsx', 'xls', 'csv', 'docx', 'doc', 'txt'].includes(mobileItemActionSheet.type) && (
+                                        <button 
+                                            onClick={() => { 
+                                                const item = mobileItemActionSheet;
+                                                setMobileItemActionSheet(null); 
+                                                executeDownloadWrapper('edit', item);
+                                            }}
+                                            className="w-full text-left px-3.5 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-100 active:bg-slate-100 flex items-center gap-3 rounded-xl transition-colors cursor-pointer"
+                                        >
+                                            <FaEdit className="text-base text-[var(--brand)]" />
+                                            <span>Edit Document</span>
+                                        </button>
+                                    )}
+
+                                    {/* RENAME */}
+                                    {(isGod || canUser('can_edit', mobileItemActionSheet)) && (
+                                        <button 
+                                            onClick={() => { 
+                                                const item = mobileItemActionSheet;
+                                                setMobileItemActionSheet(null); 
+                                                setSelectedIds(new Set([item.id]));
+                                                setRenameValue(item.name);
+                                                setIsRenameModalOpen(true);
+                                            }}
+                                            className="w-full text-left px-3.5 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-100 active:bg-slate-100 flex items-center gap-3 rounded-xl transition-colors cursor-pointer"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-slate-600"><path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" /></svg>
+                                            <span>Rename</span>
+                                        </button>
+                                    )}
+
+                                    {/* DOWNLOAD ORIGINAL */}
+                                    {mobileItemActionSheet.type !== 'folder' && canUser('can_download_original', mobileItemActionSheet) && (
+                                        <button 
+                                            onClick={() => { 
+                                                const item = mobileItemActionSheet;
+                                                setMobileItemActionSheet(null); 
+                                                executeDownloadWrapper('original', item);
+                                            }}
+                                            className="w-full text-left px-3.5 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-100 active:bg-slate-100 flex items-center gap-3 rounded-xl transition-colors cursor-pointer"
+                                        >
+                                            <FaDownload className="text-base text-emerald-600" />
+                                            <span>Download Original</span>
+                                        </button>
+                                    )}
+
+                                    {/* DOWNLOAD SECURE */}
+                                    {mobileItemActionSheet.type !== 'folder' && canUser('can_download_secure', mobileItemActionSheet) && (
+                                        <button 
+                                            onClick={() => { 
+                                                const item = mobileItemActionSheet;
+                                                setMobileItemActionSheet(null); 
+                                                executeDownloadWrapper('secure', item);
+                                            }}
+                                            className="w-full text-left px-3.5 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-100 active:bg-slate-100 flex items-center gap-3 rounded-xl transition-colors cursor-pointer"
+                                        >
+                                            <FaShieldAlt className="text-base text-[var(--brand)]" />
+                                            <span>Download Secure (.html)</span>
+                                        </button>
+                                    )}
+
+                                    {/* Q&A */}
+                                    <button 
+                                        onClick={() => { 
+                                            const item = mobileItemActionSheet;
+                                            setMobileItemActionSheet(null); 
+                                            router.push(item.type === 'folder' ? `/qa?folderId=${item.id}` : `/qa?fileId=${item.id}`);
+                                        }}
+                                        className="w-full text-left px-3.5 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-100 active:bg-slate-100 flex items-center gap-3 rounded-xl transition-colors cursor-pointer"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" className="text-slate-600"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" /></svg>
+                                        <span>Questions &amp; Answers (Q&amp;A)</span>
+                                    </button>
+
+                                    {/* BOOKMARK */}
+                                    <button 
+                                        onClick={(e) => { 
+                                            const item = mobileItemActionSheet;
+                                            setMobileItemActionSheet(null); 
+                                            handleToggleBookmark(item, e);
+                                        }}
+                                        className="w-full text-left px-3.5 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-100 active:bg-slate-100 flex items-center gap-3 rounded-xl transition-colors cursor-pointer"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill={bookmarkedIds.has(mobileItemActionSheet.id) ? "#fbbf24" : "none"} stroke={bookmarkedIds.has(mobileItemActionSheet.id) ? "#fbbf24" : "#64748b"} strokeWidth="2.5">
+                                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                        </svg>
+                                        <span>{bookmarkedIds.has(mobileItemActionSheet.id) ? 'Remove Bookmark' : 'Add to Bookmarks'}</span>
+                                    </button>
+
+                                    {/* MOVE */}
+                                    {canMergeFolder && (
+                                        <button 
+                                            onClick={() => { 
+                                                const item = mobileItemActionSheet;
+                                                setMobileItemActionSheet(null); 
+                                                setSelectedIds(new Set([item.id]));
+                                                setIsMoveModalOpen(true);
+                                            }}
+                                            className="w-full text-left px-3.5 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-100 active:bg-slate-100 flex items-center gap-3 rounded-xl transition-colors cursor-pointer"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-slate-600"><polyline points="5 9 2 12 5 15" /><polyline points="9 5 12 2 15 5" /><line x1="2" y1="12" x2="22" y2="12" /><line x1="12" y1="2" x2="12" y2="22" /></svg>
+                                            <span>Move Item</span>
+                                        </button>
+                                    )}
+
+                                    {/* DELETE / MOVE TO TRASH */}
+                                    {(isGod || (mobileItemActionSheet.type === 'folder' ? globalFolderPerms.can_delete : canUser('can_delete', mobileItemActionSheet))) && (
+                                        <button 
+                                            onClick={() => { 
+                                                const item = mobileItemActionSheet;
+                                                setMobileItemActionSheet(null); 
+                                                setSelectedIds(new Set([item.id]));
+                                                setIsDeleteModalOpen(true);
+                                            }}
+                                            className="w-full text-left px-3.5 py-2.5 text-xs font-bold text-rose-600 hover:bg-rose-50 active:bg-rose-100 flex items-center gap-3 rounded-xl transition-colors cursor-pointer mt-1 pt-2 border-t border-slate-100"
+                                        >
+                                            <FaTrash className="text-base text-rose-500" />
+                                            <span>Move to Trash</span>
+                                        </button>
+                                    )}
+                                </>
+                            )}
+
+                            {currentView === 'trash' && (
+                                <>
+                                    <button 
+                                        onClick={() => { 
+                                            const item = mobileItemActionSheet;
+                                            setMobileItemActionSheet(null); 
+                                            executeRecoverSingle(item);
+                                        }}
+                                        className="w-full text-left px-3.5 py-2.5 text-xs font-bold text-emerald-600 hover:bg-emerald-50 active:bg-emerald-100 flex items-center gap-3 rounded-xl transition-colors cursor-pointer"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" /></svg>
+                                        <span>Recover Item</span>
+                                    </button>
+                                    <button 
+                                        onClick={() => { 
+                                            const item = mobileItemActionSheet;
+                                            setMobileItemActionSheet(null); 
+                                            executePermanentDeleteSingle(item);
+                                        }}
+                                        className="w-full text-left px-3.5 py-2.5 text-xs font-bold text-rose-600 hover:bg-rose-50 active:bg-rose-100 flex items-center gap-3 rounded-xl transition-colors cursor-pointer mt-1 pt-2 border-t border-slate-100"
+                                    >
+                                        <FaTrash className="text-base text-rose-500" />
+                                        <span>Permanently Delete</span>
+                                    </button>
+                                </>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Bulk Upload Progress Tracking Modal */}
             <BulkUploadModal
                 isOpen={isUploadModalOpen}
@@ -1377,9 +1750,9 @@ function UnifiedWorkspace() {
 
 function Modal({ children, onClose, maxWidth = 'max-w-lg' }) {
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div onClick={onClose} className="absolute inset-0 bg-brand/40 -[3px]" />
-            <div className={`relative bg-white rounded-lg shadow-md w-full ${maxWidth} p-6 z-10`}>
+        <div className="fixed inset-0 z-[100000] flex items-center justify-center p-4 animate-fade-in">
+            <div onClick={onClose} className="absolute inset-0 bg-slate-900/60 backdrop-blur-xs" />
+            <div className={`relative bg-white rounded-2xl sm:rounded-3xl shadow-2xl w-full ${maxWidth} p-5 sm:p-6 z-10 animate-scale-up max-h-[90vh] overflow-y-auto`}>
                 {children}
             </div>
         </div>

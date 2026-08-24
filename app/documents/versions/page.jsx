@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { FaHistory, FaDownload, FaHistory as FaRestore, FaEllipsisH } from 'react-icons/fa';
+import { FaHistory, FaDownload, FaRedo, FaSearch } from 'react-icons/fa';
 import { useDialog } from '@/components/ui/DialogProvider';
 
 export default function DocumentVersionsPage() {
@@ -11,9 +11,9 @@ export default function DocumentVersionsPage() {
     const [versions, setVersions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [searchQuery, setSearchQuery] = useState('');
     const [restoringId, setRestoringId] = useState(null);
     const [downloading, setDownloading] = useState({});
-    const [activeDropdownId, setActiveDropdownId] = useState(null);
     const { showConfirm, showAlert } = useDialog();
 
     // Group state
@@ -46,7 +46,7 @@ export default function DocumentVersionsPage() {
 
             // Group by document
             const grouped = {};
-            data.versions.forEach(v => {
+            (data.versions || []).forEach(v => {
                 if (!grouped[v.document_id]) {
                     grouped[v.document_id] = {
                         name: v.name,
@@ -56,14 +56,14 @@ export default function DocumentVersionsPage() {
                 }
                 grouped[v.document_id].versions.push(v);
             });
-            
+
             // Sort versions within groups by version_number descending
             Object.values(grouped).forEach(group => {
                 group.versions.sort((a, b) => b.version_number - a.version_number);
             });
 
             setGroupedVersions(grouped);
-            setVersions(data.versions);
+            setVersions(data.versions || []);
         } catch (err) {
             setError(err.message);
         } finally {
@@ -73,7 +73,7 @@ export default function DocumentVersionsPage() {
 
     const handleRestore = async (versionId) => {
         if (!(await showConfirm("Are you sure you want to restore this version? The current version will be archived."))) return;
-        
+
         try {
             setRestoringId(versionId);
             const res = await fetch('/api/documents/versions/restore', {
@@ -83,7 +83,7 @@ export default function DocumentVersionsPage() {
             });
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || 'Failed to restore version');
-            
+
             await showAlert('Version restored successfully!', 'Success');
             fetchVersions();
         } catch (err) {
@@ -93,7 +93,7 @@ export default function DocumentVersionsPage() {
         }
     };
 
-    const handleDownload = async (version, type) => {
+    const handleDownload = async (version, type = 'original') => {
         try {
             setDownloading(prev => ({ ...prev, [version.id]: true }));
             const res = await fetch('/api/documents/download', {
@@ -126,10 +126,6 @@ export default function DocumentVersionsPage() {
         }
     };
 
-    const handleView = (version) => {
-        handleDownload(version, 'view');
-    };
-
     const formatBytes = (bytes) => {
         if (!bytes) return '--';
         if (bytes < 1024) return `${bytes} B`;
@@ -138,140 +134,275 @@ export default function DocumentVersionsPage() {
         return `${(bytes / (1024 * 1024 * 1024)).toFixed(1)} GB`;
     };
 
+    const filteredGroups = useMemo(() => {
+        const query = searchQuery.toLowerCase().trim();
+        if (!query) return Object.values(groupedVersions);
+
+        return Object.values(groupedVersions).filter(group => {
+            const matchesDoc = group.name?.toLowerCase().includes(query);
+            const matchesVersion = group.versions.some(v =>
+                v.upload_comment?.toLowerCase().includes(query) ||
+                v.uploaded_by_name?.toLowerCase().includes(query) ||
+                `v${v.version_number}`.includes(query)
+            );
+            return matchesDoc || matchesVersion;
+        });
+    }, [groupedVersions, searchQuery]);
+
+    const getFileExt = (filename) => {
+        return filename?.split('.').pop().toLowerCase() || 'file';
+    };
+
+    const getFileIconClass = (ext) => {
+        switch (ext) {
+            case 'pdf': return 'bg-rose-50 border-rose-100 text-rose-600';
+            case 'xlsx':
+            case 'xls':
+            case 'csv': return 'bg-emerald-50 border-emerald-100 text-emerald-600';
+            case 'docx':
+            case 'doc': return 'bg-indigo-50 border-indigo-100 text-indigo-600';
+            case 'pptx':
+            case 'ppt': return 'bg-amber-50 border-amber-100 text-amber-600';
+            default: return 'bg-slate-50 border-slate-200 text-slate-500';
+        }
+    };
+
     if (loading) {
         return (
-            <div className="p-8 flex items-center justify-center h-full">
-                <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+            <div className="p-8 flex flex-col items-center justify-center h-full gap-3 bg-[#F8F9FB]">
+                <div className="w-8 h-8 border-4 border-slate-200 border-t-[var(--brand)] rounded-full animate-spin"></div>
+                <p className="text-xs font-bold text-slate-400">Loading versions...</p>
             </div>
         );
     }
 
     return (
-        <div className="p-8 h-full overflow-y-auto bg-slate-50">
-            <div className="mb-6 flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
-                    <FaHistory className="text-xl text-blue-600" />
+        <div className="flex-1 flex flex-col h-full overflow-hidden bg-[#F8F9FB] text-slate-800 font-sans">
+            {/* ── HEADER ── */}
+            <div className="px-4 sm:px-8 pt-4 sm:pt-6 pb-3 sm:pb-5 border-b border-slate-200 bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0 shadow-2xs">
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-[var(--brand)]/10 border border-[var(--brand)]/20 flex items-center justify-center text-[var(--brand)] shrink-0 shadow-2xs">
+                        <FaHistory className="text-base" />
+                    </div>
+                    <div>
+                        <h1 className="text-base sm:text-lg font-black text-slate-900 tracking-tight">Document Versions</h1>
+                        <p className="text-xs text-slate-400 font-medium">View and restore previous document iterations</p>
+                    </div>
                 </div>
-                <div>
-                    <h1 className="text-2xl font-black text-slate-900 tracking-tight">Document Versions</h1>
-                    <p className="text-sm font-medium text-slate-500">View and restore historical document versions.</p>
+
+                {/* Search Bar */}
+                <div className="relative w-full sm:w-64">
+                    <FaSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs" />
+                    <input
+                        type="text"
+                        placeholder="Search document or version..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full pl-9 pr-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 placeholder:text-slate-400 focus:outline-none focus:border-[var(--brand)] focus:bg-white transition-all shadow-2xs"
+                    />
                 </div>
             </div>
 
-            {error && <div className="p-4 mb-6 bg-red-50 text-red-700 rounded-xl border border-red-200 text-sm">{error}</div>}
-
-            {Object.keys(groupedVersions).length === 0 ? (
-                <div className="text-center p-12 bg-white rounded-lg border border-slate-200">
-                    <FaHistory className="text-4xl text-slate-300 mx-auto mb-4" />
-                    <h3 className="text-lg font-bold text-slate-700 mb-2">No historical versions</h3>
-                    <p className="text-sm text-slate-500">Documents that are updated will appear here.</p>
-                </div>
-            ) : (
-                <div className="space-y-6">
-                    {Object.values(groupedVersions).map(group => (
-                        <div key={group.document_id} className="bg-white rounded-lg border border-slate-200 shadow-sm relative">
-                            <div className="bg-slate-50/80 px-5 py-3 border-b border-slate-200">
-                                <h3 className="font-bold text-slate-800 flex items-center gap-2 text-[15px]">
-                                    <svg className="w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                                    </svg>
-                                    {group.name}
-                                </h3>
-                            </div>
-                            <div className="overflow-x-auto no-scrollbar pb-24">
-                                <table className="w-full text-left border-collapse min-w-[700px]">
-                                    <thead>
-                                        <tr className="bg-white border-b border-slate-100">
-                                            <th className="py-3 px-5 font-bold text-[12px] text-slate-400 uppercase tracking-wider">Version</th>
-                                            <th className="py-3 px-5 font-bold text-[12px] text-slate-400 uppercase tracking-wider">Comment</th>
-                                            <th className="py-3 px-5 font-bold text-[12px] text-slate-400 uppercase tracking-wider">Uploaded By</th>
-                                            <th className="py-3 px-5 font-bold text-[12px] text-slate-400 uppercase tracking-wider">Date</th>
-                                            <th className="py-3 px-5 font-bold text-[12px] text-slate-400 uppercase tracking-wider">Size</th>
-                                            <th className="py-3 px-5 font-bold text-[12px] text-slate-400 uppercase tracking-wider text-right">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-slate-200">
-                                        {group.versions.map((v, index) => {
-                                            // Split the list in half: top half opens downwards, bottom half opens upwards
-                                            const dropdownPositionClass = index >= group.versions.length / 2 ? 'bottom-full mb-1' : 'top-full mt-1';
-                                            return (
-                                            <tr key={v.id} className="hover:bg-slate-50/50 transition-colors relative">
-                                                <td className="py-3 px-5">
-                                                    <span className="inline-flex items-center justify-center px-2 py-1 bg-slate-100 text-slate-600 rounded text-[11px] font-bold">
-                                                        V{v.version_number}
-                                                    </span>
-                                                </td>
-                                                <td className="py-3 px-5 text-[13px] text-slate-600 font-medium">
-                                                    {v.upload_comment || '-'}
-                                                </td>
-                                                <td className="py-3 px-5 text-[13px] text-slate-700 font-medium">
-                                                    {v.uploaded_by_name}
-                                                </td>
-                                                <td className="py-3 px-5 text-[13px] text-slate-500">
-                                                    {new Date(v.created_at).toLocaleString()}
-                                                </td>
-                                                <td className="py-3 px-5 text-[13px] text-slate-500">
-                                                    {formatBytes(v.file_size_bytes)}
-                                                </td>
-                                                <td className="py-3 px-5 text-right relative">
-                                                    <div className="flex items-center justify-end">
-                                                        <button 
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                setActiveDropdownId(activeDropdownId === v.id ? null : v.id);
-                                                            }}
-                                                            className={`p-2 rounded-lg transition-colors ${activeDropdownId === v.id ? 'bg-[var(--brand)] text-white shadow-md' : 'text-slate-400 hover:text-[var(--brand)] hover:bg-slate-100'}`}
-                                                            title="Actions"
-                                                        >
-                                                            <FaEllipsisH className="text-[15px]" />
-                                                        </button>
-                                                        
-                                                        {activeDropdownId === v.id && (
-                                                            <>
-                                                                <div 
-                                                                    className="fixed inset-0 z-40" 
-                                                                    onClick={(e) => { e.stopPropagation(); setActiveDropdownId(null); }}
-                                                                ></div>
-                                                                <div 
-                                                                    className={`absolute right-0 ${dropdownPositionClass} w-48 bg-white border border-slate-200 rounded-xl shadow-md py-2 z-[9999] flex flex-col`}
-                                                                    onClick={(e) => e.stopPropagation()}
-                                                                >
-                                                                    <button 
-                                                                        onClick={() => {
-                                                                            handleDownload(v, 'original');
-                                                                            setActiveDropdownId(null);
-                                                                        }} 
-                                                                        disabled={downloading[v.id]}
-                                                                        className="w-full text-left px-4 py-2.5 text-[13px] font-bold text-slate-700 hover:bg-slate-50 hover:text-[var(--brand)] flex items-center gap-3 transition-colors disabled:opacity-50" 
-                                                                    >
-                                                                        <FaDownload className="text-[14px]" />
-                                                                        Download
-                                                                    </button>
-                                                                    <button 
-                                                                        onClick={() => {
-                                                                            handleRestore(v.id);
-                                                                            setActiveDropdownId(null);
-                                                                        }}
-                                                                        disabled={restoringId === v.id}
-                                                                        className="w-full text-left px-4 py-2.5 text-[13px] font-bold text-slate-700 hover:bg-slate-50 hover:text-[var(--brand)] flex items-center gap-3 transition-colors disabled:opacity-50"
-                                                                    >
-                                                                        <FaRestore className="text-[14px]" />
-                                                                        {restoringId === v.id ? 'Restoring...' : 'Restore Version'}
-                                                                    </button>
-                                                                </div>
-                                                            </>
-                                                        )}
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        )})}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    ))}
+            {error && (
+                <div className="mx-4 sm:mx-8 mt-4 p-3.5 bg-rose-50 text-rose-700 rounded-2xl border border-rose-200 text-xs font-bold flex items-center gap-2">
+                    <span>⚠️</span>
+                    <span>{error}</span>
                 </div>
             )}
+
+            {/* ── CONTENT BODY ── */}
+            <div className="flex-1 overflow-y-auto p-3 sm:p-6 lg:p-8">
+                {filteredGroups.length === 0 ? (
+                    <div className="text-center py-16 px-4 bg-white rounded-3xl border border-slate-200 shadow-2xs flex flex-col items-center justify-center gap-3 max-w-lg mx-auto">
+                        <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400 text-xl">
+                            <FaHistory />
+                        </div>
+                        <div>
+                            <h3 className="text-sm font-bold text-slate-800">No historical versions found</h3>
+                            <p className="text-xs text-slate-400 mt-0.5">
+                                {searchQuery ? 'Try adjusting your search query.' : 'When files are updated with new versions, they will appear here.'}
+                            </p>
+                        </div>
+                        {searchQuery && (
+                            <button
+                                onClick={() => setSearchQuery('')}
+                                className="px-4 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-xl text-xs font-bold text-slate-600 transition-colors cursor-pointer"
+                            >
+                                Clear Search
+                            </button>
+                        )}
+                    </div>
+                ) : (
+                    <div className="space-y-4 sm:space-y-6 max-w-6xl mx-auto">
+                        {filteredGroups.map(group => {
+                            const ext = getFileExt(group.name);
+                            const iconClass = getFileIconClass(ext);
+
+                            return (
+                                <div key={group.document_id} className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 shadow-2xs overflow-hidden">
+                                    {/* Group Title Header */}
+                                    <div className="bg-slate-50/70 px-4 sm:px-6 py-3.5 border-b border-slate-100 flex items-center justify-between gap-3">
+                                        <div className="flex items-center gap-2.5 min-w-0">
+                                            <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-[10px] font-black border uppercase shrink-0 shadow-2xs ${iconClass}`}>
+                                                {ext.slice(0, 3)}
+                                            </div>
+                                            <h3 className="font-bold text-slate-900 text-sm truncate">{group.name}</h3>
+                                        </div>
+                                        <span className="text-[11px] font-bold text-slate-500 bg-white border border-slate-200 px-2.5 py-1 rounded-xl shrink-0 shadow-2xs">
+                                            {group.versions.length} {group.versions.length === 1 ? 'version' : 'versions'}
+                                        </span>
+                                    </div>
+
+                                    {/* ── DESKTOP TABLE VIEW (hidden md:block) ── */}
+                                    <div className="hidden md:block overflow-x-auto">
+                                        <table className="w-full text-left border-collapse min-w-[650px]">
+                                            <thead>
+                                                <tr className="bg-slate-50/30 border-b border-slate-100 text-[10px] font-extrabold uppercase text-slate-400 tracking-wider">
+                                                    <th className="py-3 px-6 w-24">Version</th>
+                                                    <th className="py-3 px-4">Comment</th>
+                                                    <th className="py-3 px-4">Uploaded By</th>
+                                                    <th className="py-3 px-4">Date & Time</th>
+                                                    <th className="py-3 px-4">Size</th>
+                                                    <th className="py-3 px-6 text-right w-44">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-slate-100">
+                                                {group.versions.map((v, idx) => (
+                                                    <tr key={v.id} className="hover:bg-slate-50/60 transition-colors">
+                                                        <td className="py-3.5 px-6">
+                                                            <div className="flex items-center gap-2">
+                                                                <span className={`px-2.5 py-1 rounded-xl text-xs font-bold ${idx === 0 ? 'bg-[var(--brand)] text-white shadow-2xs' : 'bg-slate-100 text-slate-700'}`}>
+                                                                    V{v.version_number}
+                                                                </span>
+                                                                {idx === 0 && (
+                                                                    <span className="text-[10px] font-extrabold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100">
+                                                                        Latest
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                        </td>
+                                                        <td className="py-3.5 px-4 text-xs font-semibold text-slate-600 max-w-xs truncate">
+                                                            {v.upload_comment || <span className="text-slate-400 font-normal italic">No comment</span>}
+                                                        </td>
+                                                        <td className="py-3.5 px-4">
+                                                            <div className="flex items-center gap-2">
+                                                                <div className="w-5 h-5 rounded-full bg-slate-200 flex items-center justify-center text-[9px] font-bold text-slate-600">
+                                                                    {(v.uploaded_by_name || 'U').charAt(0).toUpperCase()}
+                                                                </div>
+                                                                <span className="text-xs font-bold text-slate-700">{v.uploaded_by_name || 'User'}</span>
+                                                            </div>
+                                                        </td>
+                                                        <td className="py-3.5 px-4 text-xs font-semibold text-slate-500">
+                                                            {new Date(v.created_at).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}
+                                                        </td>
+                                                        <td className="py-3.5 px-4 text-xs font-mono font-semibold text-slate-500">
+                                                            {formatBytes(v.file_size_bytes)}
+                                                        </td>
+                                                        <td className="py-3.5 px-6 text-right">
+                                                            <div className="flex items-center justify-end gap-2">
+                                                                <button
+                                                                    onClick={() => handleDownload(v, 'original')}
+                                                                    disabled={downloading[v.id]}
+                                                                    className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
+                                                                    title="Download Version"
+                                                                >
+                                                                    <FaDownload className="text-[11px]" />
+                                                                    <span>{downloading[v.id] ? '...' : 'Download'}</span>
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => handleRestore(v.id)}
+                                                                    disabled={restoringId === v.id}
+                                                                    className="px-3 py-1.5 rounded-xl bg-[var(--brand)]/10 hover:bg-[var(--brand)]/20 text-[var(--brand)] font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
+                                                                    title="Restore this version"
+                                                                >
+                                                                    <FaRedo className={`text-[10px] ${restoringId === v.id ? 'animate-spin' : ''}`} />
+                                                                    <span>{restoringId === v.id ? 'Restoring...' : 'Restore'}</span>
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    {/* ── MOBILE CARDS VIEW (block md:hidden) ── */}
+                                    <div className="block md:hidden p-3 divide-y divide-slate-100">
+                                        {group.versions.map((v, idx) => (
+                                            <div key={v.id} className="py-3 first:pt-0 last:pb-0 flex flex-col gap-2.5">
+                                                {/* Card Header: Version Badge, Latest Pill, Size, Date */}
+                                                <div className="flex items-center justify-between">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className={`px-2.5 py-1 rounded-xl text-xs font-bold ${idx === 0 ? 'bg-[var(--brand)] text-white shadow-2xs' : 'bg-slate-100 text-slate-700'}`}>
+                                                            V{v.version_number}
+                                                        </span>
+                                                        {idx === 0 && (
+                                                            <span className="text-[10px] font-extrabold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100">
+                                                                Latest
+                                                            </span>
+                                                        )}
+                                                        <span className="text-xs font-mono font-semibold text-slate-400">
+                                                            {formatBytes(v.file_size_bytes)}
+                                                        </span>
+                                                    </div>
+
+                                                    <span className="text-[11px] font-semibold text-slate-400">
+                                                        {new Date(v.created_at).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}
+                                                    </span>
+                                                </div>
+
+                                                {/* Comment & Uploader Box */}
+                                                <div className="bg-slate-50/80 rounded-xl p-2.5 border border-slate-100 flex flex-col gap-1.5">
+                                                    {v.upload_comment ? (
+                                                        <p className="text-xs font-semibold text-slate-700 italic">
+                                                            &ldquo;{v.upload_comment}&rdquo;
+                                                        </p>
+                                                    ) : (
+                                                        <p className="text-[11px] text-slate-400 italic">No comment provided</p>
+                                                    )}
+
+                                                    <div className="flex items-center justify-between pt-1 border-t border-slate-200/50">
+                                                        <div className="flex items-center gap-1.5">
+                                                            <div className="w-4 h-4 rounded-full bg-slate-200 flex items-center justify-center text-[8px] font-bold text-slate-600">
+                                                                {(v.uploaded_by_name || 'U').charAt(0).toUpperCase()}
+                                                            </div>
+                                                            <span className="text-[11px] font-bold text-slate-600 truncate">{v.uploaded_by_name || 'User'}</span>
+                                                        </div>
+                                                        <span className="text-[10px] text-slate-400">
+                                                            {new Date(v.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                {/* Action Buttons: 2 Big Tap Buttons */}
+                                                <div className="grid grid-cols-2 gap-2 pt-0.5">
+                                                    <button
+                                                        onClick={() => handleDownload(v, 'original')}
+                                                        disabled={downloading[v.id]}
+                                                        className="py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-800 font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer disabled:opacity-50"
+                                                    >
+                                                        <FaDownload className="text-xs" />
+                                                        <span>{downloading[v.id] ? 'Downloading...' : 'Download'}</span>
+                                                    </button>
+
+                                                    <button
+                                                        onClick={() => handleRestore(v.id)}
+                                                        disabled={restoringId === v.id}
+                                                        className="py-2 px-3 rounded-xl bg-[var(--brand)] text-white hover:opacity-90 active:scale-95 font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-xs disabled:opacity-50"
+                                                    >
+                                                        <FaRedo className={`text-xs ${restoringId === v.id ? 'animate-spin' : ''}`} />
+                                                        <span>{restoringId === v.id ? 'Restoring...' : 'Restore'}</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                )}
+            </div>
         </div>
     );
 }
