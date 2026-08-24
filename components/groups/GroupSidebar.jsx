@@ -115,7 +115,7 @@ export default function GroupsSidebar({ isOpen = true, onToggle }) {
     return (
         <>
             {/* Desktop Sidebar */}
-            <aside className={`hidden md:flex flex-col border-r border-gray-200 bg-white shrink-0 h-full font-sans transition-all duration-300 ${!isOpen ? '-translate-x-full w-0 border-none opacity-0 overflow-hidden' : 'translate-x-0 w-64 opacity-100'}`}>
+            <aside className={`hidden lg:flex flex-col border-r border-gray-200 bg-white shrink-0 h-full font-sans transition-all duration-300 ${!isOpen ? '-translate-x-full w-0 border-none opacity-0 overflow-hidden' : 'translate-x-0 w-64 opacity-100'}`}>
                 <div className="flex-1 overflow-y-auto w-64">
                     <div className="p-5 border-b border-gray-100 flex items-center justify-between">
                         <h2 className="text-[14px] font-bold font-sans text-gray-800 tracking-tight uppercase">Active Members</h2>
@@ -191,7 +191,7 @@ export default function GroupsSidebar({ isOpen = true, onToggle }) {
             </aside>
 
             {/* Mobile-Only Dropdown Navigation Bar */}
-            <div className="flex md:hidden sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-4 py-2.5 items-center justify-between shadow-sm shrink-0 w-full font-sans">
+            <div className="flex lg:hidden sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-4 py-2.5 items-center justify-between shadow-sm shrink-0 w-full font-sans">
                 <div className="relative w-full">
                     <button
                         type="button"

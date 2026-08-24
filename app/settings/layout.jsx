@@ -114,14 +114,14 @@ export default function SettingsLayout({ children }) {
   const activeLink = navLinks.find(item => pathname.includes(item.href)) || navLinks[0] || { name: "Settings", icon: null };
 
   return (
-    <div className="h-screen w-full bg-[#F8FAFC] flex flex-col md:flex-row overflow-hidden font-sans relative pt-16 md:pt-0">
+    <div className="h-screen w-full bg-[#F8FAFC] flex flex-col lg:flex-row overflow-hidden font-sans relative pt-16 md:pt-0">
       {/* Top gradient overlay */}
       <div className="absolute top-0 left-0 w-full h-80 pointer-events-none z-0"></div>
 
       <MainSidebar />
 
       {/* VERTICAL SETTINGS SIDEBAR */}
-      <div className="hidden md:flex w-64 bg-white border-r border-gray-200/80 flex-col shrink-0 z-10 shadow-[4px_0_24px_rgba(28,127,159,0.06)]">
+      <div className="hidden lg:flex w-64 bg-white border-r border-gray-200/80 flex-col shrink-0 z-10 shadow-[4px_0_24px_rgba(28,127,159,0.06)]">
         {/* Sidebar Header with PiBi accent */}
         <div className="p-6 border-b border-gray-100/80">
           <div className="flex items-center gap-3 mb-1">
@@ -162,7 +162,7 @@ export default function SettingsLayout({ children }) {
       {/* ACTUAL PAGE CONTENT */}
       <div className="flex-1 flex flex-col relative z-10 h-full overflow-hidden">
         {/* Mobile-Only Dropdown Navigation Bar */}
-        <div className="flex md:hidden sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-4 py-2.5 items-center justify-between shadow-sm shrink-0">
+        <div className="flex lg:hidden sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-4 py-2.5 items-center justify-between shadow-sm shrink-0">
           <div className="relative" ref={mobileDropdownRef}>
             <button
               type="button"

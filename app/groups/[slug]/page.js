@@ -111,34 +111,34 @@ export default function DynamicGroupPage() {
 
             {/* HEADER */}
             <div className="pt-6 md:pt-10 px-4 md:px-10 pb-4 md:pb-6 shrink-0 relative z-10">
-                <div className="flex flex-col md:flex-row items-start justify-between gap-4 md:gap-0">
-                    <div>
-                        <div className="flex items-center gap-3 mb-2">
-                            <div className="w-10 h-10 rounded-xl bg-[var(--brand)] text-white flex items-center justify-center font-bold text-lg shadow-sm">
-                                {groupData?.name?.charAt(0).toUpperCase() || "G"}
-                            </div>
-                            <h1 className="text-xl md:text-2xl font-semibold text-slate-800 tracking-tight">
+                <div className="flex flex-col md:flex-row items-start justify-between gap-4 md:gap-4">
+                    <div className="flex-1 min-w-0 pr-0 md:pr-4 flex items-start gap-3 md:gap-4">
+                        <div className="w-10 h-10 md:w-11 md:h-11 rounded-xl bg-[var(--brand)] text-white flex items-center justify-center font-bold text-lg md:text-xl shadow-sm shrink-0 mt-0.5 md:mt-0">
+                            {groupData?.name?.charAt(0).toUpperCase() || "G"}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <h1 className="text-xl md:text-2xl font-semibold text-slate-800 tracking-tight truncate">
                                 {groupData ? `${groupData.name} Group` : "Loading..."}
                             </h1>
+                            <p className="text-slate-500 text-sm font-medium max-w-2xl mt-1 md:mt-1.5 line-clamp-2 md:line-clamp-none">
+                                {groupData?.description || "Manage access and administration settings for members in this group."}
+                            </p>
                         </div>
-                        <p className="text-slate-500 text-sm font-medium ml-0 md:ml-13 pl-0 md:pl-13 max-w-2xl">
-                            {groupData?.description || "Manage access and administration settings for members in this group."}
-                        </p>
                     </div>
 
-                    <div className="flex items-center gap-2 md:gap-3 w-full md:w-auto mt-2 md:mt-0">
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto mt-4 md:mt-0 shrink-0">
                         {canAddMembers && (
                             <button onClick={() => router.push(`/groups/${groupSlug}/invite-member`)}
-                                className="group flex flex-1 md:flex-none justify-center items-center gap-2 bg-white border border-gray-200 text-gray-700 px-4 md:px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-gray-50 hover:border-[var(--brand)] hover:text-[var(--brand)] transition-all duration-300 shadow-sm active:scale-95 cursor-pointer">
-                                <FaUserPlus size={14} className="text-slate-500 group-hover:text-[var(--brand)] transition-colors" />
-                                <span>Invite Member</span>
+                                className="group flex w-full sm:w-auto justify-center items-center gap-2 bg-white border border-gray-200 text-gray-700 px-4 md:px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-gray-50 hover:border-[var(--brand)] hover:text-[var(--brand)] transition-all duration-300 shadow-sm active:scale-95 cursor-pointer">
+                                <FaUserPlus size={14} className="text-slate-500 group-hover:text-[var(--brand)] transition-colors shrink-0" />
+                                <span className="whitespace-nowrap">Invite Member</span>
                             </button>
                         )}
                         {canEditPermissions && (
                             <button onClick={() => router.push(`/groups/${groupSlug}/permissions`)}
-                                className="flex flex-1 md:flex-none justify-center items-center gap-2 bg-gradient-to-r from-[var(--brand)] to-[var(--brand-secondary)] text-white px-4 md:px-5 py-2.5 rounded-xl font-semibold text-sm hover:shadow-sm hover:-translate-y-0.5 transition-all duration-500 shadow-[0_8px_30px_rgba(var(--brand-rgb),0.14)] active:scale-95 cursor-pointer">
-                                <FaCog size={14} className="text-white/80" />
-                                <span>Edit Permissions</span>
+                                className="flex w-full sm:w-auto justify-center items-center gap-2 bg-gradient-to-r from-[var(--brand)] to-[var(--brand-secondary)] text-white px-4 md:px-5 py-2.5 rounded-xl font-semibold text-sm hover:shadow-sm hover:-translate-y-0.5 transition-all duration-500 shadow-[0_8px_30px_rgba(var(--brand-rgb),0.14)] active:scale-95 cursor-pointer">
+                                <FaCog size={14} className="text-white/80 shrink-0" />
+                                <span className="whitespace-nowrap">Edit Permissions</span>
                             </button>
                         )}
                     </div>
