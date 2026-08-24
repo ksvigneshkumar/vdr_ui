@@ -23,6 +23,7 @@ export default function GroupsSidebar({ isOpen = true, onToggle }) {
     const pathname = usePathname();
     const [navItems, setNavItems] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [mobileDropdownOpen, setMobileDropdownOpen] = useState(false);
     const [isAddGroupModalOpen, setIsAddGroupModalOpen] = useState(false);
     const [newGroupName, setNewGroupName] = useState('');
     const [newGroupDescription, setNewGroupDescription] = useState('');
@@ -113,12 +114,9 @@ export default function GroupsSidebar({ isOpen = true, onToggle }) {
 
     return (
         <>
-            {/* Mobile Overlay */}
-            {isOpen && (
-                <div className="md:hidden fixed inset-0 top-16 bg-black/20 z-[35]" onClick={onToggle}></div>
-            )}
-            <aside className={`fixed md:sticky ${isOpen ? 'translate-x-0 w-64 border-r border-gray-200' : '-translate-x-full md:translate-x-0 md:w-0 md:border-r-0'} transition-transform md:transition-all duration-300 bg-white flex flex-col h-[calc(100vh-4rem)] md:h-screen top-16 md:top-0 z-40 shrink-0 font-sans`}>
-                <div className="flex-1 overflow-y-auto">
+            {/* Desktop Sidebar */}
+            <aside className={`hidden md:flex flex-col border-r border-gray-200 bg-white shrink-0 h-full font-sans transition-all duration-300 ${!isOpen ? '-translate-x-full w-0 border-none opacity-0 overflow-hidden' : 'translate-x-0 w-64 opacity-100'}`}>
+                <div className="flex-1 overflow-y-auto w-64">
                     <div className="p-5 border-b border-gray-100 flex items-center justify-between">
                         <h2 className="text-[14px] font-bold font-sans text-gray-800 tracking-tight uppercase">Active Members</h2>
                     </div>
@@ -183,7 +181,7 @@ export default function GroupsSidebar({ isOpen = true, onToggle }) {
                 </div>
 
                 {canCreateGroup && (
-                    <div className="p-5 border-t border-gray-100 bg-gray-50/30">
+                    <div className="p-5 border-t border-gray-100 bg-gray-50/30 w-64">
                         <button onClick={() => setIsAddGroupModalOpen(true)} className="w-full py-2.5 bg-[var(--brand)] text-white rounded-lg font-bold font-sans text-[13px] hover:bg-[var(--brand-dark)] transition-all flex items-center justify-center gap-2 shadow-sm">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
                             Add Groups
@@ -191,6 +189,86 @@ export default function GroupsSidebar({ isOpen = true, onToggle }) {
                     </div>
                 )}
             </aside>
+
+            {/* Mobile-Only Dropdown Navigation Bar */}
+            <div className="flex md:hidden sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-4 py-2.5 items-center justify-between shadow-sm shrink-0 w-full font-sans">
+                <div className="relative w-full">
+                    <button
+                        type="button"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setMobileDropdownOpen(prev => !prev);
+                        }}
+                        className="flex items-center justify-between w-full px-3 py-2 bg-slate-100/80 active:bg-slate-200/60 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 transition-all cursor-pointer"
+                    >
+                        <div className="flex items-center gap-2">
+                            <div className="w-6 h-6 rounded-lg bg-[var(--brand)] text-white flex items-center justify-center shadow-sm shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>
+                            </div>
+                            <span>{navItems.find(item => item.href === pathname)?.name || 'Select Group'}</span>
+                        </div>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className={`text-slate-500 transition-transform ${mobileDropdownOpen ? 'rotate-180' : ''}`}
+                        >
+                            <polyline points="6 9 12 15 18 9" />
+                        </svg>
+                    </button>
+
+                    {/* Mobile Dropdown Popup */}
+                    {mobileDropdownOpen && (
+                        <div className="absolute left-0 top-full mt-2 w-full bg-white border border-slate-200 rounded-2xl shadow-xl p-1.5 z-50 animate-in fade-in slide-in-from-top-2">
+                            <div className="px-3 py-2 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 border-b border-slate-100 mb-1 flex justify-between items-center">
+                                <span>Switch Group</span>
+                                {canCreateGroup && (
+                                    <button onClick={(e) => { e.stopPropagation(); setMobileDropdownOpen(false); setIsAddGroupModalOpen(true); }} className="text-[var(--brand)] hover:underline flex items-center gap-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
+                                        Add
+                                    </button>
+                                )}
+                            </div>
+                            <div className="flex flex-col gap-0.5 max-h-60 overflow-y-auto">
+                                {isLoading ? (
+                                    <div className="p-3 text-center text-xs text-gray-500 animate-pulse">Loading...</div>
+                                ) : (
+                                    navItems.map((item) => {
+                                        const isActive = pathname === item.href;
+                                        return (
+                                            <Link
+                                                key={item.name}
+                                                href={item.href}
+                                                onClick={() => setMobileDropdownOpen(false)}
+                                                className={`px-3 py-2 rounded-xl transition-all flex items-center justify-between text-xs font-semibold ${
+                                                    isActive ? 'bg-slate-100 text-slate-900 font-bold' : 'text-slate-600 hover:bg-slate-50'
+                                                }`}
+                                            >
+                                                <div className="flex items-center gap-2.5">
+                                                    <span className={isActive ? 'text-[var(--brand)]' : 'text-slate-400'}>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>
+                                                    </span>
+                                                    <span className="truncate max-w-[150px]">{item.name}</span>
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    {item.role && <span className="text-[9px] uppercase text-gray-400 font-bold">{item.role.replace('_', ' ')}</span>}
+                                                    {isActive && <span className="text-[var(--brand)] text-xs font-bold">✓</span>}
+                                                </div>
+                                            </Link>
+                                        );
+                                    })
+                                )}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
 
             {/* ── Delete Confirmation Modal ─────────────────────────────── */}
             {deleteTarget && (

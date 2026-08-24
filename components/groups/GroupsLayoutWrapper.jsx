@@ -51,13 +51,13 @@ export default function GroupsLayoutWrapper({ children }) {
     if (!isAuthorized) return <div className="w-full h-screen flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-slate-900 rounded-full animate-spin"></div></div>;
 
     return (
-        <>
+        <div className="flex flex-col md:flex-row flex-1 h-full min-w-0 mt-16 md:mt-0 relative">
             <Suspense fallback={<div className="hidden md:block w-64 bg-white border-r border-gray-200 shrink-0 h-full"></div>}>
                 <GroupSidebar isOpen={isSidebarOpen} onToggle={() => setIsSidebarOpen(!isSidebarOpen)} />
             </Suspense>
 
             {/* Main Content Area */}
-            <main className="flex-1 bg-white relative flex flex-col min-w-0 transition-all duration-300 h-[calc(100vh-4rem)] md:h-full mt-16 md:mt-0">
+            <main className="flex-1 bg-white relative flex flex-col min-w-0 transition-all duration-300 h-full overflow-hidden">
                 {/* Desktop Toggle button */}
                 <div
                     onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -67,20 +67,10 @@ export default function GroupsLayoutWrapper({ children }) {
                 </div>
 
                 <div className="flex-1 overflow-y-auto w-full h-full relative">
-                    {/* Mobile Toggle button */}
-                    <div className="md:hidden sticky top-0 bg-white/95 backdrop-blur z-20 px-4 py-3 border-b border-gray-100 flex items-center shadow-sm">
-                        <button
-                            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                            className="flex items-center gap-2 text-sm font-semibold text-gray-700 bg-white border border-gray-200 px-3 py-1.5 rounded-lg shadow-sm hover:bg-gray-50 transition-colors"
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>
-                            Groups Menu
-                        </button>
-                    </div>
                     {children}
                 </div>
             </main>
-        </>
+        </div>
     );
 }
 //hard encoded code , url change doesnt work in this code

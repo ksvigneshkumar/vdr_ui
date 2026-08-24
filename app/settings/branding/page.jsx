@@ -292,7 +292,7 @@ export default function BrandingPage() {
           <button 
             onClick={handlePublish}
             disabled={saving}
-            className="px-6 py-2.5 brand-button text-white text-sm font-medium rounded-xl hover:shadow-sm hover:-translate-y-0.5 focus:ring-4 focus:ring-gray-200 transition-all duration-500 flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full md:w-auto justify-center px-6 py-2.5 brand-button text-white text-sm font-medium rounded-xl hover:shadow-sm hover:-translate-y-0.5 focus:ring-4 focus:ring-gray-200 transition-all duration-500 flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {saving ? (
               <><div className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />Savingâ€¦</>
