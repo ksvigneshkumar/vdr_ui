@@ -8,7 +8,7 @@ import React, {
   Suspense,
 } from "react";
 import { useSearchParams } from "next/navigation";
-const qB = { then: (r) => r({data:[],error:null}), single: async()=>({data:null,error:null}), maybeSingle: async()=>({data:null,error:null}) }; qB.eq = () => qB; qB.order = () => qB; qB.select = () => qB; qB.insert = () => qB; qB.update = () => qB; qB.delete = () => qB; const supabase = { auth: { getSession: async () => ({ data: { session: null } }), signOut: async () => ({}) }, storage: { from: () => ({ createSignedUrl: async () => ({ data: { signedUrl: "" } }), upload: async () => ({ data: {}, error: null }), remove: async () => ({}), getPublicUrl: () => ({ data: { publicUrl: "" } }) }) }, from: () => qB };
+const qB = { then: (r) => r({ data: [], error: null }), single: async () => ({ data: null, error: null }), maybeSingle: async () => ({ data: null, error: null }) }; qB.eq = () => qB; qB.order = () => qB; qB.select = () => qB; qB.insert = () => qB; qB.update = () => qB; qB.delete = () => qB; const supabase = { auth: { getSession: async () => ({ data: { session: null } }), signOut: async () => ({}) }, storage: { from: () => ({ createSignedUrl: async () => ({ data: { signedUrl: "" } }), upload: async () => ({ data: {}, error: null }), remove: async () => ({}), getPublicUrl: () => ({ data: { publicUrl: "" } }) }) }, from: () => qB };
 import {
   FaLock,
   FaChevronLeft,
@@ -55,12 +55,12 @@ const hexToPdfColor = (hex, rgb) => {
 const getFileType = (filePath) => {
   if (!filePath) return "unknown";
   const ext = filePath.split(".").pop().toLowerCase().trim();
-  if (ext === "pdf")  return "pdf";
+  if (ext === "pdf") return "pdf";
   if (ext === "doc" || ext === "docx") return "word";
   if (ext === "xls" || ext === "xlsx" || ext === "csv") return ext;
-  if (ext === "ppt")  return "ppt";
+  if (ext === "ppt") return "ppt";
   if (ext === "pptx") return "pptx";
-  if (ext === "txt")  return "text";
+  if (ext === "txt") return "text";
   if (ext === "png" || ext === "jpg" || ext === "jpeg") return "image";
   return "unknown";
 };
@@ -205,13 +205,13 @@ function DocumentViewerContent() {
         try {
           const stored = localStorage.getItem("vdr_mock_documents");
           if (stored) {
-             const docs = JSON.parse(stored);
-             docData = docs.find(d => d.id === docId);
+            const docs = JSON.parse(stored);
+            docData = docs.find(d => d.id === docId);
           }
-        } catch(e) {}
+        } catch (e) { }
 
         if (!docData) throw new Error("Document not found.");
-        
+
         if (!docData.file_path) docData.file_path = docData.name;
         setDoc(docData);
 
@@ -221,7 +221,7 @@ function DocumentViewerContent() {
 
         let resolvedUrl = docData.dataUrl;
         if (!resolvedUrl) {
-           resolvedUrl = "data:application/pdf;base64,JVBERi0xLjcKCjEgMCBvYmogICUgZW50cnkgcG9pbnQKPDwKICAvVHlwZSAvQ2F0YWxvZwogIC9QYWdlcyAyIDAgUgo+PgplbmRvYmoKCjIgMCBvYmoKPDwKICAvVHlwZSAvUGFnZXMKICAvTWVkaWFCb3ggWyAwIDAgMjAwIDIwMCBdCiAgL0NvdW50IDEKICAvS2lkcyBbIDMgMCBSIF0KPj4KZW5kb2JqCgozIDAgb2JqCjw8CiAgL1R5cGUgL1BhZ2UKICAvUGFyZW50IDIgMCBSCiAgL1Jlc291cmNlcyA8PAogICAgL0ZvbnQgPDwKICAgICAgL0YxIDQgMCBSCj4+Cj4+CiAgL0NvbnRlbnRzIDUgMCBSCj4+CmVuZG9iagoKNCAwIG9iago8PAogIC9UeXBlIC9Gb250CiAgL1N1YnR5cGUgL1R5cGUxCiAgL0Jhc2VGb250IC9UaW1lcy1Sb21hbgo+PgplbmRvYmoKCjUgMCBvYmoKPDwKICAvTGVuZ3RoIDM4Cj4+CnN0cmVhbQpCVEQKL0YxIDE4IFRmCjAgNTAgVGQKKE1vY2sgUERGIEZpbGUpIFRqCkVUCmVuZHN0cmVhbQplbmRvYmoKCnhyZWYKMCA2CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDEwIDEwMDAwIG4gCjAwMDAwMDAwNjggMDAwMDAgbiAKMDAwMDAwMDE2NyAwMDAwMCBuIAowMDAwMDAwMjc1IDAwMDAwIG4gCjAwMDAwMDAzNTkgMDAwMDAgbiAKdHJhaWxlcgo8PAogIC9TaXplIDYKICAvUm9vdCAxIDAgUgo+PgpzdGFydHhyZWYKNDQ4CiUlRU9GCg==";
+          resolvedUrl = "data:application/pdf;base64,JVBERi0xLjcKCjEgMCBvYmogICUgZW50cnkgcG9pbnQKPDwKICAvVHlwZSAvQ2F0YWxvZwogIC9QYWdlcyAyIDAgUgo+PgplbmRvYmoKCjIgMCBvYmoKPDwKICAvVHlwZSAvUGFnZXMKICAvTWVkaWFCb3ggWyAwIDAgMjAwIDIwMCBdCiAgL0NvdW50IDEKICAvS2lkcyBbIDMgMCBSIF0KPj4KZW5kb2JqCgozIDAgb2JqCjw8CiAgL1R5cGUgL1BhZ2UKICAvUGFyZW50IDIgMCBSCiAgL1Jlc291cmNlcyA8PAogICAgL0ZvbnQgPDwKICAgICAgL0YxIDQgMCBSCj4+Cj4+CiAgL0NvbnRlbnRzIDUgMCBSCj4+CmVuZG9iagoKNCAwIG9iago8PAogIC9UeXBlIC9Gb250CiAgL1N1YnR5cGUgL1R5cGUxCiAgL0Jhc2VGb250IC9UaW1lcy1Sb21hbgo+PgplbmRvYmoKCjUgMCBvYmoKPDwKICAvTGVuZ3RoIDM4Cj4+CnN0cmVhbQpCVEQKL0YxIDE4IFRmCjAgNTAgVGQKKE1vY2sgUERGIEZpbGUpIFRqCkVUCmVuZHN0cmVhbQplbmRvYmoKCnhyZWYKMCA2CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDEwIDEwMDAwIG4gCjAwMDAwMDAwNjggMDAwMDAgbiAKMDAwMDAwMDE2NyAwMDAwMCBuIAowMDAwMDAwMjc1IDAwMDAwIG4gCjAwMDAwMDAzNTkgMDAwMDAgbiAKdHJhaWxlcgo8PAogIC9TaXplIDYKICAvUm9vdCAxIDAgUgo+PgpzdGFydHhyZWYKNDQ4CiUlRU9GCg==";
         }
 
         // 5. Detect file type from path; route to appropriate viewer
@@ -303,12 +303,11 @@ function DocumentViewerContent() {
               font-size: ${fontHeight}px;
               line-height: 1;
               transform-origin: 0% 0%;
-              transform: rotate(${angle}rad) scaleX(${
-              item.width > 0
+              transform: rotate(${angle}rad) scaleX(${item.width > 0
                 ? (item.width * viewport.scale) /
-                  (item.str.length * fontHeight * 0.6 || 1)
+                (item.str.length * fontHeight * 0.6 || 1)
                 : 1
-            });
+              });
               white-space: pre;
               color: transparent;
               cursor: text;
@@ -391,9 +390,8 @@ function DocumentViewerContent() {
         newHtml += escapeHtml(text.substring(lastIndex, index));
         const isCurrentMatch = matchCount === activeMatchIndex;
         const bgColor = isCurrentMatch ? "#f97316" : "#fef08a";
-        newHtml += `<mark style="background-color: ${bgColor}; color: inherit; padding: 0; border-radius: 2px;" ${
-          isCurrentMatch ? 'data-active-match="true"' : ""
-        }>${escapeHtml(text.substring(index, index + query.length))}</mark>`;
+        newHtml += `<mark style="background-color: ${bgColor}; color: inherit; padding: 0; border-radius: 2px;" ${isCurrentMatch ? 'data-active-match="true"' : ""
+          }>${escapeHtml(text.substring(index, index + query.length))}</mark>`;
 
         matchCount++;
         lastIndex = index + query.length;
@@ -415,15 +413,15 @@ function DocumentViewerContent() {
     }
   }, [searchQuery, activeMatchIndex, fileType, pdfRenderTrigger]);
 
-  /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  /* ──────────────────────────────────────────
      Zoom helpers
-  â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  ────────────────────────────────────────── */
   const zoomOut = () => setScale((s) => Math.max(0.5, +(s - 0.25).toFixed(2)));
   const zoomIn = () => setScale((s) => Math.min(4.0, +(s + 0.25).toFixed(2)));
 
-  /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  /* ──────────────────────────────────────────
      Drag-to-select on overlay div
-  â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  ────────────────────────────────────────── */
   const getRelativePos = (e, el) => {
     const rect = el.getBoundingClientRect();
     return {
@@ -475,12 +473,12 @@ function DocumentViewerContent() {
     window.getSelection()?.removeAllRanges();
 
     onAddSelection({
-        page: currentPage,
-        text: selectedText,
-        x: finalBox.x,
-        y: finalBox.y,
-        w: finalBox.w,
-        h: finalBox.h,
+      page: currentPage,
+      text: selectedText,
+      x: finalBox.x,
+      y: finalBox.y,
+      w: finalBox.w,
+      h: finalBox.h,
     });
   };
 
@@ -501,115 +499,225 @@ function DocumentViewerContent() {
     );
   };
 
-  /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-     Save Redaction â€” Save as New File
-  â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ──────────────────────────────────────────
+     Helper to robustly get Document ArrayBuffer
+  ────────────────────────────────────────── */
+  const getDocumentArrayBuffer = async (targetDoc, currentFileType) => {
+    // 1. If doc.dataUrl is provided as a base64 data URL
+    if (targetDoc?.dataUrl && typeof targetDoc.dataUrl === "string" && targetDoc.dataUrl.startsWith("data:")) {
+      try {
+        const parts = targetDoc.dataUrl.split(",");
+        if (parts.length > 1) {
+          const base64 = parts[1];
+          const binaryString = atob(base64);
+          const len = binaryString.length;
+          const bytes = new Uint8Array(len);
+          for (let i = 0; i < len; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+          }
+          if (currentFileType === "pdf") {
+            const header = String.fromCharCode(bytes[0], bytes[1], bytes[2], bytes[3]);
+            if (header.startsWith("%PDF")) {
+              return bytes.buffer;
+            }
+          } else {
+            return bytes.buffer;
+          }
+        }
+      } catch (e) {
+        console.warn("Could not decode doc.dataUrl base64:", e);
+      }
+    }
+
+    // 2. If doc.dataUrl is a fetchable URL
+    if (targetDoc?.dataUrl && typeof targetDoc.dataUrl === "string" && (targetDoc.dataUrl.startsWith("http") || targetDoc.dataUrl.startsWith("/"))) {
+      try {
+        const res = await fetch(targetDoc.dataUrl);
+        if (res.ok) {
+          const buf = await res.arrayBuffer();
+          const bytes = new Uint8Array(buf);
+          if (currentFileType === "pdf") {
+            const header = String.fromCharCode(bytes[0], bytes[1], bytes[2], bytes[3]);
+            if (header.startsWith("%PDF")) {
+              return buf;
+            }
+          } else {
+            return buf;
+          }
+        }
+      } catch (e) {
+        console.warn("Could not fetch doc.dataUrl:", e);
+      }
+    }
+
+    // 3. Try Supabase storage signed URL if storagePath exists
+    let storagePath = targetDoc?.original_file_path || targetDoc?.file_path;
+    if (storagePath) {
+      if (storagePath.includes("secure_") && !targetDoc.original_file_path) {
+        storagePath = storagePath.replace("secure_", "original_");
+      }
+      try {
+        const { data: urlData, error: urlError } = await supabase.storage
+          .from("original-files")
+          .createSignedUrl(storagePath, 3600);
+        if (!urlError && urlData?.signedUrl) {
+          const res = await fetch(urlData.signedUrl);
+          if (res.ok) {
+            const buf = await res.arrayBuffer();
+            const bytes = new Uint8Array(buf);
+            if (currentFileType === "pdf") {
+              const header = String.fromCharCode(bytes[0], bytes[1], bytes[2], bytes[3]);
+              if (header.startsWith("%PDF")) {
+                return buf;
+              }
+            } else {
+              return buf;
+            }
+          }
+        }
+      } catch (e) {
+        console.warn("Could not fetch from supabase storage:", e);
+      }
+    }
+
+    // 4. Fallback for PDF
+    if (currentFileType === "pdf") {
+      const fallbackBase64 = "JVBERi0xLjcKCjEgMCBvYmogICUgZW50cnkgcG9pbnQKPDwKICAvVHlwZSAvQ2F0YWxvZwogIC9QYWdlcyAyIDAgUgo+PgplbmRvYmoKCjIgMCBvYmoKPDwKICAvVHlwZSAvUGFnZXMKICAvTWVkaWFCb3ggWyAwIDAgMjAwIDIwMCBdCiAgL0NvdW50IDEKICAvS2lkcyBbIDMgMCBSIF0KPj4KZW5kb2JqCgozIDAgb2JqCjw8CiAgL1R5cGUgL1BhZ2UKICAvUGFyZW50IDIgMCBSCiAgL1Jlc291cmNlcyA8PAogICAgL0ZvbnQgPDwKICAgICAgL0YxIDQgMCBSCj4+Cj4+CiAgL0NvbnRlbnRzIDUgMCBSCj4+CmVuZG9iagoKNCAwIG9iago8PAogIC9UeXBlIC9Gb250CiAgL1N1YnR5cGUgL1R5cGUxCiAgL0Jhc2VGb250IC9UaW1lcy1Sb21hbgo+PgplbmRvYmoKCjUgMCBvYmoKPDwKICAvTGVuZ3RoIDM4Cj4+CnN0cmVhbQpCVEQKL0YxIDE4IFRmCjAgNTAgVGQKKE1vY2sgUERGIEZpbGUpIFRqCkVUCmVuZHN0cmVhbQplbmRvYmoKCnhyZWYKMCA2CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDEwIDEwMDAwIG4gCjAwMDAwMDAwNjggMDAwMDAgbiAKMDAwMDAwMDE2NyAwMDAwMCBuIAowMDAwMDAwMjc1IDAwMDAwIG4gCjAwMDAwMDAzNTkgMDAwMDAgbiAKdHJhaWxlcgo8PAogIC9TaXplIDYKICAvUm9vdCAxIDAgUgo+PgpzdGFydHhyZWYKNDQ4CiUlRU9GCg==";
+      const binaryString = atob(fallbackBase64);
+      const len = binaryString.length;
+      const bytes = new Uint8Array(len);
+      for (let i = 0; i < len; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+      return bytes.buffer;
+    }
+
+    return new ArrayBuffer(0);
+  };
+
+  const uint8ArrayToDataUrl = (uint8Array, mimeType = "application/pdf") => {
+    let binary = "";
+    const len = uint8Array.byteLength;
+    const chunk = 8192;
+    for (let i = 0; i < len; i += chunk) {
+      const sub = uint8Array.subarray(i, Math.min(i + chunk, len));
+      binary += String.fromCharCode.apply(null, sub);
+    }
+    return `data:${mimeType};base64,${btoa(binary)}`;
+  };
+
+  /* ──────────────────────────────────────────
+     Save Redaction — Save as New File
+  ────────────────────────────────────────── */
   const saveAsNewFile = async () => {
-    const raw = localStorage.getItem("vdr_session");
-    if (!raw) throw new Error("Session not found");
-    const session = JSON.parse(raw);
+    let raw = localStorage.getItem("vdr_session");
+    const session = raw ? JSON.parse(raw) : { id: "user_mock" };
 
-    // 1. Get original PDF bytes (support original_file_path & secure_ to original_ fallback)
-    let storagePath = doc.original_file_path || doc.file_path;
-    if (storagePath && storagePath.includes("secure_") && !doc.original_file_path) {
-      storagePath = storagePath.replace("secure_", "original_");
-    }
-
-    let { data: urlData, error: urlError } = await supabase.storage
-      .from("original-files")
-      .createSignedUrl(storagePath, 3600);
-
-    if (urlError && doc.file_path && doc.file_path.includes("secure_")) {
-      const candidate = doc.file_path.replace("secure_", "original_");
-      const fallback = await supabase.storage
-        .from("original-files")
-        .createSignedUrl(candidate, 3600);
-      if (!fallback.error && fallback.data) {
-        urlData = fallback.data;
-        urlError = null;
-        storagePath = candidate;
-      }
-    }
-
-    if (urlError && doc.file_path && storagePath !== doc.file_path) {
-      const fallback = await supabase.storage
-        .from("original-files")
-        .createSignedUrl(doc.file_path, 3600);
-      if (!fallback.error && fallback.data) {
-        urlData = fallback.data;
-        urlError = null;
-        storagePath = doc.file_path;
-      }
-    }
-
-    if (urlError) throw urlError;
-
-    const pdfBytes = await fetch(urlData.signedUrl).then((r) =>
-      r.arrayBuffer()
-    );
-
+    // 1. Get original PDF bytes
+    const fileBuffer = await getDocumentArrayBuffer(doc, fileType);
     let redactedBytes;
+    let redactedDataUrl;
 
     if (fileType === "pdf") {
       // 2. Use pdf-lib to burn redaction rectangles
       const { PDFDocument, rgb } = await import("pdf-lib");
-      const pdfDoc = await PDFDocument.load(pdfBytes);
+      const pdfDoc = await PDFDocument.load(fileBuffer, { ignoreEncryption: true });
       const pages = pdfDoc.getPages();
 
       for (const sel of selections) {
         const pdfPage = pages[sel.page - 1];
         if (!pdfPage) continue;
-        const { height: pageHeight } = pdfPage.getSize();
+        const { height: pageHeight, width: pageWidth } = pdfPage.getSize();
 
-        // Convert from screen-space (top-left origin) to PDF-space (bottom-left origin)
-        // Coordinates are at the current scale; convert back to PDF units
-        const pdfX = sel.x / scale;
-        const pdfY = pageHeight - (sel.y + sel.h) / scale;
-        const pdfW = sel.w / scale;
-        const pdfH = sel.h / scale;
+        const currentScale = scale || 1;
+        const pdfX = sel.x / currentScale;
+        const pdfY = pageHeight - (sel.y + sel.h) / currentScale;
+        const pdfW = sel.w / currentScale;
+        const pdfH = sel.h / currentScale;
 
         pdfPage.drawRectangle({
-          x: pdfX,
-          y: pdfY,
-          width: pdfW,
-          height: pdfH,
-          color: hexToPdfColor(sel.color, rgb),
+          x: Math.max(0, pdfX),
+          y: Math.max(0, pdfY),
+          width: Math.min(pageWidth, pdfW),
+          height: Math.min(pageHeight, pdfH),
+          color: hexToPdfColor(sel.color || "#000000", rgb),
           opacity: 1,
         });
       }
 
-      redactedBytes = await pdfDoc.save();
+      const u8 = await pdfDoc.save();
+      redactedBytes = u8;
+      redactedDataUrl = uint8ArrayToDataUrl(u8, "application/pdf");
     } else {
       // Non-PDF native redactions
-      redactedBytes = await applyNativeRedactions(pdfBytes, fileType, selections);
+      const u8 = await applyNativeRedactions(fileBuffer, fileType, selections);
+      redactedBytes = u8;
+      const ext = doc.file_path ? doc.file_path.split(".").pop().toLowerCase() : "txt";
+      let mime = "application/octet-stream";
+      if (ext === "txt") mime = "text/plain";
+      if (ext === "png") mime = "image/png";
+      if (ext === "jpg" || ext === "jpeg") mime = "image/jpeg";
+      redactedDataUrl = uint8ArrayToDataUrl(u8, mime);
     }
 
-    // 3. Upload to redacted-files bucket
-    const ext = doc.file_path ? doc.file_path.split(".").pop().toLowerCase() : "pdf";
-    const fileName = doc.file_path
-      ? doc.file_path.split("/").pop().replace(new RegExp(`\\.${ext}$`, "i"), "") + `_redacted.${ext}`
-      : `document_${docId}_redacted.${ext}`;
-    const redactedPath = `users/${session.id}/${fileName}`;
+    // 3. Generate New File Metadata
+    const ext = doc.name ? doc.name.split(".").pop().toLowerCase() : "pdf";
+    const baseName = doc.name ? doc.name.replace(new RegExp(`\\.${ext}$`, "i"), "") : "Document";
+    const newDocName = `${baseName}_redacted.${ext}`;
+    const newDocId = `redacted_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
+    const redactedPath = `users/${session.id}/${newDocName}`;
 
-    // Default to application/octet-stream, then infer by extension
-    let contentType = "application/pdf";
-    if (ext === "txt") contentType = "text/plain";
-    if (ext === "docx") contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-    if (ext === "xlsx") contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-    if (ext === "pptx") contentType = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+    // 4. Update Mock Documents List in localStorage
+    try {
+      const storedDocsRaw = localStorage.getItem("vdr_mock_documents");
+      let allDocs = storedDocsRaw ? JSON.parse(storedDocsRaw) : [];
+      const newDoc = {
+        ...doc,
+        id: newDocId,
+        name: newDocName,
+        displayIndex: doc.displayIndex ? `${doc.displayIndex}.R` : "—",
+        dataUrl: redactedDataUrl,
+        file_path: `redacted-files/${newDocName}`,
+        created_at: new Date().toISOString(),
+        is_redacted: true,
+        original_doc_id: doc.id,
+        size: `${(redactedBytes.length / (1024 * 1024)).toFixed(2)} MB`
+      };
+      allDocs.push(newDoc);
+      localStorage.setItem("vdr_mock_documents", JSON.stringify(allDocs));
 
-    const { error: uploadError } = await supabase.storage
-      .from("redacted-files")
-      .upload(redactedPath, new Blob([redactedBytes], { type: contentType }), {
-        upsert: true,
-        contentType: contentType,
+      // Also update vdr_mock_redacted_documents for Redacted Files list
+      const storedRedactedRaw = localStorage.getItem("vdr_mock_redacted_documents");
+      let allRedacted = storedRedactedRaw ? JSON.parse(storedRedactedRaw) : [];
+      allRedacted.unshift({
+        id: `rd-${Date.now()}`,
+        document_id: newDocId,
+        name: newDocName,
+        created_at: new Date().toISOString(),
+        metadata: { size: redactedBytes.length },
+        dataUrl: redactedDataUrl
       });
-    if (uploadError) throw uploadError;
+      localStorage.setItem("vdr_mock_redacted_documents", JSON.stringify(allRedacted));
+    } catch (e) {
+      console.warn("Failed to persist to localStorage:", e);
+    }
 
-    // 4. Upsert into redacted_documents
-    const { error: dbError } = await supabase
-      .from("redacted_documents")
-      .upsert(
+    // 5. Try Supabase upload if available
+    try {
+      let contentType = "application/pdf";
+      if (ext === "txt") contentType = "text/plain";
+      if (ext === "docx") contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+      if (ext === "xlsx") contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+      if (ext === "pptx") contentType = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+
+      await supabase.storage
+        .from("redacted-files")
+        .upload(redactedPath, new Blob([redactedBytes], { type: contentType }), {
+          upsert: true,
+          contentType: contentType,
+        });
+
+      await supabase.from("redacted_documents").upsert(
         {
           document_id: docId,
           redacted_path: redactedPath,
@@ -617,30 +725,26 @@ function DocumentViewerContent() {
         },
         { onConflict: "document_id" }
       );
-    if (dbError) throw dbError;
-
-    // 5. Persist text-region selections to DB
-    // Delete existing first, then insert fresh
-    await supabase
-      .from("document_text_redactions")
-      .delete()
-      .eq("document_id", docId);
-
-    if (selections.length > 0) {
-      const rows = selections.map((s) => ({
-        document_id: docId,
-        page_number: s.page,
-        selected_text: s.text || null,
-        x: s.x,
-        y: s.y,
-        width: s.w,
-        height: s.h,
-        created_by: session.id,
-      }));
-      const { error: insError } = await supabase
+      await supabase
         .from("document_text_redactions")
-        .insert(rows);
-      if (insError) throw insError;
+        .delete()
+        .eq("document_id", docId);
+
+      if (selections.length > 0) {
+        const rows = selections.map((s) => ({
+          document_id: docId,
+          page_number: s.page,
+          selected_text: s.text || null,
+          x: s.x,
+          y: s.y,
+          width: s.w,
+          height: s.h,
+          created_by: session.id,
+        }));
+        await supabase.from("document_text_redactions").insert(rows);
+      }
+    } catch (e) {
+      // Ignored for mock mode
     }
   };
 
@@ -648,118 +752,109 @@ function DocumentViewerContent() {
      Save Redaction — Overwrite Original
   ────────────────────────────────────────── */
   const overwriteOriginal = async () => {
-    const raw = localStorage.getItem("vdr_session");
-    if (!raw) throw new Error("Session not found");
-    const session = JSON.parse(raw);
+    let raw = localStorage.getItem("vdr_session");
+    const session = raw ? JSON.parse(raw) : { id: "user_mock" };
 
-    // 1. Get original PDF bytes (support original_file_path & secure_ to original_ fallback)
-    let storagePath = doc.original_file_path || doc.file_path;
-    if (storagePath && storagePath.includes("secure_") && !doc.original_file_path) {
-      storagePath = storagePath.replace("secure_", "original_");
-    }
-
-    let { data: urlData, error: urlError } = await supabase.storage
-      .from("original-files")
-      .createSignedUrl(storagePath, 3600);
-
-    if (urlError && doc.file_path && doc.file_path.includes("secure_")) {
-      const candidate = doc.file_path.replace("secure_", "original_");
-      const fallback = await supabase.storage
-        .from("original-files")
-        .createSignedUrl(candidate, 3600);
-      if (!fallback.error && fallback.data) {
-        urlData = fallback.data;
-        urlError = null;
-        storagePath = candidate;
-      }
-    }
-
-    if (urlError && doc.file_path && storagePath !== doc.file_path) {
-      const fallback = await supabase.storage
-        .from("original-files")
-        .createSignedUrl(doc.file_path, 3600);
-      if (!fallback.error && fallback.data) {
-        urlData = fallback.data;
-        urlError = null;
-        storagePath = doc.file_path;
-      }
-    }
-
-    if (urlError) throw urlError;
-
-    const pdfBytes = await fetch(urlData.signedUrl).then((r) =>
-      r.arrayBuffer()
-    );
-
+    // 1. Get original PDF bytes
+    const fileBuffer = await getDocumentArrayBuffer(doc, fileType);
     let redactedBytes;
-    
+    let redactedDataUrl;
+
     if (fileType === "pdf") {
       // 2. Burn rectangles with pdf-lib
       const { PDFDocument, rgb } = await import("pdf-lib");
-      const pdfDoc = await PDFDocument.load(pdfBytes);
+      const pdfDoc = await PDFDocument.load(fileBuffer, { ignoreEncryption: true });
       const pages = pdfDoc.getPages();
 
       for (const sel of selections) {
         const pdfPage = pages[sel.page - 1];
         if (!pdfPage) continue;
-        const { height: pageHeight } = pdfPage.getSize();
-        const pdfX = sel.x / scale;
-        const pdfY = pageHeight - (sel.y + sel.h) / scale;
-        const pdfW = sel.w / scale;
-        const pdfH = sel.h / scale;
+        const { height: pageHeight, width: pageWidth } = pdfPage.getSize();
+
+        const currentScale = scale || 1;
+        const pdfX = sel.x / currentScale;
+        const pdfY = pageHeight - (sel.y + sel.h) / currentScale;
+        const pdfW = sel.w / currentScale;
+        const pdfH = sel.h / currentScale;
 
         pdfPage.drawRectangle({
-          x: pdfX,
-          y: pdfY,
-          width: pdfW,
-          height: pdfH,
-          color: hexToPdfColor(sel.color, rgb),
+          x: Math.max(0, pdfX),
+          y: Math.max(0, pdfY),
+          width: Math.min(pageWidth, pdfW),
+          height: Math.min(pageHeight, pdfH),
+          color: hexToPdfColor(sel.color || "#000000", rgb),
           opacity: 1,
         });
       }
 
-      redactedBytes = await pdfDoc.save();
+      const u8 = await pdfDoc.save();
+      redactedBytes = u8;
+      redactedDataUrl = uint8ArrayToDataUrl(u8, "application/pdf");
     } else {
       // Non-PDF native redactions
-      redactedBytes = await applyNativeRedactions(pdfBytes, fileType, selections);
+      const u8 = await applyNativeRedactions(fileBuffer, fileType, selections);
+      redactedBytes = u8;
+      const ext = doc.file_path ? doc.file_path.split(".").pop().toLowerCase() : "txt";
+      let mime = "application/octet-stream";
+      if (ext === "txt") mime = "text/plain";
+      if (ext === "png") mime = "image/png";
+      if (ext === "jpg" || ext === "jpeg") mime = "image/jpeg";
+      redactedDataUrl = uint8ArrayToDataUrl(u8, mime);
     }
 
-    // Default to application/octet-stream, then infer by extension
-    const ext = doc.file_path ? doc.file_path.split(".").pop().toLowerCase() : "pdf";
-    let contentType = "application/pdf";
-    if (ext === "txt") contentType = "text/plain";
-    if (ext === "docx") contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-    if (ext === "xlsx") contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-    if (ext === "pptx") contentType = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+    // 3. Update Existing Document in localStorage
+    try {
+      const storedDocsRaw = localStorage.getItem("vdr_mock_documents");
+      let allDocs = storedDocsRaw ? JSON.parse(storedDocsRaw) : [];
+      const targetIdx = allDocs.findIndex(d => d.id === doc.id);
+      if (targetIdx !== -1) {
+        allDocs[targetIdx] = {
+          ...allDocs[targetIdx],
+          dataUrl: redactedDataUrl,
+          is_redacted: true,
+          updated_at: new Date().toISOString()
+        };
+        localStorage.setItem("vdr_mock_documents", JSON.stringify(allDocs));
+      }
 
-    // 3. Upload back to original-files (overwrite)
-    const { error: uploadError } = await supabase.storage
-      .from("original-files")
-      .upload(
-        storagePath,
-        new Blob([redactedBytes], { type: contentType }),
-        { upsert: true, contentType: contentType }
-      );
-    if (uploadError) throw uploadError;
+      // Also record in vdr_mock_redacted_documents
+      const storedRedactedRaw = localStorage.getItem("vdr_mock_redacted_documents");
+      let allRedacted = storedRedactedRaw ? JSON.parse(storedRedactedRaw) : [];
+      allRedacted.unshift({
+        id: `rd-${Date.now()}`,
+        document_id: doc.id,
+        name: doc.name,
+        created_at: new Date().toISOString(),
+        metadata: { size: redactedBytes.length },
+        dataUrl: redactedDataUrl
+      });
+      localStorage.setItem("vdr_mock_redacted_documents", JSON.stringify(allRedacted));
+    } catch (e) {
+      console.warn("Failed to persist to localStorage:", e);
+    }
 
-    // 4. Persist selections to DB
-    await supabase
-      .from("document_text_redactions")
-      .delete()
-      .eq("document_id", docId);
+    // 4. Update doc in component state so viewer immediately reflects changes
+    setDoc(prev => ({ ...prev, dataUrl: redactedDataUrl, is_redacted: true }));
 
-    if (selections.length > 0) {
-      const rows = selections.map((s) => ({
-        document_id: docId,
-        page_number: s.page,
-        selected_text: s.text || null,
-        x: s.x,
-        y: s.y,
-        width: s.w,
-        height: s.h,
-        created_by: session.id,
-      }));
-      await supabase.from("document_text_redactions").insert(rows);
+    // 5. Try Supabase storage if available
+    try {
+      const ext = doc.file_path ? doc.file_path.split(".").pop().toLowerCase() : "pdf";
+      let contentType = "application/pdf";
+      if (ext === "txt") contentType = "text/plain";
+      if (ext === "docx") contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+      if (ext === "xlsx") contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+      if (ext === "pptx") contentType = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+
+      let storagePath = doc.original_file_path || doc.file_path || doc.name;
+      await supabase.storage
+        .from("original-files")
+        .upload(
+          storagePath,
+          new Blob([redactedBytes], { type: contentType }),
+          { upsert: true, contentType: contentType }
+        );
+    } catch (e) {
+      // Ignored for mock mode
     }
   };
 
@@ -818,7 +913,7 @@ function DocumentViewerContent() {
   return (
     <div className="flex flex-col items-center w-full h-full bg-[#FAFBFD] overflow-y-auto">
 
-      
+
       <div
         style={{
           width: "100%",
@@ -841,8 +936,8 @@ function DocumentViewerContent() {
           const searchDisabled = fileType === "image";
           const pageLabel =
             (fileType === "xls" || fileType === "xlsx" || fileType === "csv") ? "Sheet" :
-            fileType === "pptx" || fileType === "ppt" ? "Slide" :
-            "Page";
+              fileType === "pptx" || fileType === "ppt" ? "Slide" :
+                "Page";
 
           const selectionDisabled = fileType === "image" || fileType === "unknown";
 
@@ -898,7 +993,7 @@ function DocumentViewerContent() {
                 <FaMousePointer size={13} />
                 <span style={{ fontSize: "11px", marginLeft: "4px" }}>Selection</span>
               </button>
-              
+
               {/* Color Picker */}
               <div style={{ position: "relative", display: "inline-block", marginLeft: "4px" }}>
                 <input
@@ -1523,10 +1618,10 @@ function DocumentViewerContent() {
                   background: saveSuccess
                     ? "#16a34a"
                     : !saveMode || isSaving
-                    ? "#94a3b8"
-                    : saveMode === "overwrite"
-                    ? "#dc2626"
-                    : "var(--brand)",
+                      ? "#94a3b8"
+                      : saveMode === "overwrite"
+                        ? "#dc2626"
+                        : "var(--brand)",
                   color: "#fff",
                   fontWeight: 600,
                   fontSize: "13px",

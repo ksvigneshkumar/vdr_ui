@@ -189,9 +189,8 @@ export default function SelectionOverlay({
                   }}
                 >
                   {s.redactionTarget.type === "excel"
-                    ? `REDACTED: ${
-                        s.redactionTarget.cells?.map((c) => c.address).join(", ") || "—"
-                      }`
+                    ? `REDACTED: ${s.redactionTarget.cells?.map((c) => c.address).join(", ") || "—"
+                    }`
                     : "████████"}
                 </span>
               </div>

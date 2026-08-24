@@ -19,7 +19,6 @@ export default function RedactedFilesPage() {
 
     const fetchFiles = async () => {
       setLoading(true);
-      // Dummy data matching the required screenshot
       const dummyRedactedFiles = [
         { id: "rd-1", name: "Financial_Report_Q3_Redacted.pdf", created_at: "2026-08-01T10:00:00.000Z", metadata: { size: 1400000 } },
         { id: "rd-2", name: "Employee_Contracts_Redacted.pdf", created_at: "2026-08-05T10:00:00.000Z", metadata: { size: 450000 } },
@@ -29,10 +28,18 @@ export default function RedactedFilesPage() {
         { id: "rd-6", name: "Customer_Data_Export.pdf", created_at: "2026-08-14T10:00:00.000Z", metadata: { size: 3100000 } }
       ];
       
-      setTimeout(() => {
+      try {
+        const stored = localStorage.getItem('vdr_mock_redacted_documents');
+        if (stored) {
+          const userFiles = JSON.parse(stored);
+          setFiles([...userFiles, ...dummyRedactedFiles]);
+        } else {
+          setFiles(dummyRedactedFiles);
+        }
+      } catch (e) {
         setFiles(dummyRedactedFiles);
-        setLoading(false);
-      }, 300);
+      }
+      setLoading(false);
     };
 
     fetchFiles();
@@ -40,25 +47,22 @@ export default function RedactedFilesPage() {
 
   const handleView = async (file) => {
     try {
-      const path = `users/${session.id}/${file.name}`;
-      const ext = file.name.split('.').pop().toLowerCase();
-      
-      if (ext !== 'pdf') {
-        const { data: rd } = await supabase
-          .from('redacted_documents')
-          .select('document_id')
-          .eq('redacted_path', path)
-          .maybeSingle();
-          
-        if (rd?.document_id) {
-          window.open(`/redaction/view?id=${rd.document_id}`, "_blank");
-          return;
-        }
+      if (file.document_id) {
+        window.open(`/redaction/documents/viewer?id=${file.document_id}`, "_blank");
+        return;
+      }
+      if (file.dataUrl) {
+        window.open(file.dataUrl, '_blank');
+        return;
       }
 
+      const path = `users/${session?.id || 'mock'}/${file.name}`;
       const { data, error } = await supabase.storage.from('redacted-files').createSignedUrl(path, 3600);
-      if (error) throw error;
-      window.open(data.signedUrl, '_blank');
+      if (!error && data?.signedUrl) {
+        window.open(data.signedUrl, '_blank');
+      } else {
+        window.open(`/redaction/documents/viewer?id=${file.id}`, "_blank");
+      }
     } catch (err) {
       await showAlert("Failed to open document: " + err.message, "Error");
     }
