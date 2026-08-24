@@ -159,14 +159,14 @@ function ViewOnlyContent() {
   return (
     <div className="fixed inset-0 z-[100] bg-[#FAFBFD] flex flex-col overflow-hidden">
       {/* Header */}
-      <div className="w-full bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between shadow-sm flex-shrink-0">
-        <h1 className="text-lg font-bold text-slate-800 truncate" title={doc?.name}>
+      <div className="w-full bg-white border-b border-slate-200 px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between shadow-2xs flex-shrink-0 gap-2">
+        <h1 className="text-base sm:text-lg font-bold text-slate-800 truncate" title={doc?.name}>
           <FaFileAlt className="inline mr-2 text-slate-400" />
-          {doc?.name} <span className="ml-3 text-[11px] text-slate-500 font-bold uppercase px-2 py-1 bg-slate-100 rounded-md border border-slate-200">Read Only View</span>
+          {doc?.name} <span className="ml-2 text-[10px] sm:text-[11px] text-slate-500 font-bold uppercase px-2 py-0.5 bg-slate-100 rounded-md border border-slate-200 whitespace-nowrap">Read Only</span>
         </h1>
         <button 
           onClick={() => window.close()} 
-          className="text-sm font-semibold text-slate-500 hover:text-slate-800 transition-colors"
+          className="text-xs sm:text-sm font-semibold text-slate-500 hover:text-slate-800 transition-colors shrink-0 px-2 py-1"
         >
           Close Tab
         </button>
@@ -174,11 +174,11 @@ function ViewOnlyContent() {
 
       {/* Toolbar (Pagination) */}
       {isMultiPage && (fileType === "xls" || fileType === "xlsx" || fileType === "csv" || fileType === "ppt" || fileType === "pptx") && (
-        <div className="w-full bg-white border-b border-slate-200 px-6 py-2 flex items-center justify-center gap-4 shadow-sm flex-shrink-0">
+        <div className="w-full bg-white border-b border-slate-200 px-4 sm:px-6 py-2 flex items-center justify-center gap-4 shadow-2xs flex-shrink-0">
           <button
             onClick={() => goToPage(currentPage - 1)}
             disabled={currentPage <= 1}
-            className="p-1.5 rounded-lg border border-slate-300 text-slate-600 disabled:opacity-30 hover:bg-slate-100 transition-colors"
+            className="p-1.5 rounded-xl border border-slate-300 text-slate-600 disabled:opacity-30 hover:bg-slate-100 transition-colors"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
           </button>
@@ -188,7 +188,7 @@ function ViewOnlyContent() {
           <button
             onClick={() => goToPage(currentPage + 1)}
             disabled={currentPage >= numPages}
-            className="p-1.5 rounded-lg border border-slate-300 text-slate-600 disabled:opacity-30 hover:bg-slate-100 transition-colors"
+            className="p-1.5 rounded-xl border border-slate-300 text-slate-600 disabled:opacity-30 hover:bg-slate-100 transition-colors"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
           </button>
@@ -196,8 +196,8 @@ function ViewOnlyContent() {
       )}
 
       {/* Content */}
-      <div className="flex-1 w-full overflow-auto flex items-start justify-center p-6 bg-slate-50">
-        <div className="w-full max-w-5xl bg-white border border-slate-200 rounded-xl shadow-sm min-h-[500px] flex overflow-hidden">
+      <div className="flex-1 w-full overflow-auto flex items-start justify-center p-2 sm:p-6 bg-slate-50">
+        <div className="w-full max-w-5xl bg-white border border-slate-200 rounded-2xl shadow-2xs min-h-[500px] flex overflow-hidden">
           
           {fileType === "word" && fileUrl && (
             <div className="w-full relative">

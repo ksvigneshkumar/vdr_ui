@@ -394,38 +394,40 @@ const handleSaveConfig = async () => {
   return (
     <div className="relative flex w-full h-full bg-[#FAFBFD] overflow-hidden">
       {/* Main Content Area */}
-      <div className={`flex-1 flex flex-col p-6 transition-all duration-300 ${isDrawerOpen ? 'mr-96' : ''} overflow-y-auto`}>
-        <h1 className="text-2xl font-bold text-slate-800 mb-6">Predefined Documents</h1>
+      <div className={`flex-1 flex flex-col p-4 sm:p-6 lg:p-8 transition-all duration-300 ${isDrawerOpen ? 'lg:mr-96' : ''} overflow-y-auto`}>
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-800 tracking-tight">Predefined Documents</h1>
+        </div>
         
         {loading ? (
           <div className="flex items-center justify-center h-48">
-            <div className="w-8 h-8 border-4 border-slate-200 border-t-brand rounded-full animate-spin" />
+            <div className="w-8 h-8 border-4 border-slate-200 border-t-[var(--brand)] rounded-full animate-spin" />
           </div>
         ) : documents.length === 0 ? (
-          <div className="text-center text-slate-500 py-10">
+          <div className="text-center text-slate-500 py-10 bg-white rounded-2xl border border-slate-200 shadow-2xs">
             No documents found.
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             {documents.map((doc) => (
               <div 
                 key={doc.id} 
                 onClick={() => openConfigDrawer(doc)}
-                className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col hover:border-brand hover:shadow-md transition-all cursor-pointer group"
+                className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-2xs flex flex-col hover:border-[var(--brand)] hover:shadow-md transition-all cursor-pointer group"
               >
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-lg bg-brand-soft text-brand flex items-center justify-center flex-shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-[var(--brand)]/10 text-[var(--brand)] flex items-center justify-center flex-shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
                   </div>
                   <div className="overflow-hidden flex-1">
                     <h3 className="font-semibold text-slate-800 text-sm leading-snug break-words" title={doc.name}>{doc.name}</h3>
-                    <p className="text-xs text-slate-500 truncate">
+                    <p className="text-xs text-slate-500 truncate mt-0.5">
                       {new Date(doc.created_at).toLocaleDateString()}
                     </p>
                   </div>
                 </div>
-                <div className="mt-auto pt-3 border-t border-slate-100 flex justify-between items-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <span className="text-xs font-bold text-brand flex items-center gap-1">Configure Redaction &rarr;</span>
+                <div className="mt-auto pt-3 border-t border-slate-100 flex justify-between items-center opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+                  <span className="text-xs font-bold text-[var(--brand)] flex items-center gap-1">Configure Redaction &rarr;</span>
                 </div>
               </div>
             ))}
@@ -435,65 +437,65 @@ const handleSaveConfig = async () => {
 
       {/* Slide-over Config Drawer */}
       <div 
-        className={`fixed inset-y-0 right-0 w-96 bg-white border-l border-slate-200 shadow-md transform transition-transform duration-300 ease-in-out z-50 flex flex-col ${
+        className={`fixed inset-y-0 right-0 w-full sm:w-96 bg-white border-l border-slate-200 shadow-2xl transform transition-transform duration-300 ease-in-out z-50 flex flex-col ${
           isDrawerOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
         {selectedDoc && (
           <>
             {/* Drawer Header */}
-            <div className="px-6 py-5 border-b border-slate-200 flex justify-between items-center bg-slate-50">
-              <div>
-                <h2 className="text-lg font-bold text-slate-800">Redaction Setup</h2>
-                <p className="text-xs text-slate-500 truncate w-64" title={selectedDoc.name}>{selectedDoc.name}</p>
+            <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-slate-200 flex justify-between items-center bg-slate-50 shrink-0">
+              <div className="min-w-0 pr-2">
+                <h2 className="text-base sm:text-lg font-bold text-slate-800">Redaction Setup</h2>
+                <p className="text-xs text-slate-500 truncate w-56 sm:w-64" title={selectedDoc.name}>{selectedDoc.name}</p>
               </div>
               <button 
                 onClick={closeConfigDrawer}
-                className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-200 rounded-full transition-colors"
+                className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-200 rounded-full transition-colors shrink-0"
               >
                 <FaTimes />
               </button>
             </div>
 
             {/* Drawer Body */}
-            <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-8">
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6 flex flex-col gap-6">
               
               {/* Document Preview Trigger */}
               <div className="flex flex-col gap-3">
                 <button
                   onClick={openPreview}
-                  className="w-full h-32 bg-slate-100 rounded-xl border-2 border-dashed border-slate-300 flex flex-col items-center justify-center text-slate-400 hover:border-brand hover:text-brand hover:bg-brand-soft/40 transition-colors group"
+                  className="w-full h-28 sm:h-32 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-300 flex flex-col items-center justify-center text-slate-500 hover:border-[var(--brand)] hover:text-[var(--brand)] hover:bg-[var(--brand)]/5 transition-colors group p-3"
                 >
-                  <FaEye className="w-6 h-6 mb-1 text-slate-300 group-hover:text-brand transition-colors" />
-                  <span className="text-sm font-bold">Preview Document</span>
-                  <span className="text-xs text-slate-400 mt-1">See redaction rules applied live</span>
+                  <FaEye className="w-5 h-5 sm:w-6 sm:h-6 mb-1 text-slate-400 group-hover:text-[var(--brand)] transition-colors" />
+                  <span className="text-xs sm:text-sm font-bold">Preview Document</span>
+                  <span className="text-[11px] text-slate-400 mt-0.5">See redaction rules applied live</span>
                 </button>
                 
                 <Link
                   href={`/redaction/documents/viewer?id=${selectedDoc.id}`}
-                  className="w-full h-16 bg-slate-100 rounded-xl border-2 border-slate-300 flex items-center justify-center text-slate-600 hover:border-brand hover:text-brand hover:bg-brand-soft/40 transition-colors group gap-2"
+                  className="w-full h-14 sm:h-16 bg-slate-50 rounded-2xl border-2 border-slate-200 flex items-center justify-center text-slate-700 hover:border-[var(--brand)] hover:text-[var(--brand)] hover:bg-[var(--brand)]/5 transition-colors group gap-2 px-3"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400 group-hover:text-brand transition-colors"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-                  <span className="text-sm font-bold">Advanced Redaction Tool</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400 group-hover:text-[var(--brand)] transition-colors"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                  <span className="text-xs sm:text-sm font-bold">Advanced Redaction Tool</span>
                 </Link>
               </div>
 
               {/* Mode Toggle */}
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-3">Visibility Mode</label>
-                <div className="flex bg-slate-100 p-1 rounded-lg">
+                <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-2">Visibility Mode</label>
+                <div className="flex bg-slate-100 p-1 rounded-xl">
                   <button
                     onClick={() => setVisibilityMode('show')}
-                    className={`flex-1 py-2 text-sm font-bold rounded-md transition-all ${
-                      visibilityMode === 'show' ? 'bg-white text-brand shadow-sm' : 'text-slate-500 hover:text-slate-700'
+                    className={`flex-1 py-2 text-xs sm:text-sm font-bold rounded-lg transition-all ${
+                      visibilityMode === 'show' ? 'bg-white text-[var(--brand)] shadow-xs' : 'text-slate-500 hover:text-slate-700'
                     }`}
                   >
                     Show Specific Pages
                   </button>
                   <button
                     onClick={() => setVisibilityMode('hide')}
-                    className={`flex-1 py-2 text-sm font-bold rounded-md transition-all ${
-                      visibilityMode === 'hide' ? 'bg-white text-rose-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+                    className={`flex-1 py-2 text-xs sm:text-sm font-bold rounded-lg transition-all ${
+                      visibilityMode === 'hide' ? 'bg-white text-rose-600 shadow-xs' : 'text-slate-500 hover:text-slate-700'
                     }`}
                   >
                     Hide Specific Pages
@@ -508,28 +510,28 @@ const handleSaveConfig = async () => {
 
               {/* Smart Page Selection */}
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-3">Page Selection</label>
+                <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-2">Page Selection</label>
                 
                 {/* Tag Container */}
-                <div className="flex flex-wrap gap-2 mb-3">
+                <div className="flex flex-wrap gap-1.5 mb-3">
                   {pageRanges.map((range) => (
                     <div 
                       key={range} 
-                      className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold ${
-                        visibilityMode === 'show' ? 'bg-brand-50 text-brand-dark' : 'bg-rose-100 text-rose-700'
+                      className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${
+                        visibilityMode === 'show' ? 'bg-[var(--brand)]/10 text-[var(--brand)]' : 'bg-rose-100 text-rose-700'
                       }`}
                     >
-                      Pages {range}
+                      <span>Pages {range}</span>
                       <button 
                         onClick={() => removeRange(range)}
-                        className={`hover:opacity-70 ${visibilityMode === 'show' ? 'text-brand' : 'text-rose-500'}`}
+                        className={`hover:opacity-70 cursor-pointer ${visibilityMode === 'show' ? 'text-[var(--brand)]' : 'text-rose-500'}`}
                       >
-                        <FaTimes className="w-3 h-3" />
+                        <FaTimes className="w-2.5 h-2.5" />
                       </button>
                     </div>
                   ))}
                   {pageRanges.length === 0 && (
-                    <span className="text-sm text-slate-400 italic">No pages specified yet.</span>
+                    <span className="text-xs text-slate-400 italic">No pages specified yet.</span>
                   )}
                 </div>
 
@@ -541,10 +543,10 @@ const handleSaveConfig = async () => {
                     onChange={(e) => setInputValue(e.target.value)}
                     onKeyDown={handleAddRange}
                     placeholder="e.g. 1-3 or 5 (Press Enter)"
-                    className="w-full px-4 py-2.5 text-sm bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all"
+                    className="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--brand)] focus:border-transparent transition-all pr-24"
                   />
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 font-medium">
-                    Press Enter â†µ
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-slate-400 font-medium pointer-events-none">
+                    Press Enter ↵
                   </div>
                 </div>
               </div>
@@ -552,12 +554,12 @@ const handleSaveConfig = async () => {
             </div>
 
             {/* Drawer Footer */}
-            <div className="p-6 border-t border-slate-200 bg-white">
+            <div className="p-4 sm:p-6 border-t border-slate-200 bg-white shrink-0">
               <button 
                 onClick={handleSaveConfig}
                 disabled={isSaving || saveSuccess}
-                className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-white transition-all ${
-                  saveSuccess ? 'bg-green-500' : 'bg-brand hover:bg-brand-dark shadow-sm shadow-[var(--brand)]/20'
+                className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-xs sm:text-sm text-white transition-all cursor-pointer ${
+                  saveSuccess ? 'bg-emerald-600' : 'bg-[var(--brand)] hover:opacity-90 shadow-xs'
                 }`}
               >
                 {isSaving ? (
@@ -575,50 +577,50 @@ const handleSaveConfig = async () => {
         )}
       </div>
       
-      {/* Drawer Overlay (mobile only or to click outside to close) */}
+      {/* Drawer Overlay */}
       {isDrawerOpen && (
         <div 
-          className="fixed inset-0 bg-brand/20 z-40 lg:hidden"
+          className="fixed inset-0 bg-black/40 backdrop-blur-2xs z-40 lg:hidden"
           onClick={closeConfigDrawer}
         />
       )}
 
       {/* Preview Modal */}
       {isPreviewOpen && selectedDoc && (
-        <div className="fixed inset-0 bg-black/60 z-[60] flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg shadow-md w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-2xs z-[60] flex items-center justify-center p-2.5 sm:p-4 overflow-y-auto">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[92vh] flex flex-col overflow-hidden border border-slate-200 my-auto animate-in zoom-in-95">
             {/* Modal Header */}
-            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
-              <div className="overflow-hidden">
-                <h3 className="text-base font-bold text-slate-800 truncate" title={selectedDoc.name}>
+            <div className="px-4 sm:px-6 py-3.5 sm:py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50 shrink-0">
+              <div className="overflow-hidden min-w-0 pr-2">
+                <h3 className="text-sm sm:text-base font-bold text-slate-800 truncate" title={selectedDoc.name}>
                   {selectedDoc.name}
                 </h3>
-                <p className="text-xs text-slate-500">Live preview with redaction rules applied</p>
+                <p className="text-[11px] sm:text-xs text-slate-500">Live preview with redaction rules applied</p>
               </div>
               <button
                 onClick={closePreview}
-                className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-200 rounded-full transition-colors flex-shrink-0"
+                className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-200 rounded-full transition-colors shrink-0"
               >
                 <FaTimes />
               </button>
             </div>
 
             {/* Modal Body */}
-            <div className="flex-1 overflow-auto p-6 flex items-center justify-center bg-slate-100 relative min-h-[400px]">
+            <div className="flex-1 overflow-auto p-3 sm:p-6 flex items-center justify-center bg-slate-100 relative min-h-[280px] sm:min-h-[400px]">
               {previewLoading ? (
                 <div className="flex flex-col items-center gap-3 text-slate-400">
-                  <FaSpinner className="w-6 h-6 animate-spin" />
-                  <span className="text-sm font-medium">Loading documentâ€¦</span>
+                  <FaSpinner className="w-6 h-6 animate-spin text-[var(--brand)]" />
+                  <span className="text-xs sm:text-sm font-medium">Loading document…</span>
                 </div>
               ) : previewError ? (
                 <div className="flex flex-col items-center gap-2 text-rose-500 text-center px-6">
                   <FaLock className="w-8 h-8" />
-                  <span className="text-sm font-semibold">{previewError}</span>
+                  <span className="text-xs sm:text-sm font-semibold">{previewError}</span>
                 </div>
               ) : currentPageRedacted ? (
-                <div className="flex flex-col items-center justify-center gap-3 py-20 text-slate-400">
+                <div className="flex flex-col items-center justify-center gap-3 py-16 text-slate-400">
                   <FaLock className="w-10 h-10" />
-                  <span className="text-base font-semibold text-slate-500">
+                  <span className="text-sm sm:text-base font-semibold text-slate-500">
                     This page is redacted
                   </span>
                 </div>
@@ -626,33 +628,33 @@ const handleSaveConfig = async () => {
                 <>
                   {pageRendering && (
                     <div className="absolute inset-0 flex items-center justify-center bg-slate-100/70">
-                      <FaSpinner className="w-5 h-5 text-brand animate-spin" />
+                      <FaSpinner className="w-5 h-5 text-[var(--brand)] animate-spin" />
                     </div>
                   )}
-                  <canvas ref={canvasRef} className="max-w-full h-auto shadow-md bg-white" />
+                  <canvas ref={canvasRef} className="max-w-full h-auto shadow-md bg-white rounded-lg" />
                 </>
               )}
             </div>
 
             {/* Modal Footer / Pagination */}
             {!previewLoading && !previewError && (
-              <div className="px-6 py-4 border-t border-slate-200 bg-white flex items-center justify-center gap-4">
+              <div className="px-4 sm:px-6 py-3 sm:py-4 border-t border-slate-200 bg-white flex items-center justify-center gap-4 shrink-0">
                 <button
                   onClick={() => goToPage(currentPage - 1)}
                   disabled={currentPage <= 1}
-                  className="p-2 rounded-lg border border-slate-300 text-slate-600 disabled:opacity-30 hover:bg-slate-100 transition-colors"
+                  className="p-2 rounded-xl border border-slate-200 text-slate-600 disabled:opacity-30 hover:bg-slate-100 transition-colors"
                 >
-                  <FaChevronLeft />
+                  <FaChevronLeft className="w-3.5 h-3.5" />
                 </button>
-                <span className="text-sm font-medium text-slate-600">
+                <span className="text-xs sm:text-sm font-medium text-slate-600">
                   Page {currentPage} of {numPages || "?"}
                 </span>
                 <button
                   onClick={() => goToPage(currentPage + 1)}
                   disabled={currentPage >= numPages}
-                  className="p-2 rounded-lg border border-slate-300 text-slate-600 disabled:opacity-30 hover:bg-slate-100 transition-colors"
+                  className="p-2 rounded-xl border border-slate-200 text-slate-600 disabled:opacity-30 hover:bg-slate-100 transition-colors"
                 >
-                  <FaChevronRight />
+                  <FaChevronRight className="w-3.5 h-3.5" />
                 </button>
               </div>
             )}
