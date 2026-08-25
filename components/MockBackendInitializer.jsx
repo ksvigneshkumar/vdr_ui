@@ -1,6 +1,21 @@
 "use client";
 import { useEffect } from "react";
 
+const normalizeOrgPlan = (rawPlan) => {
+  if (!rawPlan) return "Starter Plan";
+  const p = String(rawPlan).trim().toLowerCase();
+  if (p === "standard plan" || p === "standard" || p === "basic" || p === "free tier" || p === "free" || p === "starter" || p === "starter plan") {
+    return "Starter Plan";
+  }
+  if (p === "pro plan" || p === "pro" || p === "professional" || p === "professional plan" || p === "pro tier") {
+    return "Professional Plan";
+  }
+  if (p === "enterprise" || p === "enterprise plan" || p === "enterprise tier") {
+    return "Enterprise Plan";
+  }
+  return rawPlan.includes("Plan") ? rawPlan : `${rawPlan} Plan`;
+};
+
 export default function MockBackendInitializer() {
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -42,23 +57,6 @@ export default function MockBackendInitializer() {
                   success: true,
                   data: userObj,
                   user: userObj
-                };
-              } else if (url.includes("/api/business-owner/overview")) {
-                mockData = {
-                  success: true,
-                  totalOrganizations: 15,
-                  activeOrgs: 12,
-                  trialOrgs: 3,
-                  totalUsers: 342,
-                  storageUsedGb: 154,
-                  storageLimitGb: 1000,
-                  storagePercentage: 15.4,
-                  activePlansCount: 3,
-                  planCounts: { "Standard": 5, "Professional": 7, "Enterprise": 3 },
-                  recentActivity: [
-                    { id: 1, action: "Tenant Created", timestamp: "2 mins ago", description: "Global Tech Inc initialized", iconType: "org" },
-                    { id: 2, action: "Plan Upgraded", timestamp: "1 hour ago", description: "Acme Corp moved to Enterprise", iconType: "plan" }
-                  ]
                 };
               } else if (url.includes("/api/workspaces")) {
                 if (typeof window !== "undefined" && !window.__mockWorkspaces) {
@@ -440,17 +438,56 @@ export default function MockBackendInitializer() {
                   templates: typeof window !== "undefined" ? (window.__mockEmailTemplates || []) : []
                 };
               } else if (url.includes("/api/business-owner/storage")) {
-                mockData = { 
-                  success: true, 
-                  storageUsedGb: 154,
-                  storageLimitGb: 500
-                };
+                if (typeof window !== "undefined") {
+                  let storedGlobalLimit = localStorage.getItem("vdr_mock_global_storage_limit");
+                  let globalLimit = storedGlobalLimit ? Number(storedGlobalLimit) : 500;
+
+                  const reqMethod = config?.method?.toUpperCase() || "GET";
+                  if (reqMethod === "POST" || reqMethod === "PUT") {
+                    const bodyStr = config?.body;
+                    let body = {};
+                    try { body = typeof bodyStr === 'string' ? JSON.parse(bodyStr) : bodyStr; } catch (e) {}
+                    if (body.globalStorageLimitGb) {
+                      globalLimit = Number(body.globalStorageLimitGb);
+                      localStorage.setItem("vdr_mock_global_storage_limit", String(globalLimit));
+                    }
+                  }
+
+                  let orgs = window.__mockOrganizations || [];
+                  if (!orgs || orgs.length === 0) {
+                    try {
+                      const st = localStorage.getItem("vdr_mock_organizations");
+                      if (st) orgs = JSON.parse(st);
+                    } catch(e){}
+                  }
+                  const totalUsed = (orgs || []).reduce((sum, o) => sum + (Number(o.storageUsedGb) || 0), 0);
+
+                  mockData = { 
+                    success: true, 
+                    storageUsedGb: totalUsed > 0 ? totalUsed : 154,
+                    storageLimitGb: globalLimit
+                  };
+                } else {
+                  mockData = { 
+                    success: true, 
+                    storageUsedGb: 154,
+                    storageLimitGb: 500
+                  };
+                }
               } else if (url.includes("/api/business-owner/organizations")) {
                 if (typeof window !== "undefined") {
                   let stored = null;
                   try { stored = localStorage.getItem("vdr_mock_organizations"); } catch(e){}
                   if (stored) {
-                    try { window.__mockOrganizations = JSON.parse(stored); } catch(e){}
+                    try { 
+                      let parsed = JSON.parse(stored);
+                      parsed = parsed.map(o => ({
+                        ...o,
+                        plan: normalizeOrgPlan(o.plan)
+                      }));
+                      window.__mockOrganizations = parsed;
+                      try { localStorage.setItem("vdr_mock_organizations", JSON.stringify(parsed)); } catch(e){}
+                    } catch(e){}
                   }
                   if (!window.__mockOrganizations || window.__mockOrganizations.length === 0) {
                     window.__mockOrganizations = [
@@ -465,7 +502,8 @@ export default function MockBackendInitializer() {
                         status: "active",
                         created_at: "2026-08-10T10:00:00.000Z",
                         storageUsedGb: 45,
-                        storageLimitGb: 100
+                        storageLimitGb: 100,
+                        storageLimitMb: 102400
                       },
                       {
                         id: "org-2",
@@ -474,11 +512,12 @@ export default function MockBackendInitializer() {
                         adminEmail: "jane@globaltech.io",
                         usersCount: 3,
                         usersLimit: 5,
-                        plan: "Standard Plan",
+                        plan: "Starter Plan",
                         status: "trial",
                         created_at: "2026-08-12T14:30:00.000Z",
                         storageUsedGb: 8,
-                        storageLimitGb: 50
+                        storageLimitGb: 50,
+                        storageLimitMb: 51200
                       },
                       {
                         id: "org-3",
@@ -491,7 +530,8 @@ export default function MockBackendInitializer() {
                         status: "active",
                         created_at: "2026-08-17T09:15:00.000Z",
                         storageUsedGb: 101,
-                        storageLimitGb: 350
+                        storageLimitGb: 350,
+                        storageLimitMb: 358400
                       }
                     ];
                     try { localStorage.setItem("vdr_mock_organizations", JSON.stringify(window.__mockOrganizations)); } catch(e){}
@@ -503,6 +543,13 @@ export default function MockBackendInitializer() {
                   const reqMethod = config?.method?.toUpperCase() || "GET";
 
                   if (reqMethod === "POST") {
+                    const storageGb = body.storageLimitGb !== undefined
+                      ? Number(body.storageLimitGb)
+                      : (body.storageLimitMb !== undefined ? Math.round(Number(body.storageLimitMb) / 1024) : 50);
+                    const storageMb = body.storageLimitMb !== undefined
+                      ? Number(body.storageLimitMb)
+                      : storageGb * 1024;
+
                     const newOrg = {
                       id: "org-" + Date.now(),
                       name: body.name || "New Org",
@@ -514,15 +561,30 @@ export default function MockBackendInitializer() {
                       status: body.status || "trial",
                       created_at: new Date().toISOString(),
                       storageUsedGb: body.storageUsedGb || 0,
-                      storageLimitGb: body.storageLimitGb || 50
+                      storageLimitGb: storageGb,
+                      storageLimitMb: storageMb
                     };
                     window.__mockOrganizations.push(newOrg);
                     try { localStorage.setItem("vdr_mock_organizations", JSON.stringify(window.__mockOrganizations)); } catch(e){}
                   } else if (reqMethod === "PUT") {
-                    const orgId = body.id;
+                    const orgId = body.id || body.orgId;
                     const index = window.__mockOrganizations.findIndex(o => o.id === orgId);
                     if (index !== -1) {
-                      window.__mockOrganizations[index] = { ...window.__mockOrganizations[index], ...body };
+                      const currentOrg = window.__mockOrganizations[index];
+                      const updatedLimitGb = body.storageLimitGb !== undefined
+                        ? Number(body.storageLimitGb)
+                        : (body.storageLimitMb !== undefined ? Math.round(Number(body.storageLimitMb) / 1024) : currentOrg.storageLimitGb || 50);
+                      const updatedLimitMb = body.storageLimitMb !== undefined
+                        ? Number(body.storageLimitMb)
+                        : updatedLimitGb * 1024;
+
+                      window.__mockOrganizations[index] = {
+                        ...currentOrg,
+                        ...body,
+                        id: orgId,
+                        storageLimitGb: updatedLimitGb,
+                        storageLimitMb: updatedLimitMb,
+                      };
                       try { localStorage.setItem("vdr_mock_organizations", JSON.stringify(window.__mockOrganizations)); } catch(e){}
                     }
                   } else if (reqMethod === "DELETE") {
@@ -544,7 +606,15 @@ export default function MockBackendInitializer() {
                   let stored = null;
                   try { stored = localStorage.getItem("vdr_mock_organizations"); } catch(e){}
                   if (stored) {
-                    try { window.__mockOrganizations = JSON.parse(stored); } catch(e){}
+                    try { 
+                      let parsed = JSON.parse(stored);
+                      parsed = parsed.map(o => ({
+                        ...o,
+                        plan: normalizeOrgPlan(o.plan)
+                      }));
+                      window.__mockOrganizations = parsed;
+                      try { localStorage.setItem("vdr_mock_organizations", JSON.stringify(parsed)); } catch(e){}
+                    } catch(e){}
                   }
                   
                   if (!window.__mockOrganizations || window.__mockOrganizations.length === 0) {
@@ -560,7 +630,8 @@ export default function MockBackendInitializer() {
                         status: "active",
                         created_at: "2026-08-10T10:00:00.000Z",
                         storageUsedGb: 45,
-                        storageLimitGb: 100
+                        storageLimitGb: 100,
+                        storageLimitMb: 102400
                       },
                       {
                         id: "org-2",
@@ -569,11 +640,12 @@ export default function MockBackendInitializer() {
                         adminEmail: "jane@globaltech.io",
                         usersCount: 3,
                         usersLimit: 5,
-                        plan: "Standard Plan",
+                        plan: "Starter Plan",
                         status: "trial",
                         created_at: "2026-08-12T14:30:00.000Z",
                         storageUsedGb: 8,
-                        storageLimitGb: 50
+                        storageLimitGb: 50,
+                        storageLimitMb: 51200
                       },
                       {
                         id: "org-3",
@@ -586,26 +658,62 @@ export default function MockBackendInitializer() {
                         status: "active",
                         created_at: "2026-08-17T09:15:00.000Z",
                         storageUsedGb: 101,
-                        storageLimitGb: 350
+                        storageLimitGb: 350,
+                        storageLimitMb: 358400
                       }
                     ];
                     try { localStorage.setItem("vdr_mock_organizations", JSON.stringify(window.__mockOrganizations)); } catch(e){}
                   }
 
-                  const orgs = window.__mockOrganizations || [];
+                  const orgs = (window.__mockOrganizations || []).map(o => ({
+                    ...o,
+                    plan: normalizeOrgPlan(o.plan)
+                  }));
                   const activeOrgs = orgs.filter(o => o.status === 'active').length;
-                  const trialOrgs = orgs.filter(o => o.status === 'trial').length;
-                  const totalUsers = orgs.reduce((sum, o) => sum + (o.usersCount || 0), 0);
-                  const storageUsedGb = orgs.reduce((sum, o) => sum + (o.storageUsedGb || 0), 0);
-                  const storageLimitGb = orgs.reduce((sum, o) => sum + (o.storageLimitGb || 0), 0);
-                  const storagePercentage = storageLimitGb > 0 ? Math.round((storageUsedGb / storageLimitGb) * 100) : 0;
+                  const trialOrgs = orgs.filter(o => o.status === 'trial' || o.status === 'pending').length;
+                  const totalUsers = orgs.reduce((sum, o) => sum + (Number(o.usersCount) || Number(o.usersLimit) || 1), 0);
+                  const storageUsedGb = orgs.reduce((sum, o) => sum + (Number(o.storageUsedGb) || 0), 0);
                   
-                  const planCounts = orgs.reduce((acc, o) => {
-                    const planName = o.plan ? o.plan.replace(' Plan', '') : 'Unknown';
-                    acc[planName] = (acc[planName] || 0) + 1;
-                    return acc;
-                  }, {});
-                  const activePlansCount = Object.keys(planCounts).length;
+                  let storedGlobalLimit = null;
+                  try { storedGlobalLimit = localStorage.getItem("vdr_mock_global_storage_limit"); } catch(e){}
+                  const totalAllocatedTenantStorage = orgs.reduce((sum, o) => sum + (Number(o.storageLimitGb) || 0), 0);
+                  const storageLimitGb = storedGlobalLimit ? Number(storedGlobalLimit) : (totalAllocatedTenantStorage > 0 ? totalAllocatedTenantStorage : 500);
+                  const storagePercentage = storageLimitGb > 0 ? Math.min(100, Math.round((storageUsedGb / storageLimitGb) * 100)) : 0;
+                  
+                  let currentPlans = window.__mockPlans || [];
+                  if (!currentPlans || currentPlans.length === 0) {
+                    try {
+                      const sp = localStorage.getItem("vdr_mock_plans");
+                      if (sp) currentPlans = JSON.parse(sp);
+                    } catch(e){}
+                  }
+                  if (!currentPlans || currentPlans.length === 0) {
+                    currentPlans = [
+                      { id: "1", name: "Starter" },
+                      { id: "2", name: "Professional" },
+                      { id: "3", name: "Enterprise" }
+                    ];
+                  }
+
+                  const activePlansCount = 3;
+                  const activePlansList = 'Starter • Professional • Enterprise';
+
+                  const planCounts = {
+                    "Starter": 0,
+                    "Professional": 0,
+                    "Enterprise": 0
+                  };
+
+                  orgs.forEach(o => {
+                    const norm = normalizeOrgPlan(o.plan);
+                    if (norm.includes("Starter")) {
+                      planCounts["Starter"] += 1;
+                    } else if (norm.includes("Professional")) {
+                      planCounts["Professional"] += 1;
+                    } else if (norm.includes("Enterprise")) {
+                      planCounts["Enterprise"] += 1;
+                    }
+                  });
                   
                   const recentActivity = [...orgs]
                     .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
@@ -613,8 +721,8 @@ export default function MockBackendInitializer() {
                     .map(o => ({
                       id: `act-${o.id}`,
                       iconType: 'org',
-                      action: 'Organization Registered',
-                      description: `Tenant '${o.name}' provisioned with ${o.plan}.`,
+                      action: 'Organization Provisioned',
+                      description: `Tenant '${o.name}' active on ${o.plan} (${o.storageLimitGb || 50} GB allocated).`,
                       timestamp: new Date(o.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
                     }));
 
@@ -628,6 +736,7 @@ export default function MockBackendInitializer() {
                     storageLimitGb,
                     storagePercentage,
                     activePlansCount,
+                    activePlansList,
                     planCounts,
                     recentActivity
                   };
@@ -655,7 +764,8 @@ export default function MockBackendInitializer() {
                         status: "active",
                         created_at: "2026-08-10T10:00:00.000Z",
                         storageUsedGb: 45,
-                        storageLimitGb: 100
+                        storageLimitGb: 100,
+                        storageLimitMb: 102400
                       },
                       {
                         id: "org-2",
@@ -664,11 +774,12 @@ export default function MockBackendInitializer() {
                         adminEmail: "jane@globaltech.io",
                         usersCount: 3,
                         usersLimit: 5,
-                        plan: "Standard Plan",
+                        plan: "Starter Plan",
                         status: "trial",
                         created_at: "2026-08-12T14:30:00.000Z",
                         storageUsedGb: 8,
-                        storageLimitGb: 50
+                        storageLimitGb: 50,
+                        storageLimitMb: 51200
                       },
                       {
                         id: "org-3",
@@ -681,7 +792,8 @@ export default function MockBackendInitializer() {
                         status: "active",
                         created_at: "2026-08-17T09:15:00.000Z",
                         storageUsedGb: 101,
-                        storageLimitGb: 350
+                        storageLimitGb: 350,
+                        storageLimitMb: 358400
                       }
                     ];
                     try { localStorage.setItem("vdr_mock_organizations", JSON.stringify(window.__mockOrganizations)); } catch(e){}

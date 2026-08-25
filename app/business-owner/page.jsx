@@ -155,8 +155,8 @@ export default function BusinessOwnerOverviewPage() {
 
         <SummaryCard
           title="Active Plans"
-          value={data.activePlansCount}
-          subtitle="Free • Pro • Enterprise"
+          value={data.activePlansCount || 3}
+          subtitle={data.activePlansList || "Starter • Professional • Enterprise"}
           icon={FaTags}
           trend="All Tiers Live"
           trendPositive={true}
@@ -218,21 +218,22 @@ export default function BusinessOwnerOverviewPage() {
               Tenant Tiers
             </h2>
             <div className="space-y-5">
-              {Object.entries(data.planCounts || {}).map(([planName, count]) => {
+              {Object.entries(data.planCounts || { Starter: 0, Professional: 0, Enterprise: 0 }).map(([planName, count]) => {
                 const total = data.totalOrganizations || 1;
-                const pct = Math.round((count / total) * 100);
+                const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+                const cleanName = planName.replace(/ Plan| Tier/i, '');
                 return (
                   <div key={planName}>
                     <div className="flex justify-between text-xs font-semibold text-slate-500 mb-1.5 uppercase tracking-wider">
-                      <span>{planName} Plan</span>
-                      <span className="text-slate-700">
+                      <span>{cleanName} Plan</span>
+                      <span className="text-slate-700 font-bold">
                         {count} ({pct}%)
                       </span>
                     </div>
                     <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-slate-800 rounded-full transition-all duration-500"
-                        style={{ width: `${Math.max(8, pct)}%` }}
+                        className="h-full bg-[var(--brand)] rounded-full transition-all duration-500"
+                        style={{ width: `${pct}%` }}
                       />
                     </div>
                   </div>

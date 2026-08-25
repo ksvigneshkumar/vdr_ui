@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 
 import OrganizationModal from '@/components/business-owner/OrganizationModal';
 import { useDialog } from '@/components/ui/DialogProvider';
@@ -13,13 +14,21 @@ import {
   FaExclamationTriangle,
 } from 'react-icons/fa';
 
-export default function BusinessOwnerOrganizationsPage() {
+function OrganizationsPageContent() {
+  const searchParams = useSearchParams();
   const [organizations, setOrganizations] = useState([]);
   const [plans, setPlans] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [filterPlan, setFilterPlan] = useState('ALL');
   const { showConfirm } = useDialog();
+
+  useEffect(() => {
+    const q = searchParams.get('q') || searchParams.get('search') || '';
+    if (q) {
+      setSearch(q);
+    }
+  }, [searchParams]);
 
   // Modal State
   const [modalOpen, setModalOpen] = useState(false);
@@ -100,7 +109,9 @@ export default function BusinessOwnerOrganizationsPage() {
     const matchesSearch =
       o.name.toLowerCase().includes(search.toLowerCase()) ||
       o.adminEmail.toLowerCase().includes(search.toLowerCase());
-    const matchesPlan = filterPlan === 'ALL' || o.plan === filterPlan;
+    const matchesPlan =
+      filterPlan === 'ALL' ||
+      (o.plan && o.plan.toLowerCase().includes(filterPlan.toLowerCase()));
     return matchesSearch && matchesPlan;
   });
 
@@ -172,9 +183,14 @@ export default function BusinessOwnerOrganizationsPage() {
             className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm font-semibold text-slate-700 focus:outline-none focus:border-[var(--brand)]"
           >
             <option value="ALL">All Plans</option>
-            <option value="Free">Free Tier</option>
-            <option value="Pro">Pro Tier</option>
-            <option value="Enterprise">Enterprise</option>
+            {plans.map((p) => {
+              const displayName = p.name.includes('Plan') ? p.name : `${p.name} Plan`;
+              return (
+                <option key={p.id} value={p.name}>
+                  {displayName}
+                </option>
+              );
+            })}
           </select>
         </div>
       </div>
@@ -271,5 +287,13 @@ export default function BusinessOwnerOrganizationsPage() {
         plans={plans}
       />
     </div>
+  );
+}
+
+export default function BusinessOwnerOrganizationsPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center text-slate-500">Loading organizations...</div>}>
+      <OrganizationsPageContent />
+    </Suspense>
   );
 }

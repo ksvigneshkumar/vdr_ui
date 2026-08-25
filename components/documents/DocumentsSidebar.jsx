@@ -125,7 +125,7 @@ export default function DocumentsSidebar({ isOpen = true }) {
                     </div>
                     <div>
                         <span className="text-[12px] font-bold text-gray-700">Storage</span>
-                        <p className="text-[10px] font-semibold text-gray-400 mt-0.25">Standard Enterprise Plan</p>
+                        <p className="text-[10px] font-semibold text-gray-400 mt-0.25">Enterprise Plan</p>
                     </div>
                 </div>
 

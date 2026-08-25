@@ -390,15 +390,55 @@ function CompanyRegisterContent() {
   }, [step, countdown]);
 
   useEffect(() => {
-    // MOCK FOR STATIC UI DEMO
-    setTimeout(() => {
+    const fetchPlans = async () => {
+      try {
+        const res = await fetch('/api/business-owner/plans');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.plans && data.plans.length > 0) {
+            setPlans(data.plans);
+            setSelectedPlanId(data.plans[0].id);
+            setLoadingPlans(false);
+            return;
+          }
+        }
+      } catch (err) {
+        console.error("Error loading plans for registration:", err);
+      }
       setPlans([
-        { id: "1", name: "Standard Plan", price: 99, storage_limit_mb: 5120, users_limit: 5 },
-        { id: "2", name: "Professional Plan", price: 199, storage_limit_mb: 15360, users_limit: 15 },
-        { id: "3", name: "Enterprise Plan", price: 499, storage_limit_mb: 51200, users_limit: 50 }
+        { 
+          id: "1", 
+          name: "Starter", 
+          price: "₹999/month", 
+          description: "Perfect for startups and small businesses to securely share documents.",
+          storageLimitMb: 25600, 
+          maxUsers: 10,
+          features: ["Secure Document Storage", "3 Workspaces", "Role-Based Access"]
+        },
+        { 
+          id: "2", 
+          name: "Professional", 
+          price: "₹2,999/month", 
+          description: "Ideal for growing businesses managing multiple projects and teams.",
+          storageLimitMb: 204800, 
+          maxUsers: 50,
+          features: ["Everything in Starter", "20 Workspaces", "Dynamic Watermarking"]
+        },
+        { 
+          id: "3", 
+          name: "Enterprise", 
+          price: "Custom", 
+          description: "Designed for large enterprises, M&A transactions, and highly secure data rooms.",
+          storageLimitMb: 1024000, 
+          maxUsers: 185,
+          features: ["Everything in Professional", "Unlimited Workspaces"]
+        }
       ]);
+      setSelectedPlanId("1");
       setLoadingPlans(false);
-    }, 500);
+    };
+
+    fetchPlans();
   }, []);
 
   const handleSendOtp = async (e) => {
@@ -469,6 +509,14 @@ function CompanyRegisterContent() {
 
     try {
       const selectedPlan = plans.find(p => p.id === selectedPlanId);
+      const planNameFormatted = selectedPlan
+        ? (selectedPlan.name.includes("Plan") ? selectedPlan.name : `${selectedPlan.name} Plan`)
+        : "Starter Plan";
+
+      const storageMb = selectedPlan?.storageLimitMb || selectedPlan?.storage_limit_mb || 25600;
+      const storageGb = Math.round(storageMb / 1024) || 25;
+      const usersLimit = selectedPlan?.maxUsers || selectedPlan?.users_limit || 10;
+
       const res = await fetch('/api/business-owner/organizations', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -476,12 +524,12 @@ function CompanyRegisterContent() {
           name: companyName,
           adminName: adminName,
           adminEmail: adminEmail,
-          plan: selectedPlan ? (selectedPlan.name.includes("Plan") ? selectedPlan.name : selectedPlan.name + " Plan") : "Starter Plan",
+          plan: planNameFormatted,
           status: "trial",
           usersCount: 1,
-          usersLimit: selectedPlan ? selectedPlan.maxUsers || selectedPlan.users_limit : 10,
+          usersLimit: usersLimit,
           storageUsedGb: 0,
-          storageLimitGb: selectedPlan ? (selectedPlan.storageLimitMb / 1024) || (selectedPlan.storage_limit_mb / 1024) : 10
+          storageLimitGb: storageGb
         })
       });
       if (!res.ok) throw new Error("Registration failed");
@@ -814,47 +862,62 @@ function CompanyRegisterContent() {
               ) : (
                 <>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    {plans.map((plan) => (
-                      <div
-                        key={plan.id}
-                        onClick={() => setSelectedPlanId(plan.id)}
-                        className={`relative rounded-lg border transition-all duration-200 cursor-pointer overflow-hidden p-6 flex flex-col items-center text-center
-                          ${selectedPlanId === plan.id
-                            ? 'border-[var(--brand)] ring-2 ring-[var(--brand)]/20 bg-[var(--brand)]/5 shadow-sm'
-                            : 'border-slate-200 hover:border-slate-300 bg-white'}`}
-                      >
-                        {selectedPlanId === plan.id && (
-                          <div className="absolute top-4 right-4 text-[var(--brand)]">
-                            <FaCheckCircle className="text-lg" />
-                          </div>
-                        )}
-                        <h3 className={`text-lg font-bold mb-2 ${selectedPlanId === plan.id ? 'text-[var(--brand)]' : 'text-slate-900'}`}>
-                          {plan.name}
-                        </h3>
-                        <div className="w-10 h-0.5 bg-slate-200 rounded-full my-4"></div>
-                        <p className="text-3xl font-extrabold text-slate-900 mb-1">
-                          {plan.storage_limit_mb >= 1024 && plan.storage_limit_mb % 1024 === 0 ? (
-                            <>
-                              {plan.storage_limit_mb / 1024}
-                              <span className="text-sm font-semibold text-slate-500 ml-1">GB</span>
-                            </>
-                          ) : (
-                            <>
-                              {plan.storage_limit_mb}
-                              <span className="text-sm font-semibold text-slate-500 ml-1">MB</span>
-                            </>
-                          )}
-                        </p>
-                        <p className="text-xs text-slate-500 mb-6 font-medium uppercase tracking-wider">Total Storage</p>
+                    {plans.map((plan) => {
+                      const storageMb = plan.storageLimitMb || plan.storage_limit_mb || 0;
+                      const isGb = storageMb >= 1024 && storageMb % 1024 === 0;
+                      const storageDisplay = isGb ? `${storageMb / 1024} GB` : `${storageMb} MB`;
+                      const userSeats = plan.maxUsers || plan.users_limit || 10;
+                      const isSelected = selectedPlanId === plan.id;
+                      const cleanName = (plan.name || '').replace(/ Tier| Plan/i, '');
 
-                        <div className="w-full bg-slate-50 py-2.5 rounded-xl border border-slate-100 mt-auto">
-                          <p className="text-xs font-semibold text-slate-700 flex items-center justify-center gap-1.5">
-                            <FaUser className="text-slate-400" />
-                            Up to {plan.users_limit} Users
+                      return (
+                        <div
+                          key={plan.id}
+                          onClick={() => setSelectedPlanId(plan.id)}
+                          className={`relative rounded-xl border transition-all duration-200 cursor-pointer overflow-hidden p-6 flex flex-col items-center text-center group
+                            ${isSelected
+                              ? 'border-[var(--brand)] ring-2 ring-[var(--brand)]/20 bg-[var(--brand)]/5 shadow-md -translate-y-1'
+                              : 'border-slate-200 hover:border-slate-300 bg-white shadow-xs hover:-translate-y-0.5'}`}
+                        >
+                          {isSelected && (
+                            <div className="absolute top-4 right-4 text-[var(--brand)]">
+                              <FaCheckCircle className="text-lg" />
+                            </div>
+                          )}
+                          <span className="inline-block px-3 py-1 rounded-lg bg-brand-soft text-[var(--brand)] text-xs font-bold mb-2">
+                            {cleanName} Tier
+                          </span>
+                          <div className="text-2xl font-black text-slate-900 mb-1 tracking-tight">
+                            {plan.price || 'Custom'}
+                          </div>
+                          <p className="text-xs text-slate-500 mb-4 min-h-[32px] line-clamp-2 px-1">
+                            {plan.description || "Secure virtual data room capacity and team access."}
                           </p>
+
+                          <div className="w-full bg-slate-50 py-3 px-4 rounded-xl border border-slate-100 mb-4 space-y-2">
+                            <div className="flex justify-between items-center text-xs">
+                              <span className="text-slate-500 font-medium">Storage</span>
+                              <span className="text-slate-900 font-bold">{storageDisplay}</span>
+                            </div>
+                            <div className="flex justify-between items-center text-xs">
+                              <span className="text-slate-500 font-medium">User Seats</span>
+                              <span className="text-slate-900 font-bold">Up to {userSeats} Users</span>
+                            </div>
+                          </div>
+
+                          {plan.features && plan.features.length > 0 && (
+                            <div className="w-full text-left space-y-1.5 mb-2 mt-auto">
+                              {plan.features.slice(0, 3).map((feat, idx) => (
+                                <div key={idx} className="flex items-center gap-2 text-xs text-slate-600 font-medium">
+                                  <FaCheckCircle className="text-emerald-500 text-xs shrink-0" />
+                                  <span className="truncate">{feat}</span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
 
                   <div className="flex justify-center max-w-sm mx-auto">

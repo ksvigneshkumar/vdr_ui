@@ -43,7 +43,9 @@ export default function StorageLimitModal({
     setIsSubmitting(true);
     try {
       await onSave({
+        id: organization.id,
         orgId: organization.id,
+        storageLimitGb: gbVal,
         storageLimitMb: gbVal * 1024,
       });
       onClose();

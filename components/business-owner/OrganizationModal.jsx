@@ -20,9 +20,9 @@ export default function OrganizationModal({
 
   const [name, setName] = useState('');
   const [adminEmail, setAdminEmail] = useState('');
-  const [plan, setPlan] = useState('Pro');
-  const [storageLimitGb, setStorageLimitGb] = useState(50);
-  const [usersCount, setUsersCount] = useState(5);
+  const [plan, setPlan] = useState('');
+  const [storageLimitGb, setStorageLimitGb] = useState(25);
+  const [usersCount, setUsersCount] = useState(10);
   const [status, setStatus] = useState('active');
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -32,22 +32,43 @@ export default function OrganizationModal({
     if (initialData) {
       setName(initialData.name || '');
       setAdminEmail(initialData.adminEmail || '');
-      setPlan(initialData.plan || 'Pro');
+      setPlan(initialData.plan || (plans[0]?.name ? (plans[0].name.includes('Plan') ? plans[0].name : `${plans[0].name} Plan`) : 'Starter Plan'));
       setStorageLimitGb(
-        Math.round((initialData.storageLimitMb || 51200) / 1024)
+        initialData.storageLimitGb || Math.round((initialData.storageLimitMb || 25600) / 1024)
       );
-      setUsersCount(initialData.usersCount || 5);
+      setUsersCount(initialData.usersCount || initialData.usersLimit || 10);
       setStatus(initialData.status || 'active');
     } else {
       setName('');
       setAdminEmail('');
-      setPlan('Pro');
-      setStorageLimitGb(50);
-      setUsersCount(5);
+      const defaultPlanName = plans[0]?.name ? (plans[0].name.includes('Plan') ? plans[0].name : `${plans[0].name} Plan`) : 'Starter Plan';
+      setPlan(defaultPlanName);
+      const defaultStorage = plans[0]?.storageLimitMb ? Math.round(plans[0].storageLimitMb / 1024) : 25;
+      const defaultUsers = plans[0]?.maxUsers || 10;
+      setStorageLimitGb(defaultStorage);
+      setUsersCount(defaultUsers);
       setStatus('active');
     }
     setErrorMsg('');
-  }, [initialData, isOpen]);
+  }, [initialData, isOpen, plans]);
+
+  const handlePlanChange = (selectedPlanName) => {
+    setPlan(selectedPlanName);
+    const found = plans.find(
+      (p) =>
+        p.name === selectedPlanName ||
+        `${p.name} Plan` === selectedPlanName ||
+        p.name === selectedPlanName.replace(' Plan', '')
+    );
+    if (found) {
+      if (found.storageLimitMb) {
+        setStorageLimitGb(Math.round(found.storageLimitMb / 1024));
+      }
+      if (found.maxUsers) {
+        setUsersCount(found.maxUsers);
+      }
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -67,8 +88,10 @@ export default function OrganizationModal({
         name: name.trim(),
         adminEmail: adminEmail.trim(),
         plan,
+        storageLimitGb: Number(storageLimitGb),
         storageLimitMb: Number(storageLimitGb) * 1024,
         usersCount: Number(usersCount),
+        usersLimit: Number(usersCount),
         status,
       });
       onClose();
@@ -164,12 +187,21 @@ export default function OrganizationModal({
               </label>
               <select
                 value={plan}
-                onChange={(e) => setPlan(e.target.value)}
+                onChange={(e) => handlePlanChange(e.target.value)}
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-[var(--brand)]"
               >
-                <option value="Free">Free Tier</option>
-                <option value="Pro">Pro Plan</option>
-                <option value="Enterprise">Enterprise Plan</option>
+                {plans && plans.length > 0 ? (
+                  plans.map((p) => {
+                    const planDisplayName = p.name.includes('Plan') ? p.name : `${p.name} Plan`;
+                    return (
+                      <option key={p.id} value={planDisplayName}>
+                        {planDisplayName}
+                      </option>
+                    );
+                  })
+                ) : (
+                  <option value="Starter Plan">Starter Plan</option>
+                )}
               </select>
             </div>
 

@@ -78,12 +78,18 @@ export default function BusinessOwnerStoragePage() {
   };
 
   const handleSaveQuota = async (payload) => {
+    const orgId = payload.id || payload.orgId;
+    const gb = payload.storageLimitGb !== undefined
+      ? Number(payload.storageLimitGb)
+      : Math.round((payload.storageLimitMb || 51200) / 1024);
+
     const res = await fetch('/api/business-owner/organizations', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        id: payload.orgId,
-        storageLimitMb: payload.storageLimitMb,
+        id: orgId,
+        storageLimitGb: gb,
+        storageLimitMb: gb * 1024,
       }),
     });
 
@@ -91,6 +97,15 @@ export default function BusinessOwnerStoragePage() {
       const err = await res.json();
       throw new Error(err.error || 'Failed to update storage limit');
     }
+
+    // Optimistically update local state immediately
+    setOrganizations((prev) =>
+      prev.map((org) =>
+        org.id === orgId
+          ? { ...org, storageLimitGb: gb, storageLimitMb: gb * 1024 }
+          : org
+      )
+    );
 
     await fetchStorageData();
   };
