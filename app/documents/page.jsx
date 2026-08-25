@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, useRef, useEffect, Suspense, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { FaEye, FaEdit, FaUpload, FaShieldAlt, FaDownload, FaTrash, FaEllipsisH, FaFilePdf, FaFileWord, FaFileExcel, FaFilePowerpoint, FaFileImage, FaFileVideo, FaFileArchive, FaFileAlt, FaFile } from 'react-icons/fa';
+import { FaEye, FaEdit, FaUpload, FaShieldAlt, FaDownload, FaTrash, FaEllipsisH, FaEllipsisV, FaFilePdf, FaFileWord, FaFileExcel, FaFilePowerpoint, FaFileImage, FaFileVideo, FaFileArchive, FaFileAlt, FaFile } from 'react-icons/fa';
 import { MdDragIndicator } from 'react-icons/md';
 import BulkUploadModal from '@/components/documents/BulkUploadModal';
 import { exportIndexToExcel, exportIndexToPDF } from '@/utils/exportIndexService';
@@ -159,11 +159,25 @@ function UnifiedWorkspace() {
 
     // ── UTILITIES ────────────────────────────────────────────────────────────
     const formatBytes = (bytes) => {
-        if (typeof bytes !== 'number' || Number.isNaN(bytes)) return '--';
+        if (typeof bytes !== 'number' || Number.isNaN(bytes) || bytes === null || bytes === undefined) return '--';
+        if (bytes <= 0) return '--';
         if (bytes < 1024) return `${bytes} B`;
-        if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
+        if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
         if (bytes < 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
         return `${(bytes / (1024 * 1024 * 1024)).toFixed(1)} GB`;
+    };
+
+    const getItemSize = (item) => {
+        if (!item || item.type === 'folder') return '--';
+        const raw = item.size_bytes ?? item.file_size_bytes ?? (typeof item.size === 'number' ? item.size : null);
+        if (raw !== null && raw !== undefined && !Number.isNaN(Number(raw))) {
+            const formatted = formatBytes(Number(raw));
+            if (formatted !== '--') return formatted;
+        }
+        if (typeof item.size === 'string' && item.size.trim() && item.size !== '0.00 MB' && item.size !== '0 MB' && item.size !== '--') {
+            return item.size;
+        }
+        return '--';
     };
 
     const showToast = (message, type = 'success') => {
@@ -1170,16 +1184,17 @@ function UnifiedWorkspace() {
                                     ) : (
                                         <th className="py-3 sm:py-4 px-2.5 sm:px-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Created At</th>
                                     )}
-                                    <th className="py-3 sm:py-4 px-2.5 sm:px-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Size</th>
+                                    <th className="py-3 sm:py-4 px-2.5 sm:px-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap min-w-[75px]">Size</th>
                                     {currentView !== 'trash' && <th className="py-3 sm:py-4 px-2.5 sm:px-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Actions</th>}
                                     {currentView === 'trash' && <th className="py-3 sm:py-4 px-2 sm:px-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center">Actions</th>}
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-300">
-                                {paginatedItems.map((item) => {
+                                {paginatedItems.map((item, index) => {
                                     const isChecked = selectedIds.has(item.id);
                                     const isFolder = item.type === 'folder';
                                     const isDL = downloading[item.id];
+                                    const isNearBottom = paginatedItems.length > 1 && index >= Math.max(1, paginatedItems.length - (paginatedItems.length >= 5 ? 3 : 2));
 
                                     return (
                                         <tr
@@ -1202,14 +1217,17 @@ function UnifiedWorkspace() {
                                             
                                             <td className="py-4 px-3" onClick={isFolder ? (e) => { e.stopPropagation(); setCurrentFolderId(item.id); } : undefined}>
                                                 <div className="flex items-center gap-3">
-                                                    <div 
-                                                        draggable
-                                                        onDragStart={(e) => { e.stopPropagation(); handleDragStart(e, item, 'reorder'); }}
-                                                        className="cursor-grab active:cursor-grabbing hover:bg-slate-200 p-1 rounded text-slate-400 hover:text-slate-600 transition-colors mr-1 flex items-center justify-center"
-                                                        title="Drag here to reorder"
-                                                    >
-                                                        <MdDragIndicator size={18} />
-                                                    </div>
+                                                    {/* 6-dots drag handle ONLY in files view (not in Trash, Bookmarks, Downloads) */}
+                                                    {currentView === 'files' && (
+                                                        <div 
+                                                            draggable
+                                                            onDragStart={(e) => { e.stopPropagation(); handleDragStart(e, item, 'reorder'); }}
+                                                            className="cursor-grab active:cursor-grabbing hover:bg-slate-200 p-1 rounded text-slate-400 hover:text-slate-600 transition-colors mr-1 flex items-center justify-center shrink-0"
+                                                            title="Drag here to reorder"
+                                                        >
+                                                            <MdDragIndicator size={18} />
+                                                        </div>
+                                                    )}
                                                     {isFolder ? (
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#fcd34d"><path d="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z" /></svg>
                                                     ) : (
@@ -1270,69 +1288,275 @@ function UnifiedWorkspace() {
                                             ) : (
                                                 <td className="py-4 px-3 text-[12px] font-medium text-slate-500">{item.dateCreated || (item.created_at ? new Date(item.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : '19 Aug 2026')}</td>
                                             )}
-                                            <td className="py-4 px-3 text-[12px] font-medium text-slate-500">{item.type === 'folder' ? '--' : (item.size || '2.4 MB')}</td>
+                                            <td className="py-4 px-3 text-[12px] font-medium text-slate-500 whitespace-nowrap">{getItemSize(item)}</td>
                                             
                                             {currentView !== 'trash' && (
-                                                <td className="py-4 px-3">
-                                                    <div className="flex items-center gap-4 text-[15px]">
-                                                        {canUser('can_view', item) ? (
-                                                            <FaEye className="text-slate-600 cursor-pointer hover:text-brand transition-colors" title="View" onClick={(e) => { e.stopPropagation(); setSelectedIds(new Set([item.id])); setTimeout(() => executeDownloadWrapper('view'), 50); }} />
-                                                        ) : (
-                                                            <FaEye className="text-slate-200" title="No View Access" />
-                                                        )}
+                                                <td className="py-4 px-3 text-center" onClick={e => e.stopPropagation()}>
+                                                    <div className="relative inline-flex items-center justify-center">
+                                                        <button
+                                                            type="button"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                setActiveDropdownId(activeDropdownId === item.id ? null : item.id);
+                                                            }}
+                                                            className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all cursor-pointer ${
+                                                                activeDropdownId === item.id 
+                                                                    ? 'bg-[var(--brand)] text-white shadow-sm ring-2 ring-[var(--brand)]/30 scale-105' 
+                                                                    : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200'
+                                                            }`}
+                                                            title="Actions"
+                                                        >
+                                                            <FaEllipsisV size={14} />
+                                                        </button>
 
-                                                        {canUser('can_edit', item) && ['xlsx', 'xls', 'csv', 'docx', 'doc', 'txt'].includes(item.type) ? (
-                                                            <FaEdit className="text-slate-600 cursor-pointer hover:text-brand transition-colors" title="Edit Document" onClick={(e) => { e.stopPropagation(); setSelectedIds(new Set([item.id])); setTimeout(() => executeDownloadWrapper('edit'), 50); }} />
-                                                        ) : (
-                                                            <FaEdit className="text-slate-200" title={['pdf'].includes(item.type) ? "PDFs cannot be edited" : "No Edit Access"} />
-                                                        )}
+                                                        {activeDropdownId === item.id && (
+                                                            <>
+                                                                {/* Backdrop to close when clicking outside */}
+                                                                <div 
+                                                                    className="fixed inset-0 z-40" 
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        setActiveDropdownId(null);
+                                                                    }} 
+                                                                />
 
-                                                        {isFolder ? (
-                                                            canUser('can_upload', item) ? <FaUpload className="text-slate-600 cursor-pointer hover:text-brand" title="Upload" onClick={(e) => { e.stopPropagation(); setCurrentFolderId(item.id); fileInputRef.current?.click(); }} /> : <FaUpload className="text-slate-200" title="No Upload Access" />
-                                                        ) : <div className="w-[15px]"></div>}
+                                                                {/* Popover Action Menu */}
+                                                                <div
+                                                                    className={`absolute right-0 ${
+                                                                        isNearBottom ? 'bottom-full mb-2' : 'top-full mt-2'
+                                                                    } z-50 bg-white border border-slate-200/90 rounded-2xl shadow-xl p-1.5 flex items-center gap-1 animate-scale-up whitespace-nowrap`}
+                                                                    onClick={(e) => e.stopPropagation()}
+                                                                >
+                                                                    {/* 1. VIEW / PREVIEW */}
+                                                                    {canUser('can_view', item) ? (
+                                                                        <button
+                                                                            type="button"
+                                                                            onClick={(e) => {
+                                                                                e.stopPropagation();
+                                                                                setActiveDropdownId(null);
+                                                                                if (isFolder) {
+                                                                                    setCurrentFolderId(item.id);
+                                                                                } else {
+                                                                                    setSelectedIds(new Set([item.id]));
+                                                                                    setTimeout(() => executeDownloadWrapper('view', item), 50);
+                                                                                }
+                                                                            }}
+                                                                            className="p-2 rounded-xl text-slate-600 hover:text-[var(--brand)] hover:bg-slate-100 transition-all cursor-pointer"
+                                                                            title={isFolder ? "Open Folder" : "View"}
+                                                                        >
+                                                                            <FaEye size={15} />
+                                                                        </button>
+                                                                    ) : (
+                                                                        <span className="p-2 text-slate-300 cursor-not-allowed" title="No View Access">
+                                                                            <FaEye size={15} />
+                                                                        </span>
+                                                                    )}
 
-                                                        {canUser('can_download_secure', item) && !isFolder ? (
-                                                            <FaShieldAlt className="text-slate-600 cursor-pointer hover:text-brand transition-colors" title="Download Secure" onClick={(e) => { e.stopPropagation(); setSelectedIds(new Set([item.id])); setTimeout(() => executeDownloadWrapper('secure'), 50); }} />
-                                                        ) : !isFolder ? (
-                                                            <FaShieldAlt className="text-slate-200" title="No Secure DL Access" />
-                                                        ) : null}
+                                                                    {/* 2. EDIT / RENAME */}
+                                                                    {canUser('can_edit', item) && ['xlsx', 'xls', 'csv', 'docx', 'doc', 'txt'].includes(item.type) ? (
+                                                                        <button
+                                                                            type="button"
+                                                                            onClick={(e) => {
+                                                                                e.stopPropagation();
+                                                                                setActiveDropdownId(null);
+                                                                                setSelectedIds(new Set([item.id]));
+                                                                                setTimeout(() => executeDownloadWrapper('edit', item), 50);
+                                                                            }}
+                                                                            className="p-2 rounded-xl text-slate-600 hover:text-[var(--brand)] hover:bg-slate-100 transition-all cursor-pointer"
+                                                                            title="Edit Document"
+                                                                        >
+                                                                            <FaEdit size={15} />
+                                                                        </button>
+                                                                    ) : isFolder && (isGod || canUser('can_edit', item)) ? (
+                                                                        <button
+                                                                            type="button"
+                                                                            onClick={(e) => {
+                                                                                e.stopPropagation();
+                                                                                setActiveDropdownId(null);
+                                                                                setSelectedIds(new Set([item.id]));
+                                                                                setRenameValue(item.name);
+                                                                                setIsRenameModalOpen(true);
+                                                                            }}
+                                                                            className="p-2 rounded-xl text-slate-600 hover:text-[var(--brand)] hover:bg-slate-100 transition-all cursor-pointer"
+                                                                            title="Rename Folder"
+                                                                        >
+                                                                            <FaEdit size={15} />
+                                                                        </button>
+                                                                    ) : (
+                                                                        <span className="p-2 text-slate-300 cursor-not-allowed" title={['pdf'].includes(item.type) ? "PDFs cannot be edited" : "No Edit Access"}>
+                                                                            <FaEdit size={15} />
+                                                                        </span>
+                                                                    )}
 
-                                                        {canUser('can_download_original', item) && !isFolder ? (
-                                                            <FaDownload className="text-slate-600 cursor-pointer hover:text-brand transition-colors" title="Download Original" onClick={(e) => { e.stopPropagation(); setSelectedIds(new Set([item.id])); setTimeout(() => executeDownloadWrapper('original'), 50); }} />
-                                                        ) : !isFolder ? (
-                                                            <FaDownload className="text-slate-200" title="No Original DL Access" />
-                                                        ) : null}
+                                                                    {/* 3. UPLOAD (if Folder) */}
+                                                                    {isFolder && (
+                                                                        canUser('can_upload', item) ? (
+                                                                            <button
+                                                                                type="button"
+                                                                                onClick={(e) => {
+                                                                                    e.stopPropagation();
+                                                                                    setActiveDropdownId(null);
+                                                                                    setCurrentFolderId(item.id);
+                                                                                    fileInputRef.current?.click();
+                                                                                }}
+                                                                                className="p-2 rounded-xl text-slate-600 hover:text-[var(--brand)] hover:bg-slate-100 transition-all cursor-pointer"
+                                                                                title="Upload Files"
+                                                                            >
+                                                                                <FaUpload size={15} />
+                                                                            </button>
+                                                                        ) : (
+                                                                            <span className="p-2 text-slate-300 cursor-not-allowed" title="No Upload Access">
+                                                                                <FaUpload size={15} />
+                                                                            </span>
+                                                                        )
+                                                                    )}
 
-                                                        {canUser('can_delete', item) ? (
-                                                            <FaTrash className="text-slate-600 cursor-pointer hover:text-red-500 transition-colors text-[14px]" title="Delete" onClick={(e) => { e.stopPropagation(); setSelectedIds(new Set([item.id])); setIsDeleteModalOpen(true); }} />
-                                                        ) : (
-                                                            <FaTrash className="text-slate-200 text-[14px]" title="No Delete Access" />
+                                                                    {/* 4. DOWNLOAD SECURE (Shield) */}
+                                                                    {!isFolder && (
+                                                                        canUser('can_download_secure', item) ? (
+                                                                            <button
+                                                                                type="button"
+                                                                                onClick={(e) => {
+                                                                                    e.stopPropagation();
+                                                                                    setActiveDropdownId(null);
+                                                                                    setSelectedIds(new Set([item.id]));
+                                                                                    setTimeout(() => executeDownloadWrapper('secure', item), 50);
+                                                                                }}
+                                                                                className="p-2 rounded-xl text-slate-600 hover:text-[var(--brand)] hover:bg-slate-100 transition-all cursor-pointer"
+                                                                                title="Download Secure (.html)"
+                                                                            >
+                                                                                <FaShieldAlt size={15} />
+                                                                            </button>
+                                                                        ) : (
+                                                                            <span className="p-2 text-slate-300 cursor-not-allowed" title="No Secure DL Access">
+                                                                                <FaShieldAlt size={15} />
+                                                                            </span>
+                                                                        )
+                                                                    )}
+
+                                                                    {/* 5. DOWNLOAD ORIGINAL (Tray Download) */}
+                                                                    {!isFolder && (
+                                                                        canUser('can_download_original', item) ? (
+                                                                            <button
+                                                                                type="button"
+                                                                                onClick={(e) => {
+                                                                                    e.stopPropagation();
+                                                                                    setActiveDropdownId(null);
+                                                                                    setSelectedIds(new Set([item.id]));
+                                                                                    setTimeout(() => executeDownloadWrapper('original', item), 50);
+                                                                                }}
+                                                                                className="p-2 rounded-xl text-slate-600 hover:text-emerald-600 hover:bg-slate-100 transition-all cursor-pointer"
+                                                                                title="Download Original"
+                                                                            >
+                                                                                <FaDownload size={15} />
+                                                                            </button>
+                                                                        ) : (
+                                                                            <span className="p-2 text-slate-300 cursor-not-allowed" title="No Original DL Access">
+                                                                                <FaDownload size={15} />
+                                                                            </span>
+                                                                        )
+                                                                    )}
+
+                                                                    {/* 6. DELETE / TRASH */}
+                                                                    {canUser('can_delete', item) ? (
+                                                                        <button
+                                                                            type="button"
+                                                                            onClick={(e) => {
+                                                                                e.stopPropagation();
+                                                                                setActiveDropdownId(null);
+                                                                                setSelectedIds(new Set([item.id]));
+                                                                                setIsDeleteModalOpen(true);
+                                                                            }}
+                                                                            className="p-2 rounded-xl text-slate-600 hover:text-rose-600 hover:bg-rose-50 transition-all cursor-pointer"
+                                                                            title="Move to Trash"
+                                                                        >
+                                                                            <FaTrash size={14} />
+                                                                        </button>
+                                                                    ) : (
+                                                                        <span className="p-2 text-slate-300 cursor-not-allowed" title="No Delete Access">
+                                                                            <FaTrash size={14} />
+                                                                        </span>
+                                                                    )}
+                                                                </div>
+                                                            </>
                                                         )}
                                                     </div>
                                                 </td>
                                             )}
 
                                             {currentView === 'trash' && (
-                                                <td className="py-4 px-3 text-center">
-                                                    <div className="flex items-center justify-center gap-3">
-                                                        <button onClick={(e) => { e.stopPropagation(); executeRecoverSingle(item); }} className="p-1.5 rounded hover:bg-emerald-50 text-emerald-600 transition-colors" title="Restore">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="w-[15px] h-[15px]">
-                                                                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-                                                                <path d="M3 3v5h5" />
-                                                            </svg>
+                                                <td className="py-4 px-3 text-center" onClick={e => e.stopPropagation()}>
+                                                    <div className="relative inline-flex items-center justify-center">
+                                                        <button
+                                                            type="button"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                setActiveDropdownId(activeDropdownId === item.id ? null : item.id);
+                                                            }}
+                                                            className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all cursor-pointer ${
+                                                                activeDropdownId === item.id 
+                                                                    ? 'bg-[var(--brand)] text-white shadow-sm ring-2 ring-[var(--brand)]/30 scale-105' 
+                                                                    : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200'
+                                                            }`}
+                                                            title="Actions"
+                                                        >
+                                                            <FaEllipsisV size={14} />
                                                         </button>
 
-                                                        {isGod && (
-                                                            <button onClick={(e) => { e.stopPropagation(); executePermanentDeleteSingle(item); }} className="p-1.5 rounded hover:bg-rose-50 text-rose-600 transition-colors" title="Delete Permanently">
-                                                                <FaTrash className="text-[14px]" />
-                                                            </button>
-                                                        )}
-                                                    </div>
-                                                </td>
-                                            )}
-                                        </tr>
-                                    );
-                                })}
+                                                        {activeDropdownId === item.id && (
+                                                            <>
+                                                                <div 
+                                                                    className="fixed inset-0 z-40" 
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        setActiveDropdownId(null);
+                                                                    }} 
+                                                                />
+                                                                <div
+                                                                    className={`absolute right-0 ${
+                                                                        isNearBottom ? 'bottom-full mb-2' : 'top-full mt-2'
+                                                                    } z-50 bg-white border border-slate-200/90 rounded-2xl shadow-xl p-1.5 flex items-center gap-1 animate-scale-up whitespace-nowrap`}
+                                                                    onClick={(e) => e.stopPropagation()}
+                                                                >
+                                                                    <button 
+                                                                        type="button"
+                                                                        onClick={(e) => { 
+                                                                            e.stopPropagation(); 
+                                                                            setActiveDropdownId(null);
+                                                                            executeRecoverSingle(item); 
+                                                                        }} 
+                                                                        className="p-2 rounded-xl text-emerald-600 hover:bg-emerald-50 transition-colors cursor-pointer" 
+                                                                        title="Restore"
+                                                                    >
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="w-[15px] h-[15px]">
+                                                                            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                                                                            <path d="M3 3v5h5" />
+                                                                        </svg>
+                                                                    </button>
+
+                                                                    {isGod && (
+                                                                        <button 
+                                                                            type="button"
+                                                                            onClick={(e) => { 
+                                                                            e.stopPropagation(); 
+                                                                            setActiveDropdownId(null);
+                                                                            executePermanentDeleteSingle(item); 
+                                                                        }} 
+                                                                        className="p-2 rounded-xl text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer" 
+                                                                        title="Delete Permanently"
+                                                                    >
+                                                                        <FaTrash size={14} />
+                                                                    </button>
+                                                                )}
+                                                            </div>
+                                                        </>
+                                                    )}
+                                                </div>
+                                            </td>
+                                        )}
+                                    </tr>
+                                );
+                            })}
                             </tbody>
                         </table>
                     </div>
@@ -1412,7 +1636,7 @@ function UnifiedWorkspace() {
                                                 <div className="flex items-center gap-1.5 text-[10.5px] text-slate-400 font-medium truncate">
                                                     <span className="text-slate-600 font-bold">{item.version ? (String(item.version).toUpperCase().startsWith('V') ? item.version : `V${item.version}`) : 'V1'}</span>
                                                     <span>•</span>
-                                                    <span>{item.type === 'folder' ? 'Folder' : (item.size || '2.4 MB')}</span>
+                                                    <span>{item.type === 'folder' ? 'Folder' : getItemSize(item)}</span>
                                                     <span>•</span>
                                                     <span>{item.dateCreated || (item.created_at ? new Date(item.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }) : '19 Aug')}</span>
                                                 </div>

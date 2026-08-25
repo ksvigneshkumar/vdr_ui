@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { FaHistory, FaDownload, FaRedo, FaSearch } from 'react-icons/fa';
+import { FaHistory, FaDownload, FaRedo, FaSearch, FaEllipsisV } from 'react-icons/fa';
 import { useDialog } from '@/components/ui/DialogProvider';
 
 export default function DocumentVersionsPage() {
@@ -14,6 +14,7 @@ export default function DocumentVersionsPage() {
     const [searchQuery, setSearchQuery] = useState('');
     const [restoringId, setRestoringId] = useState(null);
     const [downloading, setDownloading] = useState({});
+    const [activeDropdownId, setActiveDropdownId] = useState(null);
     const { showConfirm, showAlert } = useDialog();
 
     // Group state
@@ -239,9 +240,9 @@ export default function DocumentVersionsPage() {
                             const iconClass = getFileIconClass(ext);
 
                             return (
-                                <div key={group.document_id} className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 shadow-2xs overflow-hidden">
+                                <div key={group.document_id} className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 shadow-2xs">
                                     {/* Group Title Header */}
-                                    <div className="bg-slate-50/70 px-4 sm:px-6 py-3.5 border-b border-slate-100 flex items-center justify-between gap-3">
+                                    <div className="bg-slate-50/70 rounded-t-2xl sm:rounded-t-3xl px-4 sm:px-6 py-3.5 border-b border-slate-100 flex items-center justify-between gap-3">
                                         <div className="flex items-center gap-2.5 min-w-0">
                                             <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-[10px] font-black border uppercase shrink-0 shadow-2xs ${iconClass}`}>
                                                 {ext.slice(0, 3)}
@@ -254,7 +255,7 @@ export default function DocumentVersionsPage() {
                                     </div>
 
                                     {/* ── DESKTOP TABLE VIEW (hidden md:block) ── */}
-                                    <div className="hidden md:block overflow-x-auto">
+                                    <div className="hidden md:block overflow-visible rounded-b-2xl sm:rounded-b-3xl">
                                         <table className="w-full text-left border-collapse min-w-[650px]">
                                             <thead>
                                                 <tr className="bg-slate-50/30 border-b border-slate-100 text-[10px] font-extrabold uppercase text-slate-400 tracking-wider">
@@ -263,139 +264,238 @@ export default function DocumentVersionsPage() {
                                                     <th className="py-3 px-4">Uploaded By</th>
                                                     <th className="py-3 px-4">Date & Time</th>
                                                     <th className="py-3 px-4">Size</th>
-                                                    <th className="py-3 px-6 text-right w-44">Actions</th>
+                                                    <th className="py-3 px-6 text-right w-24">Actions</th>
                                                 </tr>
                                             </thead>
                                             <tbody className="divide-y divide-slate-100">
-                                                {group.versions.map((v, idx) => (
-                                                    <tr key={v.id} className="hover:bg-slate-50/60 transition-colors">
-                                                        <td className="py-3.5 px-6">
-                                                            <div className="flex items-center gap-2">
-                                                                <span className={`px-2.5 py-1 rounded-xl text-xs font-bold ${idx === 0 ? 'bg-[var(--brand)] text-white shadow-2xs' : 'bg-slate-100 text-slate-700'}`}>
-                                                                    V{v.version_number}
-                                                                </span>
-                                                                {idx === 0 && (
-                                                                    <span className="text-[10px] font-extrabold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100">
-                                                                        Latest
+                                                {group.versions.map((v, idx) => {
+                                                    const isNearBottom = group.versions.length > 1 && idx >= Math.max(1, group.versions.length - 2);
+
+                                                    return (
+                                                        <tr key={v.id} className="hover:bg-slate-50/60 transition-colors">
+                                                            <td className="py-3.5 px-6">
+                                                                <div className="flex items-center gap-2">
+                                                                    <span className={`px-2.5 py-1 rounded-xl text-xs font-bold ${idx === 0 ? 'bg-[var(--brand)] text-white shadow-2xs' : 'bg-slate-100 text-slate-700'}`}>
+                                                                        V{v.version_number}
                                                                     </span>
-                                                                )}
-                                                            </div>
-                                                        </td>
-                                                        <td className="py-3.5 px-4 text-xs font-semibold text-slate-600 max-w-xs truncate">
-                                                            {v.upload_comment || <span className="text-slate-400 font-normal italic">No comment</span>}
-                                                        </td>
-                                                        <td className="py-3.5 px-4">
-                                                            <div className="flex items-center gap-2">
-                                                                <div className="w-5 h-5 rounded-full bg-slate-200 flex items-center justify-center text-[9px] font-bold text-slate-600">
-                                                                    {(v.uploaded_by_name || 'U').charAt(0).toUpperCase()}
+                                                                    {idx === 0 && (
+                                                                        <span className="text-[10px] font-extrabold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100">
+                                                                            Latest
+                                                                        </span>
+                                                                    )}
                                                                 </div>
-                                                                <span className="text-xs font-bold text-slate-700">{v.uploaded_by_name || 'User'}</span>
-                                                            </div>
-                                                        </td>
-                                                        <td className="py-3.5 px-4 text-xs font-semibold text-slate-500">
-                                                            {new Date(v.created_at).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}
-                                                        </td>
-                                                        <td className="py-3.5 px-4 text-xs font-mono font-semibold text-slate-500">
-                                                            {formatBytes(v.file_size_bytes)}
-                                                        </td>
-                                                        <td className="py-3.5 px-6 text-right">
-                                                            <div className="flex items-center justify-end gap-2">
-                                                                <button
-                                                                    onClick={() => handleDownload(v, 'original')}
-                                                                    disabled={downloading[v.id]}
-                                                                    className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
-                                                                    title="Download Version"
-                                                                >
-                                                                    <FaDownload className="text-[11px]" />
-                                                                    <span>{downloading[v.id] ? '...' : 'Download'}</span>
-                                                                </button>
-                                                                <button
-                                                                    onClick={() => handleRestore(v.id)}
-                                                                    disabled={restoringId === v.id}
-                                                                    className="px-3 py-1.5 rounded-xl bg-[var(--brand)]/10 hover:bg-[var(--brand)]/20 text-[var(--brand)] font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
-                                                                    title="Restore this version"
-                                                                >
-                                                                    <FaRedo className={`text-[10px] ${restoringId === v.id ? 'animate-spin' : ''}`} />
-                                                                    <span>{restoringId === v.id ? 'Restoring...' : 'Restore'}</span>
-                                                                </button>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                ))}
+                                                            </td>
+                                                            <td className="py-3.5 px-4 text-xs font-semibold text-slate-600 max-w-xs truncate">
+                                                                {v.upload_comment || <span className="text-slate-400 font-normal italic">No comment</span>}
+                                                            </td>
+                                                            <td className="py-3.5 px-4">
+                                                                <div className="flex items-center gap-2">
+                                                                    <div className="w-5 h-5 rounded-full bg-slate-200 flex items-center justify-center text-[9px] font-bold text-slate-600">
+                                                                        {(v.uploaded_by_name || 'U').charAt(0).toUpperCase()}
+                                                                    </div>
+                                                                    <span className="text-xs font-bold text-slate-700">{v.uploaded_by_name || 'User'}</span>
+                                                                </div>
+                                                            </td>
+                                                            <td className="py-3.5 px-4 text-xs font-semibold text-slate-500">
+                                                                {new Date(v.created_at).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}
+                                                            </td>
+                                                            <td className="py-3.5 px-4 text-xs font-mono font-semibold text-slate-500">
+                                                                {formatBytes(v.file_size_bytes)}
+                                                            </td>
+                                                            <td className="py-3.5 px-6 text-right" onClick={e => e.stopPropagation()}>
+                                                                <div className="relative inline-flex items-center justify-end">
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={(e) => {
+                                                                            e.stopPropagation();
+                                                                            setActiveDropdownId(activeDropdownId === v.id ? null : v.id);
+                                                                        }}
+                                                                        className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all cursor-pointer ${
+                                                                            activeDropdownId === v.id 
+                                                                                ? 'bg-[var(--brand)] text-white shadow-sm ring-2 ring-[var(--brand)]/30 scale-105' 
+                                                                                : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200'
+                                                                        }`}
+                                                                        title="Actions"
+                                                                    >
+                                                                        <FaEllipsisV size={14} />
+                                                                    </button>
+
+                                                                    {activeDropdownId === v.id && (
+                                                                        <>
+                                                                            {/* Backdrop to close when clicking outside */}
+                                                                            <div 
+                                                                                className="fixed inset-0 z-40" 
+                                                                                onClick={(e) => {
+                                                                                    e.stopPropagation();
+                                                                                    setActiveDropdownId(null);
+                                                                                }} 
+                                                                            />
+
+                                                                            {/* Dropdown Action Menu */}
+                                                                            <div
+                                                                                className={`absolute right-0 ${
+                                                                                    isNearBottom ? 'bottom-full mb-2' : 'top-full mt-2'
+                                                                                } z-50 bg-white border border-slate-200/90 rounded-2xl shadow-xl py-1.5 w-44 flex flex-col animate-scale-up whitespace-nowrap`}
+                                                                                onClick={(e) => e.stopPropagation()}
+                                                                            >
+                                                                                {/* 1. DOWNLOAD */}
+                                                                                <button
+                                                                                    type="button"
+                                                                                    onClick={(e) => {
+                                                                                        e.stopPropagation();
+                                                                                        setActiveDropdownId(null);
+                                                                                        handleDownload(v, 'original');
+                                                                                    }}
+                                                                                    disabled={downloading[v.id]}
+                                                                                    className="w-full text-left px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-[var(--brand)] flex items-center gap-2.5 transition-colors disabled:opacity-50 cursor-pointer"
+                                                                                >
+                                                                                    <FaDownload className="text-xs text-slate-500" />
+                                                                                    <span>{downloading[v.id] ? 'Downloading...' : 'Download'}</span>
+                                                                                </button>
+
+                                                                                {/* 2. RESTORE */}
+                                                                                <button
+                                                                                    type="button"
+                                                                                    onClick={(e) => {
+                                                                                        e.stopPropagation();
+                                                                                        setActiveDropdownId(null);
+                                                                                        handleRestore(v.id);
+                                                                                    }}
+                                                                                    disabled={restoringId === v.id}
+                                                                                    className="w-full text-left px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-[var(--brand)] flex items-center gap-2.5 transition-colors disabled:opacity-50 cursor-pointer"
+                                                                                >
+                                                                                    <FaRedo className={`text-xs ${restoringId === v.id ? 'animate-spin text-[var(--brand)]' : 'text-slate-500'}`} />
+                                                                                    <span>{restoringId === v.id ? 'Restoring...' : 'Restore Version'}</span>
+                                                                                </button>
+                                                                            </div>
+                                                                        </>
+                                                                    )}
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    );
+                                                })}
                                             </tbody>
                                         </table>
                                     </div>
 
                                     {/* ── MOBILE CARDS VIEW (block md:hidden) ── */}
-                                    <div className="block md:hidden p-3 divide-y divide-slate-100">
-                                        {group.versions.map((v, idx) => (
-                                            <div key={v.id} className="py-3 first:pt-0 last:pb-0 flex flex-col gap-2.5">
-                                                {/* Card Header: Version Badge, Latest Pill, Size, Date */}
-                                                <div className="flex items-center justify-between">
-                                                    <div className="flex items-center gap-2">
-                                                        <span className={`px-2.5 py-1 rounded-xl text-xs font-bold ${idx === 0 ? 'bg-[var(--brand)] text-white shadow-2xs' : 'bg-slate-100 text-slate-700'}`}>
-                                                            V{v.version_number}
-                                                        </span>
-                                                        {idx === 0 && (
-                                                            <span className="text-[10px] font-extrabold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100">
-                                                                Latest
+                                    <div className="block md:hidden p-3 divide-y divide-slate-100 rounded-b-2xl sm:rounded-b-3xl overflow-visible">
+                                        {group.versions.map((v, idx) => {
+                                            const isNearBottom = group.versions.length > 1 && idx >= Math.max(1, group.versions.length - 2);
+
+                                            return (
+                                                <div key={v.id} className="py-3 first:pt-0 last:pb-0 flex flex-col gap-2.5">
+                                                    {/* Card Header: Version Badge, Latest Pill, Size, Date */}
+                                                    <div className="flex items-center justify-between">
+                                                        <div className="flex items-center gap-2">
+                                                            <span className={`px-2.5 py-1 rounded-xl text-xs font-bold ${idx === 0 ? 'bg-[var(--brand)] text-white shadow-2xs' : 'bg-slate-100 text-slate-700'}`}>
+                                                                V{v.version_number}
                                                             </span>
-                                                        )}
-                                                        <span className="text-xs font-mono font-semibold text-slate-400">
-                                                            {formatBytes(v.file_size_bytes)}
-                                                        </span>
-                                                    </div>
-
-                                                    <span className="text-[11px] font-semibold text-slate-400">
-                                                        {new Date(v.created_at).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}
-                                                    </span>
-                                                </div>
-
-                                                {/* Comment & Uploader Box */}
-                                                <div className="bg-slate-50/80 rounded-xl p-2.5 border border-slate-100 flex flex-col gap-1.5">
-                                                    {v.upload_comment ? (
-                                                        <p className="text-xs font-semibold text-slate-700 italic">
-                                                            &ldquo;{v.upload_comment}&rdquo;
-                                                        </p>
-                                                    ) : (
-                                                        <p className="text-[11px] text-slate-400 italic">No comment provided</p>
-                                                    )}
-
-                                                    <div className="flex items-center justify-between pt-1 border-t border-slate-200/50">
-                                                        <div className="flex items-center gap-1.5">
-                                                            <div className="w-4 h-4 rounded-full bg-slate-200 flex items-center justify-center text-[8px] font-bold text-slate-600">
-                                                                {(v.uploaded_by_name || 'U').charAt(0).toUpperCase()}
-                                                            </div>
-                                                            <span className="text-[11px] font-bold text-slate-600 truncate">{v.uploaded_by_name || 'User'}</span>
+                                                            {idx === 0 && (
+                                                                <span className="text-[10px] font-extrabold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100">
+                                                                    Latest
+                                                                </span>
+                                                            )}
+                                                            <span className="text-xs font-mono font-semibold text-slate-400">
+                                                                {formatBytes(v.file_size_bytes)}
+                                                            </span>
                                                         </div>
-                                                        <span className="text-[10px] text-slate-400">
-                                                            {new Date(v.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                                        </span>
+
+                                                        <div className="flex items-center gap-2">
+                                                            <span className="text-[11px] font-semibold text-slate-400">
+                                                                {new Date(v.created_at).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}
+                                                            </span>
+
+                                                            {/* 3-dots Mobile Menu */}
+                                                            <div className="relative inline-flex items-center">
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        setActiveDropdownId(activeDropdownId === `m-${v.id}` ? null : `m-${v.id}`);
+                                                                    }}
+                                                                    className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors cursor-pointer ${
+                                                                        activeDropdownId === `m-${v.id}` ? 'bg-[var(--brand)] text-white' : 'text-slate-500 hover:bg-slate-100'
+                                                                    }`}
+                                                                    title="Actions"
+                                                                >
+                                                                    <FaEllipsisV size={12} />
+                                                                </button>
+
+                                                                {activeDropdownId === `m-${v.id}` && (
+                                                                    <>
+                                                                        <div 
+                                                                            className="fixed inset-0 z-40" 
+                                                                            onClick={(e) => {
+                                                                                e.stopPropagation();
+                                                                                setActiveDropdownId(null);
+                                                                            }} 
+                                                                        />
+                                                                        <div
+                                                                            className={`absolute right-0 ${
+                                                                                isNearBottom ? 'bottom-full mb-2' : 'top-full mt-2'
+                                                                            } z-50 bg-white border border-slate-200/90 rounded-2xl shadow-xl py-1.5 w-44 flex flex-col animate-scale-up whitespace-nowrap`}
+                                                                            onClick={(e) => e.stopPropagation()}
+                                                                        >
+                                                                            <button
+                                                                                type="button"
+                                                                                onClick={(e) => {
+                                                                                    e.stopPropagation();
+                                                                                    setActiveDropdownId(null);
+                                                                                    handleDownload(v, 'original');
+                                                                                }}
+                                                                                disabled={downloading[v.id]}
+                                                                                className="w-full text-left px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-[var(--brand)] flex items-center gap-2.5 transition-colors disabled:opacity-50 cursor-pointer"
+                                                                            >
+                                                                                <FaDownload className="text-xs text-slate-500" />
+                                                                                <span>{downloading[v.id] ? 'Downloading...' : 'Download'}</span>
+                                                                            </button>
+                                                                            <button
+                                                                                type="button"
+                                                                                onClick={(e) => {
+                                                                                    e.stopPropagation();
+                                                                                    setActiveDropdownId(null);
+                                                                                    handleRestore(v.id);
+                                                                                }}
+                                                                                disabled={restoringId === v.id}
+                                                                                className="w-full text-left px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-[var(--brand)] flex items-center gap-2.5 transition-colors disabled:opacity-50 cursor-pointer"
+                                                                            >
+                                                                                <FaRedo className={`text-xs ${restoringId === v.id ? 'animate-spin text-[var(--brand)]' : 'text-slate-500'}`} />
+                                                                                <span>{restoringId === v.id ? 'Restoring...' : 'Restore Version'}</span>
+                                                                            </button>
+                                                                        </div>
+                                                                    </>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Comment & Uploader Box */}
+                                                    <div className="bg-slate-50/80 rounded-xl p-2.5 border border-slate-100 flex flex-col gap-1.5">
+                                                        {v.upload_comment ? (
+                                                            <p className="text-xs font-semibold text-slate-700 italic">
+                                                                &ldquo;{v.upload_comment}&rdquo;
+                                                            </p>
+                                                        ) : (
+                                                            <p className="text-[11px] text-slate-400 italic">No comment provided</p>
+                                                        )}
+
+                                                        <div className="flex items-center justify-between pt-1 border-t border-slate-200/50">
+                                                            <div className="flex items-center gap-1.5">
+                                                                <div className="w-4 h-4 rounded-full bg-slate-200 flex items-center justify-center text-[8px] font-bold text-slate-600">
+                                                                    {(v.uploaded_by_name || 'U').charAt(0).toUpperCase()}
+                                                                </div>
+                                                                <span className="text-[11px] font-bold text-slate-600 truncate">{v.uploaded_by_name || 'User'}</span>
+                                                            </div>
+                                                            <span className="text-[10px] text-slate-400">
+                                                                {new Date(v.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                            </span>
+                                                        </div>
                                                     </div>
                                                 </div>
-
-                                                {/* Action Buttons: 2 Big Tap Buttons */}
-                                                <div className="grid grid-cols-2 gap-2 pt-0.5">
-                                                    <button
-                                                        onClick={() => handleDownload(v, 'original')}
-                                                        disabled={downloading[v.id]}
-                                                        className="py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-800 font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer disabled:opacity-50"
-                                                    >
-                                                        <FaDownload className="text-xs" />
-                                                        <span>{downloading[v.id] ? 'Downloading...' : 'Download'}</span>
-                                                    </button>
-
-                                                    <button
-                                                        onClick={() => handleRestore(v.id)}
-                                                        disabled={restoringId === v.id}
-                                                        className="py-2 px-3 rounded-xl bg-[var(--brand)] text-white hover:opacity-90 active:scale-95 font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-xs disabled:opacity-50"
-                                                    >
-                                                        <FaRedo className={`text-xs ${restoringId === v.id ? 'animate-spin' : ''}`} />
-                                                        <span>{restoringId === v.id ? 'Restoring...' : 'Restore'}</span>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        ))}
+                                            );
+                                        })}
                                     </div>
                                 </div>
                             );
