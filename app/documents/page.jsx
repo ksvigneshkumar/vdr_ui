@@ -94,13 +94,17 @@ function UnifiedWorkspace() {
     const [activeDropdownId, setActiveDropdownId] = useState(null);
     
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 5;
+    const [pageSize, setPageSize] = useState(10);
+    const dragHoverTimerRef = useRef(null);
+    const [dragOverPageTarget, setDragOverPageTarget] = useState(null);
+    const tableContainerRef = useRef(null);
+    const mobileListContainerRef = useRef(null);
 
     const fileInputRef = useRef(null);
 
     useEffect(() => {
         setCurrentPage(1);
-    }, [currentFolderId, currentView, searchQuery]);
+    }, [currentFolderId, currentView, searchQuery, pageSize]);
 
     // ── SESSION ──────────────────────────────────────────────────────────────
     useEffect(() => {
@@ -550,10 +554,62 @@ function UnifiedWorkspace() {
         e.dataTransfer.effectAllowed = 'move';
     };
 
+    const handleAutoScrollOnDrag = (e, containerRef) => {
+        if (!containerRef?.current) return;
+        const container = containerRef.current;
+        const rect = container.getBoundingClientRect();
+        const y = e.clientY - rect.top;
+        const edgeThreshold = 90;
+
+        if (y < edgeThreshold && y >= -40) {
+            // Near Top Edge - Scroll Up
+            const factor = Math.max(0.1, (edgeThreshold - Math.max(0, y)) / edgeThreshold);
+            const speed = Math.max(8, Math.round(factor * 28));
+            container.scrollTop -= speed;
+        } else if (y > rect.height - edgeThreshold && y <= rect.height + 40) {
+            // Near Bottom Edge - Scroll Down
+            const factor = Math.max(0.1, (Math.min(rect.height, y) - (rect.height - edgeThreshold)) / edgeThreshold);
+            const speed = Math.max(8, Math.round(factor * 28));
+            container.scrollTop += speed;
+        }
+    };
+
     const handleDragOver = (e) => {
         if (currentView !== 'files') return;
         e.preventDefault();
         e.dataTransfer.dropEffect = 'move';
+        handleAutoScrollOnDrag(e, tableContainerRef);
+        handleAutoScrollOnDrag(e, mobileListContainerRef);
+    };
+
+    const handlePageButtonDragEnter = (targetPage) => {
+        if (currentView !== 'files' || targetPage === currentPage) return;
+        setDragOverPageTarget(targetPage);
+        if (dragHoverTimerRef.current) clearTimeout(dragHoverTimerRef.current);
+        dragHoverTimerRef.current = setTimeout(() => {
+            setCurrentPage(targetPage);
+            setDragOverPageTarget(null);
+            showToast(`Flipped to Page ${targetPage}`);
+        }, 350);
+    };
+
+    const handlePageButtonDragLeave = () => {
+        if (dragHoverTimerRef.current) clearTimeout(dragHoverTimerRef.current);
+        setDragOverPageTarget(null);
+    };
+
+    const handlePageButtonDragOver = (e) => {
+        if (currentView !== 'files') return;
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+    };
+
+    const handleDropOnPage = (e, targetPage) => {
+        if (currentView !== 'files') return;
+        e.preventDefault();
+        handlePageButtonDragLeave();
+        setCurrentPage(targetPage);
+        showToast(`Viewing Page ${targetPage}`);
     };
 
     const handleDropToFolder = async (e, folderId) => {
@@ -715,10 +771,11 @@ function UnifiedWorkspace() {
     const hasAnyDeleteAccess = isGod || globalFolderPerms.can_delete || canUser('can_delete', { type: 'folder', id: currentFolderId }) || filteredItems.some(f => canUser('can_delete', f));
     const hasAnyExportAccess = isGod || canUser('can_export');
 
+    const itemsPerPage = pageSize === 'all' ? (filteredItems.length || 999999) : Number(pageSize);
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const paginatedItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
-    const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
+    const paginatedItems = pageSize === 'all' ? filteredItems : filteredItems.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = pageSize === 'all' ? 1 : Math.max(1, Math.ceil(filteredItems.length / itemsPerPage));
 
     if (loading && files.length === 0) return <div className="flex items-center justify-center w-full h-full bg-[#FAFBFD]"><div className="w-8 h-8 border-4 border-slate-200 border-t-brand rounded-full animate-spin" /></div>;
 
@@ -1086,7 +1143,11 @@ function UnifiedWorkspace() {
                     </div>
 
                     {/* ── DESKTOP TABLE VIEW (hidden md:block) ── */}
-                    <div className="hidden md:flex flex-1 overflow-auto bg-white rounded-xl border border-slate-200 shadow-2xs pb-24 no-scrollbar w-full max-w-full flex-col">
+                    <div 
+                        ref={tableContainerRef}
+                        onDragOver={handleDragOver}
+                        className="hidden md:flex flex-1 overflow-auto bg-white rounded-xl border border-slate-200 shadow-2xs pb-24 no-scrollbar w-full max-w-full flex-col scroll-smooth"
+                    >
                         <table className="w-full text-left border-collapse min-w-[700px]">
                             <thead className="bg-slate-50/95 sticky top-0 z-10 backdrop-blur-xs border-b border-slate-200">
                                 <tr>
@@ -1277,7 +1338,11 @@ function UnifiedWorkspace() {
                     </div>
 
                     {/* ── MOBILE CARD LIST VIEW (flex md:hidden) ── */}
-                    <div className="flex md:hidden flex-1 overflow-y-auto pb-24 no-scrollbar w-full flex-col gap-2.5">
+                    <div 
+                        ref={mobileListContainerRef}
+                        onDragOver={handleDragOver}
+                        className="flex md:hidden flex-1 overflow-y-auto pb-24 no-scrollbar w-full flex-col gap-2.5 scroll-smooth"
+                    >
                         {paginatedItems.length === 0 ? (
                             <div className="p-10 text-center text-slate-400 font-medium text-xs bg-white rounded-2xl border border-slate-200 shadow-2xs">
                                 No files or folders in this directory
@@ -1386,31 +1451,85 @@ function UnifiedWorkspace() {
                         )}
                     </div>
                     
-                    {/* ── PAGINATION CONTROLS (Responsive) ── */}
-                    <div className="flex items-center justify-between px-3 sm:px-6 py-3 sm:py-4 border-t border-slate-200 bg-white sm:bg-slate-50/50 mt-auto shrink-0 rounded-xl sm:rounded-none">
-                        <div className="text-[11px] sm:text-[12px] font-medium text-slate-500">
-                            Showing {filteredItems.length > 0 ? indexOfFirstItem + 1 : 0}–{Math.min(indexOfLastItem, filteredItems.length)} of {filteredItems.length}
+                    {/* ── PAGINATION CONTROLS (Responsive + Drag & Drop Auto-Flip Support) ── */}
+                    <div className="flex flex-wrap items-center justify-between gap-3 px-3 sm:px-6 py-3 sm:py-4 border-t border-slate-200 bg-white sm:bg-slate-50/50 mt-auto shrink-0 rounded-xl sm:rounded-none">
+                        <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
+                            <div className="text-[11px] sm:text-[12px] font-medium text-slate-500">
+                                Showing <span className="font-bold text-slate-700">{filteredItems.length > 0 ? indexOfFirstItem + 1 : 0}</span>–<span className="font-bold text-slate-700">{Math.min(indexOfLastItem, filteredItems.length)}</span> of <span className="font-bold text-slate-700">{filteredItems.length}</span>
+                            </div>
+
+                            {/* Page Size Selector */}
+                            <div className="flex items-center gap-1.5 text-[11px] sm:text-[12px] text-slate-500 font-medium bg-slate-100/70 border border-slate-200/80 px-2 py-0.5 rounded-lg">
+                                <span className="text-slate-500 font-semibold">Per page:</span>
+                                <select 
+                                    value={pageSize} 
+                                    onChange={(e) => { setPageSize(e.target.value); setCurrentPage(1); }}
+                                    className="bg-transparent text-slate-800 font-bold outline-none cursor-pointer text-xs"
+                                >
+                                    <option value={5}>5</option>
+                                    <option value={10}>10</option>
+                                    <option value={25}>25</option>
+                                    <option value={50}>50</option>
+                                    <option value="all">All</option>
+                                </select>
+                            </div>
+
+                            {/* Subtle Drag-and-drop Hint */}
+                            {dragOverPageTarget && (
+                                <span className="hidden lg:inline-flex items-center gap-1 text-[11px] font-bold text-[var(--brand)] bg-[var(--brand)]/10 border border-[var(--brand)]/20 px-2 py-0.5 rounded-md animate-pulse">
+                                    <span>Holding... Flipping to Page {dragOverPageTarget}</span>
+                                </span>
+                            )}
                         </div>
+
                         <div className="flex items-center gap-1 sm:gap-1.5">
+                            {/* Prev Page Button with Drag Hover */}
                             <button 
                                 onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} 
                                 disabled={currentPage === 1}
-                                className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-[12px] font-bold border transition-colors ${currentPage === 1 ? 'border-transparent text-slate-300 bg-transparent cursor-not-allowed' : 'border-slate-200 text-slate-700 bg-white hover:bg-slate-100 shadow-2xs'}`}
+                                onDragEnter={() => handlePageButtonDragEnter(Math.max(1, currentPage - 1))}
+                                onDragLeave={handlePageButtonDragLeave}
+                                onDragOver={handlePageButtonDragOver}
+                                onDrop={(e) => handleDropOnPage(e, Math.max(1, currentPage - 1))}
+                                className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-[12px] font-bold border transition-all ${
+                                    currentPage === 1 
+                                        ? 'border-transparent text-slate-300 bg-transparent cursor-not-allowed' 
+                                        : dragOverPageTarget === Math.max(1, currentPage - 1)
+                                            ? 'border-[var(--brand)] bg-[var(--brand)]/15 text-[var(--brand)] ring-2 ring-[var(--brand)]/40 scale-105 shadow-md'
+                                            : 'border-slate-200 text-slate-700 bg-white hover:bg-slate-100 shadow-2xs'
+                                }`}
+                                title="Hover while dragging to flip page"
                             >
                                 Prev
                             </button>
                             
-                            {/* Desktop Page Numbers */}
+                            {/* Desktop Page Numbers with Drag Hover */}
                             <div className="hidden sm:flex items-center gap-1">
-                                {Array.from({ length: totalPages }).map((_, idx) => (
-                                    <button 
-                                        key={idx + 1}
-                                        onClick={() => setCurrentPage(idx + 1)}
-                                        className={`w-8 h-8 rounded-lg text-[12px] font-bold flex items-center justify-center transition-colors ${currentPage === idx + 1 ? 'bg-[var(--brand)] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-200'}`}
-                                    >
-                                        {idx + 1}
-                                    </button>
-                                ))}
+                                {Array.from({ length: totalPages }).map((_, idx) => {
+                                    const pageNum = idx + 1;
+                                    const isCurrent = currentPage === pageNum;
+                                    const isHoverTarget = dragOverPageTarget === pageNum;
+                                    return (
+                                        <button 
+                                            key={pageNum}
+                                            onClick={() => setCurrentPage(pageNum)}
+                                            onDragEnter={() => handlePageButtonDragEnter(pageNum)}
+                                            onDragLeave={handlePageButtonDragLeave}
+                                            onDragOver={handlePageButtonDragOver}
+                                            onDrop={(e) => handleDropOnPage(e, pageNum)}
+                                            className={`w-8 h-8 rounded-lg text-[12px] font-bold flex items-center justify-center transition-all ${
+                                                isCurrent 
+                                                    ? 'bg-[var(--brand)] text-white shadow-sm' 
+                                                    : isHoverTarget
+                                                        ? 'border-2 border-[var(--brand)] bg-[var(--brand)]/20 text-[var(--brand)] scale-110 shadow-md ring-2 ring-[var(--brand)]/40 animate-pulse'
+                                                        : 'text-slate-600 hover:bg-slate-200'
+                                            }`}
+                                            title={`Page ${pageNum} (Hover while dragging to flip)`}
+                                        >
+                                            {pageNum}
+                                        </button>
+                                    );
+                                })}
                             </div>
 
                             {/* Mobile Page indicator */}
@@ -1418,10 +1537,22 @@ function UnifiedWorkspace() {
                                 {currentPage} / {totalPages || 1}
                             </span>
 
+                            {/* Next Page Button with Drag Hover */}
                             <button 
                                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} 
                                 disabled={currentPage === totalPages || totalPages === 0}
-                                className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-[12px] font-bold border transition-colors ${currentPage === totalPages || totalPages === 0 ? 'border-transparent text-slate-300 bg-transparent cursor-not-allowed' : 'border-slate-200 text-slate-700 bg-white hover:bg-slate-100 shadow-2xs'}`}
+                                onDragEnter={() => handlePageButtonDragEnter(Math.min(totalPages, currentPage + 1))}
+                                onDragLeave={handlePageButtonDragLeave}
+                                onDragOver={handlePageButtonDragOver}
+                                onDrop={(e) => handleDropOnPage(e, Math.min(totalPages, currentPage + 1))}
+                                className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-[12px] font-bold border transition-all ${
+                                    currentPage === totalPages || totalPages === 0
+                                        ? 'border-transparent text-slate-300 bg-transparent cursor-not-allowed' 
+                                        : dragOverPageTarget === Math.min(totalPages, currentPage + 1)
+                                            ? 'border-[var(--brand)] bg-[var(--brand)]/15 text-[var(--brand)] ring-2 ring-[var(--brand)]/40 scale-105 shadow-md'
+                                            : 'border-slate-200 text-slate-700 bg-white hover:bg-slate-100 shadow-2xs'
+                                }`}
+                                title="Hover while dragging to flip page"
                             >
                                 Next
                             </button>
