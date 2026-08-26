@@ -1029,7 +1029,7 @@ function UnifiedWorkspace() {
                 )}
 
                 {/* ── DESKTOP TOP ACTION BAR (Clean Single Horizontal Row - hidden md:flex) ── */}
-                <div className="hidden md:flex w-full max-w-full items-center gap-2 px-6 py-2.5 bg-white border-b border-slate-200/80 overflow-x-auto no-scrollbar shrink-0 shadow-2xs whitespace-nowrap">
+                <div className="hidden md:flex w-full max-w-full items-center flex-wrap gap-2 px-6 py-2.5 bg-white border-b border-slate-200/80 shrink-0 shadow-2xs">
                     {!['trash', 'bookmarks', 'downloads'].includes(currentView) && canUploadHere && (
                         <button onClick={() => { setInitialUploadFiles([]); setIsUploadModalOpen(true); }} className="h-8 sm:h-8.5 px-3.5 rounded-xl bg-[var(--brand)] text-white font-bold text-xs flex items-center gap-1.5 shadow-xs hover:opacity-90 active:scale-95 transition-all shrink-0 cursor-pointer">
                             <FaUpload className="text-[11px]" />
