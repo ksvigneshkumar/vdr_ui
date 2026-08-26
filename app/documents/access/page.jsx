@@ -429,21 +429,6 @@ function AccessPageContent() {
                     </div>
 
                     <div className="flex items-center gap-2">
-                        {Object.keys(pendingChanges).length > 0 && (
-                            <button
-                                onClick={handleSaveAndReturn}
-                                disabled={isSubmitting}
-                                className="px-3.5 py-1.5 sm:py-2 bg-[var(--brand)] hover:opacity-90 text-white text-xs font-bold rounded-xl shadow-xs transition-all cursor-pointer flex items-center gap-1.5 shrink-0"
-                            >
-                                <span>{isSubmitting ? 'Saving...' : 'Save Changes'}</span>
-                                {!isSubmitting && (
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                                        <path d="M5 12h14" /><path d="m12 5 7 7-7 7" />
-                                    </svg>
-                                )}
-                            </button>
-                        )}
-
                         <div className="relative w-32 sm:w-48 shrink-0">
                             <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
                             <input type="text" placeholder="Search..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="w-full pl-8 pr-3 py-1.5 sm:py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:border-[var(--brand)] focus:bg-white transition-all shadow-2xs" />
@@ -556,22 +541,21 @@ function AccessPageContent() {
                                                         </td>
 
                                                         {toggles.map(({ field }) => {
-                                                            if (field === 'can_upload') {
-                                                                const isActive = permissions[`${selectedGroup}_fol_${folder.id}`]?.can_upload;
-                                                                const isSaving = saving[`${selectedGroup}_fol_${folder.id}_can_upload`];
+                                                            if (['can_view', 'can_upload', 'can_delete'].includes(field)) {
+                                                                const isActive = permissions[`${selectedGroup}_fol_${folder.id}`]?.[field];
+                                                                const isSaving = saving[`${selectedGroup}_fol_${folder.id}_${field}`];
                                                                 return (
                                                                     <td key={field} className="py-3.5 px-3 text-center" onClick={(e) => e.stopPropagation()}>
-                                                                        <button onClick={() => togglePermission(selectedGroup, folder.id, 'fol', 'can_upload')} disabled={isSaving} className={`relative w-11 h-6 rounded-full transition-all duration-200 mx-auto block cursor-pointer ${isActive ? 'bg-[var(--brand)]' : 'bg-slate-200'}`}>
+                                                                        <button onClick={() => togglePermission(selectedGroup, folder.id, 'fol', field)} disabled={isSaving} className={`relative w-11 h-6 rounded-full transition-all duration-200 mx-auto block cursor-pointer ${isActive ? 'bg-[var(--brand)]' : 'bg-slate-200'}`}>
                                                                             <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-all duration-200 ${isActive ? 'left-0.5 translate-x-5' : 'left-0.5 translate-x-0'}`} />
                                                                         </button>
                                                                     </td>
                                                                 );
                                                             } else {
-                                                                const state = getFolderBulkState(selectedGroup, folder.id, field);
                                                                 return (
-                                                                    <td key={field} className="py-3.5 px-3 text-center" onClick={(e) => e.stopPropagation()}>
-                                                                        <button onClick={() => toggleFolderBulk(selectedGroup, folder.id, field)} className={`relative w-11 h-6 rounded-full transition-all duration-200 mx-auto block cursor-pointer ${state === 'all' ? 'bg-[var(--brand)]' : state === 'some' ? 'bg-slate-400' : 'bg-slate-200'}`} title={state === 'some' ? 'Partial Access' : ''}>
-                                                                            <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-all duration-200 ${state === 'all' ? 'left-0.5 translate-x-5' : state === 'some' ? 'left-[12px]' : 'left-0.5 translate-x-0'}`} />
+                                                                    <td key={field} className="py-3.5 px-3 text-center">
+                                                                        <button disabled className="relative w-11 h-6 rounded-full bg-slate-100 cursor-not-allowed mx-auto block opacity-60" title="Not applicable for folders">
+                                                                            <span className="absolute top-0.5 left-0.5 w-5 h-5 bg-slate-300 rounded-full flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></span>
                                                                         </button>
                                                                     </td>
                                                                 );
@@ -754,11 +738,11 @@ function AccessPageContent() {
                                     const isUpload = p.field === 'can_upload';
                                     if (isUpload && !isFolder) return null;
 
-                                    const isActive = isFolder && !isUpload ? getFolderBulkState(selectedGroup, mobileItemConfigSheet.id, p.field) === 'all' : perm[p.field];
-                                    const isPartial = isFolder && !isUpload && getFolderBulkState(selectedGroup, mobileItemConfigSheet.id, p.field) === 'some';
+                                    const isFolderDisabled = isFolder && !['can_view', 'can_upload', 'can_delete'].includes(p.field);
+                                    const isActive = isFolder && !isFolderDisabled ? perm[p.field] : (!isFolder ? perm[p.field] : false);
 
                                     return (
-                                        <div key={p.field} className="flex items-center justify-between p-3 bg-slate-50 rounded-2xl border border-slate-100">
+                                        <div key={p.field} className={`flex items-center justify-between p-3 bg-slate-50 rounded-2xl border border-slate-100 ${isFolderDisabled ? 'opacity-60 grayscale' : ''}`}>
                                             <div className="flex items-center gap-3 min-w-0 pr-3">
                                                 <div className="w-8 h-8 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-700 shrink-0 text-sm">
                                                     {p.icon}
@@ -769,12 +753,18 @@ function AccessPageContent() {
                                                 </div>
                                             </div>
 
-                                            <button
-                                                onClick={() => isFolder && !isUpload ? toggleFolderBulk(selectedGroup, mobileItemConfigSheet.id, p.field) : togglePermission(selectedGroup, mobileItemConfigSheet.id, isFolder ? 'fol' : 'doc', p.field)}
-                                                className={`relative w-11 h-6 rounded-full transition-all duration-200 shrink-0 cursor-pointer ${isActive ? 'bg-[var(--brand)]' : isPartial ? 'bg-slate-400' : 'bg-slate-300'}`}
-                                            >
-                                                <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-all duration-200 ${isActive ? 'left-0.5 translate-x-5' : isPartial ? 'left-[12px]' : 'left-0.5 translate-x-0'}`} />
-                                            </button>
+                                            {isFolderDisabled ? (
+                                                <button disabled className="relative w-11 h-6 rounded-full bg-slate-200 shrink-0 cursor-not-allowed" title="Not applicable for folders">
+                                                    <span className="absolute top-0.5 left-0.5 w-5 h-5 bg-slate-300 rounded-full flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></span>
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    onClick={() => togglePermission(selectedGroup, mobileItemConfigSheet.id, isFolder ? 'fol' : 'doc', p.field)}
+                                                    className={`relative w-11 h-6 rounded-full transition-all duration-200 shrink-0 cursor-pointer ${isActive ? 'bg-[var(--brand)]' : 'bg-slate-300'}`}
+                                                >
+                                                    <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-all duration-200 ${isActive ? 'left-0.5 translate-x-5' : 'left-0.5 translate-x-0'}`} />
+                                                </button>
+                                            )}
                                         </div>
                                     );
                                 })}
@@ -795,9 +785,27 @@ function AccessPageContent() {
                     </div>
                 )}
 
+                {/* ── FLOATING SAVE BUTTON ── */}
+                {Object.keys(pendingChanges).length > 0 && (
+                    <div className="fixed bottom-6 right-4 sm:right-6 z-40">
+                        <button
+                            onClick={handleSaveAndReturn}
+                            disabled={isSubmitting}
+                            className="px-5 py-3 bg-[var(--brand)] hover:opacity-90 text-white text-sm font-bold rounded-2xl shadow-xl transition-all cursor-pointer flex items-center gap-2 hover:scale-105 active:scale-95"
+                        >
+                            <span>{isSubmitting ? 'Saving...' : 'Save Changes'}</span>
+                            {!isSubmitting && (
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M5 12h14" /><path d="m12 5 7 7-7 7" />
+                                </svg>
+                            )}
+                        </button>
+                    </div>
+                )}
+
                 {/* ── TOAST NOTIFICATIONS ── */}
                 {saveMessage.text && (
-                    <div className="fixed bottom-6 right-4 sm:right-6 z-50 pointer-events-auto px-4 py-2.5 rounded-2xl font-bold text-xs shadow-xl flex items-center gap-2 animate-fade-in-up bg-slate-900 text-white">
+                    <div className="fixed bottom-24 right-4 sm:right-6 z-50 pointer-events-auto px-4 py-2.5 rounded-2xl font-bold text-xs shadow-xl flex items-center gap-2 animate-fade-in-up bg-slate-900 text-white">
                         {saveMessage.text}
                     </div>
                 )}
