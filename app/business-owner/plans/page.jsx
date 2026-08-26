@@ -128,20 +128,20 @@ export default function BusinessOwnerPlansPage() {
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-row items-center gap-3 w-full sm:w-auto mt-2 sm:mt-0">
           <button
             onClick={handleOpenAssign}
-            className="px-5 py-2.5 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-sm font-medium rounded-xl transition-all shadow-2xs flex items-center gap-2"
+            className="flex-1 sm:flex-none justify-center px-3 sm:px-5 py-2 sm:py-2.5 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs sm:text-sm font-medium rounded-xl transition-all shadow-2xs flex items-center gap-2"
           >
-            <FaBuilding className="text-slate-400" />
-            <span>Assign Plan to Org</span>
+            <FaBuilding className="text-slate-400 shrink-0" />
+            <span className="whitespace-nowrap">Assign Plan</span>
           </button>
           <button
             onClick={handleOpenCreate}
-            className="px-6 py-2.5 bg-[var(--brand)] hover:bg-[var(--brand-dark)] text-white text-sm font-medium rounded-xl hover:shadow-sm hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-2"
+            className="flex-1 sm:flex-none justify-center px-3 sm:px-6 py-2 sm:py-2.5 bg-[var(--brand)] hover:bg-[var(--brand-dark)] text-white text-xs sm:text-sm font-medium rounded-xl hover:shadow-sm hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-2"
           >
-            <FaPlus />
-            <span>Create New Plan</span>
+            <FaPlus className="shrink-0" />
+            <span className="whitespace-nowrap">New Plan</span>
           </button>
         </div>
       </div>
