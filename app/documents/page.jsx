@@ -1110,13 +1110,13 @@ function UnifiedWorkspace() {
                             )}
                         </div>
                     )}
-                    {currentView !== 'trash' && canMergeFolder && (
+                    {!['trash', 'bookmarks', 'downloads'].includes(currentView) && canMergeFolder && (
                         <button disabled={selectedIds.size === 0 || !canMergeFolder} onClick={() => setIsMoveModalOpen(true)} className={`h-8 sm:h-8.5 px-3 rounded-xl border font-bold text-xs flex items-center gap-1.5 shadow-2xs transition-all shrink-0 ${selectedIds.size > 0 && canMergeFolder ? 'border-slate-200 bg-white hover:bg-slate-50 text-slate-700 hover:text-[var(--brand)] active:scale-95 cursor-pointer' : 'border-slate-100 bg-slate-50/60 text-slate-300 cursor-not-allowed opacity-60'}`}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="5 9 2 12 5 15" /><polyline points="9 5 12 2 15 5" /><line x1="2" y1="12" x2="22" y2="12" /><line x1="12" y1="2" x2="12" y2="22" /></svg>
                             <span>Move Items</span>
                         </button>
                     )}
-                    {currentView !== 'trash' && hasAnyDeleteAccess && (
+                    {!['trash', 'bookmarks', 'downloads'].includes(currentView) && hasAnyDeleteAccess && (
                         <button disabled={selectedIds.size === 0 || !canDeleteSelected} onClick={() => setIsDeleteModalOpen(true)} className={`h-8 sm:h-8.5 px-3 rounded-xl border font-bold text-xs flex items-center gap-1.5 shadow-2xs transition-all shrink-0 ${selectedIds.size > 0 && canDeleteSelected ? 'border-rose-200 bg-rose-50/60 hover:bg-rose-100 text-rose-600 active:scale-95 cursor-pointer' : 'border-slate-100 bg-slate-50/60 text-slate-300 cursor-not-allowed opacity-60'}`}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14H6L5 6" /><path d="M10 11v6M14 11v6" /><path d="M9 6V4h6v2" /></svg>
                             <span>Delete</span>

@@ -57,7 +57,7 @@ export default function GroupsLayoutWrapper({ children }) {
             </Suspense>
 
             {/* Main Content Area */}
-            <main className="flex-1 bg-white relative flex flex-col min-w-0 transition-all duration-300 h-full overflow-hidden">
+            <main className="flex-1 bg-white relative flex flex-col min-w-0 transition-all duration-300 h-full">
                 {/* Desktop Toggle button */}
                 <div
                     onClick={() => setIsSidebarOpen(!isSidebarOpen)}
