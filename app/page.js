@@ -5,10 +5,15 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import Link from "next/link";
 import { FaBars, FaTimes, FaChevronDown, FaChevronUp } from "react-icons/fa";
+import ProjectsShowcase from "@/components/landing/ProjectsShowcase";
+import InsightsResources from "@/components/landing/InsightsResources";
+import CustomerStoriesCarousel from "@/components/landing/CustomerStoriesCarousel";
+import FeaturesShowcaseCarousel from "@/components/landing/FeaturesShowcaseCarousel";
+import SecurityCertBadges from "@/components/landing/SecurityCertBadges";
+import BusinessProcessesShowcase from "@/components/landing/BusinessProcessesShowcase";
 
 export default function Home() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [openFaq, setOpenFaq] = useState(null);
 
   useEffect(() => {
     AOS.init({
@@ -41,19 +46,6 @@ export default function Home() {
     }
   }, []);
 
-  const toggleFaq = (index) => {
-    setOpenFaq(openFaq === index ? null : index);
-  };
-
-  const faqs = [
-    { q: "How do I start sharing documents?", a: "Simply create a workspace, invite your team members, and start uploading documents. You can assign specific viewing or editing permissions to different user groups." },
-    { q: "Can I track who viewed my documents?", a: "Yes. Our platform provides an analytics dashboard where you can track document views and monitor group insights in real-time." },
-    { q: "How does the Q&A module work?", a: "The Q&A module allows authorized users to securely ask and answer questions related to specific documents or the overall workspace, keeping all deal communication centralized." },
-    { q: "Is it possible to hide sensitive text in documents?", a: "Yes, our built-in redaction tool allows you to permanently black out sensitive information before making the document visible to other parties." },
-    { q: "Is my data secure during upload and storage?", a: "Absolutely. We employ enterprise-grade encryption for data both in transit and at rest, ensuring your highly sensitive corporate documents are protected at all times." },
-    { q: "Can I customize watermarking for different users?", a: "Yes. Our dynamic watermarking feature allows you to configure personalized watermarks (such as user email and IP address) that automatically appear when documents are viewed." }
-  ];
-
   return (
     <main className="overflow-x-hidden relative w-full font-sans text-gray-800 bg-gray-50">
 
@@ -64,10 +56,9 @@ export default function Home() {
         </div>
 
         <div className="hidden lg:flex gap-8 items-center font-medium text-gray-600">
-          <a href="#features" className="hover:text-[var(--brand)] transition-colors">Platform</a>
-          <a href="#solutions" className="hover:text-[var(--brand)] transition-colors">Solutions</a>
-          <a href="#how-it-works" className="hover:text-[var(--brand)] transition-colors">How it works</a>
-          <a href="#pricing" className="hover:text-[var(--brand)] transition-colors">Plans</a>
+          <a href="#features" className="hover:text-[var(--brand)] transition-colors">Features</a>
+          <a href="#products" className="hover:text-[var(--brand)] transition-colors">Products</a>
+          <a href="#insights" className="hover:text-[var(--brand)] transition-colors">Insights</a>
         </div>
 
         {/* Desktop Navigation Buttons */}
@@ -105,10 +96,9 @@ export default function Home() {
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="fixed top-[72px] left-0 w-full bg-white shadow-sm z-40 flex flex-col p-6 md:hidden gap-4 animate-fade-in border-t border-gray-100">
-          <a href="#features" className="text-lg font-medium text-gray-700 py-2 border-b border-gray-50" onClick={() => setIsMobileMenuOpen(false)}>Platform</a>
-          <a href="#solutions" className="text-lg font-medium text-gray-700 py-2 border-b border-gray-50" onClick={() => setIsMobileMenuOpen(false)}>Solutions</a>
-          <a href="#how-it-works" className="text-lg font-medium text-gray-700 py-2 border-b border-gray-50" onClick={() => setIsMobileMenuOpen(false)}>How it works</a>
-          <a href="#pricing" className="text-lg font-medium text-gray-700 py-2 border-b border-gray-50" onClick={() => setIsMobileMenuOpen(false)}>Plans</a>
+          <a href="#features" className="text-lg font-medium text-gray-700 py-2 border-b border-gray-50" onClick={() => setIsMobileMenuOpen(false)}>Features</a>
+          <a href="#products" className="text-lg font-medium text-gray-700 py-2 border-b border-gray-50" onClick={() => setIsMobileMenuOpen(false)}>Products</a>
+          <a href="#insights" className="text-lg font-medium text-gray-700 py-2 border-b border-gray-50" onClick={() => setIsMobileMenuOpen(false)}>Insights</a>
           <Link href="/business-owner/login" className="text-lg font-medium text-[var(--brand)] py-2 border-b border-gray-50 flex items-center gap-2" onClick={() => setIsMobileMenuOpen(false)}><i className="fas fa-chart-line"></i> Business Owner Login</Link>
           <div className="flex flex-col gap-3 mt-4">
             <a href="/login" className="w-full text-center px-6 py-3 border-2 border-[var(--brand)] text-[var(--brand)] rounded-full font-bold" onClick={() => setIsMobileMenuOpen(false)}>Log In</a>
@@ -170,522 +160,241 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 3. Detailed Alternating Features */}
-      <section id="features" className="py-24 bg-white relative overflow-hidden">
-        {/* Background Decorative Orbs */}
-        <div className="absolute inset-0 pointer-events-none z-0">
-          <div className="absolute top-[10%] left-[-5%] w-96 h-96 bg-[var(--brand-soft)] rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-float"></div>
-          <div className="absolute bottom-[20%] right-[-10%] w-[500px] h-[500px] bg-blue-50 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-float-delayed"></div>
-        </div>
-        <div className="max-w-7xl mx-auto px-6 md:px-16 relative z-10">
-          {/* Header removed as requested */}
-          {/* Feature 1a: Doc Management */}
-          <div className="flex flex-col md:flex-row items-center gap-16 mb-24">
-            <div className="flex-1" data-aos="fade-right">
-              <div className="inline-block px-4 py-1.5 mb-4 rounded-full bg-indigo-50 text-indigo-600 font-bold text-xs uppercase tracking-widest border border-indigo-100">Storage</div>
-              <h3 className="text-3xl md:text-4xl font-black text-gray-900 mb-6 leading-tight">Secure Document Management</h3>
-              <p className="text-lg text-gray-600 mb-6">Upload and organize your files with ease. Enjoy a fast, reliable, and secure platform to manage all your critical data.</p>
-              <ul className="space-y-4">
-                <li className="flex items-start">
-                  <div className="flex-shrink-0 mt-1 w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-green-600"><i className="fas fa-check text-xs"></i></div>
-                  <p className="ml-3 text-gray-700 font-medium">Bulk file uploads</p>
-                </li>
-                <li className="flex items-start">
-                  <div className="flex-shrink-0 mt-1 w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-green-600"><i className="fas fa-check text-xs"></i></div>
-                  <p className="ml-3 text-gray-700 font-medium">Organized folder structures</p>
-                </li>
-              </ul>
-            </div>
-            <div className="flex-1 w-full relative py-8 md:py-16 flex justify-center" data-aos="fade-left">
-              {/* Decorative concentric circles */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] h-[320px] md:w-[560px] md:h-[560px] rounded-full border border-dashed border-indigo-200 -z-10"></div>
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] h-[280px] md:w-[480px] md:h-[480px] rounded-full border border-dashed border-indigo-300 -z-10">
-                <div className="absolute top-0 right-1/4 w-3 h-3 bg-indigo-200 rounded-full"></div>
-                <div className="absolute bottom-1/4 left-0 w-2 h-2 bg-indigo-300 rounded-full"></div>
-              </div>
+      {/* 2.1 Important Projects Done On Platform (Auto-Scrolling Showcase) */}
+      <ProjectsShowcase />
 
-              {/* Main Circular Container */}
-              <div className="relative bg-white rounded-full aspect-square w-[260px] md:w-[420px] flex items-center justify-center shadow-sm border border-gray-100 overflow-hidden">
-                <img src="/bii.jpeg" alt="Document Management" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
-              </div>
+      {/* 3. Next-Gen Security & Deal Protection Showcase (Ansarada-Style Auto-Scrolling Cards) */}
+      <FeaturesShowcaseCarousel />
+
+      {/* 6. Executive Customer Stories Carousel (Ansarada-Style Cinematic Slides) */}
+      <CustomerStoriesCarousel />
+
+      {/* 7. Our Products Section (White Background with Teal Gradient Lettering) */}
+      <section id="products" className="py-20 sm:py-24 px-6 md:px-16 bg-white text-slate-900 relative border-t border-slate-100 select-none">
+        <div className="max-w-7xl mx-auto text-center relative z-10">
+          {/* Section Header */}
+          <div className="mb-16" data-aos="fade-up">
+            <div className="inline-block px-4 py-1 mb-3.5 rounded-full bg-emerald-50 text-[#00a877] font-bold text-xs uppercase tracking-widest border border-emerald-200/60 shadow-2xs">
+              Enterprise Suite
             </div>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black bg-gradient-to-r from-[#00a877] via-[#059669] to-[#088382] bg-clip-text text-transparent tracking-tight mb-4">
+              Our Products
+            </h2>
+            <p className="text-slate-500 font-medium text-sm sm:text-base md:text-lg max-w-3xl mx-auto leading-relaxed">
+              From secure document sharing to end-to-end deal execution, one platform, purpose-built for high-stakes transactions.
+            </p>
           </div>
 
-          {/* Feature 1b: Redaction */}
-          <div className="flex flex-col md:flex-row-reverse items-center gap-16 mb-24">
-            <div className="flex-1" data-aos="fade-left">
-              <div className="inline-block px-4 py-1.5 mb-4 rounded-full bg-red-50 text-red-600 font-bold text-xs uppercase tracking-widest border border-red-100">Privacy</div>
-              <h3 className="text-3xl md:text-4xl font-black text-gray-900 mb-6 leading-tight">Document Redaction</h3>
-              <p className="text-lg text-gray-600 mb-6">Need to hide sensitive data? Our built-in redaction tool lets you permanently black out text before anyone else sees it.</p>
-              <ul className="space-y-4">
-                <li className="flex items-start">
-                  <div className="flex-shrink-0 mt-1 w-6 h-6 rounded-full bg-red-100 flex items-center justify-center text-red-600"><i className="fas fa-check text-xs"></i></div>
-                  <p className="ml-3 text-gray-700 font-medium">In-browser permanent redaction</p>
-                </li>
-                <li className="flex items-start">
-                  <div className="flex-shrink-0 mt-1 w-6 h-6 rounded-full bg-red-100 flex items-center justify-center text-red-600"><i className="fas fa-check text-xs"></i></div>
-                  <p className="ml-3 text-gray-700 font-medium">Irreversible data removal</p>
-                </li>
-              </ul>
-            </div>
-            <div className="flex-1 w-full relative py-8 md:py-16 flex justify-center" data-aos="fade-right">
-              {/* Decorative concentric circles */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] h-[320px] md:w-[560px] md:h-[560px] rounded-full border border-dashed border-red-200 -z-10"></div>
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] h-[280px] md:w-[480px] md:h-[480px] rounded-full border border-dashed border-red-300 -z-10">
-                <div className="absolute top-0 right-1/4 w-3 h-3 bg-red-200 rounded-full"></div>
-                <div className="absolute bottom-1/4 left-0 w-2 h-2 bg-red-300 rounded-full"></div>
+          {/* 3 Products Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10 text-center items-stretch">
+            
+            {/* Product 1: Virtual Data Room (VDR) */}
+            <div className="flex flex-col items-center group p-8 sm:p-10 rounded-2xl bg-white border border-slate-200/90 hover:border-emerald-300 shadow-sm hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300" data-aos="fade-up" data-aos-delay="0">
+              <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-emerald-50 text-[#00a877] border border-emerald-200/70 flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 group-hover:bg-[#00a877] group-hover:text-white transition-all duration-300">
+                {/* Filing Cabinet / VDR Icon */}
+                <svg className="w-9 h-9" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <rect x="3" y="3" width="18" height="18" rx="2" strokeWidth="2.2" />
+                  <line x1="3" y1="9" x2="21" y2="9" strokeWidth="2" />
+                  <line x1="3" y1="15" x2="21" y2="15" strokeWidth="2" />
+                  <line x1="10" y1="6" x2="14" y2="6" strokeWidth="2.5" strokeLinecap="round" />
+                  <line x1="10" y1="12" x2="14" y2="12" strokeWidth="2.5" strokeLinecap="round" />
+                  <line x1="10" y1="18" x2="14" y2="18" strokeWidth="2.5" strokeLinecap="round" />
+                </svg>
               </div>
-
-              {/* Main Circular Container */}
-              <div className="relative bg-white rounded-full aspect-square w-[260px] md:w-[420px] flex items-center justify-center shadow-sm border border-gray-100 overflow-hidden">
-                <img src="/bi.jpeg" alt="Document Redaction" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
-              </div>
-            </div>
-          </div>
-
-          {/* Feature 2: Access & Watermarking */}
-          <div className="flex flex-col md:flex-row items-center gap-16 mb-24">
-            <div className="flex-1" data-aos="fade-right">
-              <div className="inline-block px-4 py-1.5 mb-4 rounded-full bg-blue-50 text-[var(--brand)] font-bold text-xs uppercase tracking-widest border border-blue-100">Access Control</div>
-              <h3 className="text-3xl md:text-4xl font-black text-gray-900 mb-6 leading-tight">Granular Permissions & Dynamic Watermarking</h3>
-              <p className="text-lg text-gray-600 mb-6">Manage user groups and assign precise viewing permissions. Protect your intellectual property with automated, user-specific watermarks on every page.</p>
-              <ul className="space-y-4">
-                <li className="flex items-start">
-                  <div className="flex-shrink-0 mt-1 w-6 h-6 rounded-full bg-[var(--brand)]/10 flex items-center justify-center text-[var(--brand)]"><i className="fas fa-check text-xs"></i></div>
-                  <p className="ml-3 text-gray-700 font-medium">Role-based group access</p>
-                </li>
-                <li className="flex items-start">
-                  <div className="flex-shrink-0 mt-1 w-6 h-6 rounded-full bg-[var(--brand)]/10 flex items-center justify-center text-[var(--brand)]"><i className="fas fa-check text-xs"></i></div>
-                  <p className="ml-3 text-gray-700 font-medium">Automatic identifying watermarks</p>
-                </li>
-              </ul>
-            </div>
-            <div className="flex-1 w-full relative py-8 md:py-16 flex justify-center" data-aos="fade-left">
-              {/* Decorative concentric circles */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] h-[320px] md:w-[560px] md:h-[560px] rounded-full border border-dashed border-blue-200 -z-10"></div>
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] h-[280px] md:w-[480px] md:h-[480px] rounded-full border border-dashed border-blue-300 -z-10">
-                <div className="absolute top-0 right-1/4 w-3 h-3 bg-blue-200 rounded-full"></div>
-                <div className="absolute bottom-1/4 left-0 w-2 h-2 bg-blue-300 rounded-full"></div>
-              </div>
-
-              {/* Main Circular Container */}
-              <div className="relative bg-white rounded-full aspect-square w-[260px] md:w-[420px] flex items-center justify-center shadow-sm border border-gray-100 overflow-hidden">
-                <img src="/water.jpeg" alt="Dynamic Watermarking" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
-              </div>
-            </div>
-          </div>
-
-          {/* Feature 3: Analytics & QA */}
-          <div className="flex flex-col md:flex-row-reverse items-center gap-16">
-            <div className="flex-1" data-aos="fade-left">
-              <div className="inline-block px-4 py-1.5 mb-4 rounded-full bg-purple-50 text-purple-600 font-bold text-xs uppercase tracking-widest border border-purple-100">Intelligence</div>
-              <h3 className="text-3xl md:text-4xl font-black text-gray-900 mb-6 leading-tight">Real-time Analytics & Secure Q&A</h3>
-              <p className="text-lg text-gray-600 mb-6">Gain intelligence on who is viewing what. Facilitate secure, centralized Q&A workflows instead of relying on chaotic email threads.</p>
-              <ul className="space-y-4">
-                <li className="flex items-start">
-                  <div className="flex-shrink-0 mt-1 w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center text-purple-600"><i className="fas fa-check text-xs"></i></div>
-                  <p className="ml-3 text-gray-700 font-medium">Track views and downloads</p>
-                </li>
-                <li className="flex items-start">
-                  <div className="flex-shrink-0 mt-1 w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center text-purple-600"><i className="fas fa-check text-xs"></i></div>
-                  <p className="ml-3 text-gray-700 font-medium">Organized question workflows</p>
-                </li>
-              </ul>
-            </div>
-            <div className="flex-1 w-full relative py-8 md:py-16 flex justify-center" data-aos="fade-right">
-              {/* Decorative concentric circles */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] h-[320px] md:w-[560px] md:h-[560px] rounded-full border border-dashed border-purple-200 -z-10"></div>
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] h-[280px] md:w-[480px] md:h-[480px] rounded-full border border-dashed border-purple-300 -z-10">
-                <div className="absolute top-0 right-1/4 w-3 h-3 bg-purple-200 rounded-full"></div>
-                <div className="absolute bottom-1/4 left-0 w-2 h-2 bg-purple-300 rounded-full"></div>
-              </div>
-
-              {/* Main Circular Container */}
-              <div className="relative bg-white rounded-full aspect-square w-[260px] md:w-[420px] flex items-center justify-center shadow-sm border border-gray-100 overflow-hidden">
-                <img src="/qa.jpeg" alt="Real-time Analytics" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      {/* 4. Solutions by Role */}
-      <section id="solutions" className="py-24 bg-gray-50 bg-dot-pattern border-y border-gray-100">
-        <div className="max-w-7xl mx-auto px-6 md:px-16 text-center">
-          <div className="glass-card p-8 rounded-xl inline-block mb-16 border-none shadow-sm">
-            <h2 className="text-[var(--brand)] font-bold tracking-wider uppercase text-sm mb-3">Who uses SecureVDR?</h2>
-            <h3 className="text-3xl md:text-5xl font-black text-gray-900 mb-0">Built for dealmakers across industries.</h3>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
-            <div className="glass-card bg-white p-8 rounded-lg shadow-sm border border-gray-100 hover:shadow-sm transition-all flex flex-col" data-aos="fade-up">
-              <div className="w-14 h-14 rounded-full bg-blue-50 text-[var(--brand)] flex items-center justify-center text-2xl mb-6">
-                <img src="/sec1.png" alt="Secure Logo" className="w-7 h-7 object-contain opacity-90" style={{ filter: 'brightness(0) saturate(100%) invert(29%) sepia(85%) saturate(1637%) hue-rotate(167deg) brightness(90%) contrast(89%)' }} />
-              </div>
-              <h4 className="text-xl font-bold text-gray-900 mb-3">Secure Document Management & Redaction</h4>
-              <p className="text-gray-600 mb-6 leading-relaxed text-sm">Upload and organize your files with ease. Need to hide sensitive data? Our built-in redaction tool lets you permanently black out text before anyone else sees it.</p>
-              <ul className="space-y-3 mt-auto">
-                <li className="flex items-start">
-                  <div className="flex-shrink-0 mt-1 w-5 h-5 rounded-full bg-[var(--brand)]/10 flex items-center justify-center text-[var(--brand)]"><i className="fas fa-check text-[10px]"></i></div>
-                  <p className="ml-3 text-gray-700 text-sm font-medium">Bulk file uploads</p>
-                </li>
-                <li className="flex items-start">
-                  <div className="flex-shrink-0 mt-1 w-5 h-5 rounded-full bg-[var(--brand)]/10 flex items-center justify-center text-[var(--brand)]"><i className="fas fa-check text-[10px]"></i></div>
-                  <p className="ml-3 text-gray-700 text-sm font-medium">In-browser permanent redaction</p>
-                </li>
-              </ul>
-            </div>
-            <div className="glass-card bg-white p-8 rounded-lg shadow-sm border border-gray-100 hover:shadow-sm transition-all flex flex-col" data-aos="fade-up" data-aos-delay="100">
-              <div className="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center mb-6">
-                <img src="/pro.png" alt="Legal" className="w-7 h-7 object-contain opacity-90" style={{ filter: 'brightness(0) saturate(100%) invert(29%) sepia(85%) saturate(1637%) hue-rotate(167deg) brightness(90%) contrast(89%)' }} />
-              </div>
-              <h4 className="text-xl font-bold text-gray-900 mb-3">Granular Permissions & Dynamic Watermarking</h4>
-              <p className="text-gray-600 mb-6 leading-relaxed text-sm">Manage user groups and assign precise viewing permissions. Protect your intellectual property with automated, user-specific watermarks on every page.</p>
-              <ul className="space-y-3 mt-auto">
-                <li className="flex items-start">
-                  <div className="flex-shrink-0 mt-1 w-5 h-5 rounded-full bg-[var(--brand)]/10 flex items-center justify-center text-[var(--brand)]"><i className="fas fa-check text-[10px]"></i></div>
-                  <p className="ml-3 text-gray-700 text-sm font-medium">Role-based group access</p>
-                </li>
-                <li className="flex items-start">
-                  <div className="flex-shrink-0 mt-1 w-5 h-5 rounded-full bg-[var(--brand)]/10 flex items-center justify-center text-[var(--brand)]"><i className="fas fa-check text-[10px]"></i></div>
-                  <p className="ml-3 text-gray-700 text-sm font-medium">Automatic identifying watermarks</p>
-                </li>
-              </ul>
-            </div>
-            <div className="glass-card bg-white p-8 rounded-lg shadow-sm border border-gray-100 hover:shadow-sm transition-all flex flex-col" data-aos="fade-up" data-aos-delay="200">
-              <div className="w-14 h-14 rounded-full bg-indigo-50 flex items-center justify-center mb-6">
-                <img src="/an.png" alt="Analytics" className="w-7 h-7 object-contain opacity-90" style={{ filter: 'brightness(0) saturate(100%) invert(29%) sepia(85%) saturate(1637%) hue-rotate(167deg) brightness(90%) contrast(89%)' }} />
-              </div>
-              <h4 className="text-xl font-bold text-gray-900 mb-3">Real-time Analytics & Secure Q&A</h4>
-              <p className="text-gray-600 mb-6 leading-relaxed text-sm">Gain intelligence on who is viewing what. Facilitate secure, centralized Q&A workflows instead of relying on chaotic email threads.</p>
-              <ul className="space-y-3 mt-auto">
-                <li className="flex items-start">
-                  <div className="flex-shrink-0 mt-1 w-5 h-5 rounded-full bg-[var(--brand)]/10 flex items-center justify-center text-[var(--brand)]"><i className="fas fa-check text-[10px]"></i></div>
-                  <p className="ml-3 text-gray-700 text-sm font-medium">Track views and downloads</p>
-                </li>
-                <li className="flex items-start">
-                  <div className="flex-shrink-0 mt-1 w-5 h-5 rounded-full bg-[var(--brand)]/10 flex items-center justify-center text-[var(--brand)]"><i className="fas fa-check text-[10px]"></i></div>
-                  <p className="ml-3 text-gray-700 text-sm font-medium">Organized question workflows</p>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 5. How It Works (Timeline) */}
-      <section id="how-it-works" className="py-24 bg-white relative overflow-hidden">
-        {/* Background Decorative Orbs */}
-        <div className="absolute inset-0 pointer-events-none z-0">
-          <div className="absolute top-[20%] right-[-5%] w-[400px] h-[400px] bg-indigo-50 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-float"></div>
-          <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-[var(--brand-soft)] rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-float-delayed"></div>
-        </div>
-        <div className="max-w-6xl mx-auto px-6 md:px-16 text-center relative z-10">
-          <div className="glass-card p-8 rounded-xl inline-block mb-12 border-none shadow-sm" data-aos="fade-up">
-            <h2 className="text-3xl md:text-5xl font-black text-gray-900 mb-0">Get started in 4 simple steps.</h2>
-          </div>
-
-          <style>{`
-            [data-aos="draw-line-horizontal"] {
-              width: 0%;
-              transition-property: width;
-            }
-            [data-aos="draw-line-horizontal"].aos-animate {
-              width: 100%;
-            }
-
-            [data-aos="draw-line-vertical"] {
-              height: 0%;
-              transition-property: height;
-            }
-            [data-aos="draw-line-vertical"].aos-animate {
-              height: 100%;
-            }
-
-            [data-aos="fade-in-dot"] {
-              transform: scale(0);
-              opacity: 0;
-              transition-property: transform, opacity;
-            }
-            [data-aos="fade-in-dot"].aos-animate {
-              transform: scale(1);
-              opacity: 1;
-            }
-          `}</style>
-
-          <div className="relative mt-8 md:mt-20 z-0">
-            {/* Single Continuous Background Line */}
-            <div className="hidden md:block absolute top-[17px] left-[12.5%] w-[75%] h-[6px] bg-gray-100 rounded-full -z-20 shadow-inner">
-              <div className="h-full bg-[var(--brand)] rounded-full" data-aos="draw-line-horizontal" data-aos-duration="3000" data-aos-delay="800" data-aos-easing="linear"></div>
-            </div>
-
-            {/* Mobile Vertical Line */}
-            <div className="md:hidden absolute top-[20px] left-[19px] w-[4px] h-[calc(100%-80px)] bg-gray-100 rounded-full overflow-hidden -z-20">
-              <div className="w-full bg-[var(--brand)]" data-aos="draw-line-vertical" data-aos-duration="3000" data-aos-delay="800" data-aos-easing="linear"></div>
-            </div>
-
-            <div className="flex flex-col md:flex-row w-full justify-between gap-12 md:gap-0">
-              
-              {/* Step 1 */}
-              <div className="flex-1 flex flex-row md:flex-col items-center md:text-center text-left" data-aos="fade-up" data-aos-delay="0">
-                <div className="w-10 h-10 rounded-full border-[3px] border-[var(--brand)] bg-white p-1 flex items-center justify-center shrink-0 md:mb-6 z-10 shadow-sm mr-6 md:mr-0">
-                  <div className="w-3 h-3 rounded-full bg-[var(--brand)]" data-aos="fade-in-dot" data-aos-delay="800" data-aos-duration="300"></div>
-                </div>
-                <div>
-                  <h4 className="text-xl md:text-2xl font-bold text-[#031b4e] mb-2 md:mb-3">1. Register</h4>
-                  <p className="text-gray-500 font-medium md:px-4 leading-relaxed">Create your account and initialize a new secure data room.</p>
-                </div>
-              </div>
-
-              {/* Step 2 */}
-              <div className="flex-1 flex flex-row md:flex-col items-center md:text-center text-left" data-aos="fade-up" data-aos-delay="200">
-                <div className="w-10 h-10 rounded-full border-[3px] border-[var(--brand)] bg-white p-1 flex items-center justify-center shrink-0 md:mb-6 z-10 shadow-sm mr-6 md:mr-0">
-                  <div className="w-3 h-3 rounded-full bg-[var(--brand)]" data-aos="fade-in-dot" data-aos-delay="1800" data-aos-duration="300"></div>
-                </div>
-                <div>
-                  <h4 className="text-xl md:text-2xl font-bold text-[#031b4e] mb-2 md:mb-3">2. Upload</h4>
-                  <p className="text-gray-500 font-medium md:px-4 leading-relaxed">Upload documents and permanently redact sensitive text.</p>
-                </div>
-              </div>
-
-              {/* Step 3 */}
-              <div className="flex-1 flex flex-row md:flex-col items-center md:text-center text-left" data-aos="fade-up" data-aos-delay="400">
-                <div className="w-10 h-10 rounded-full border-[3px] border-[var(--brand)] bg-white p-1 flex items-center justify-center shrink-0 md:mb-6 z-10 shadow-sm mr-6 md:mr-0">
-                  <div className="w-3 h-3 rounded-full bg-[var(--brand)]" data-aos="fade-in-dot" data-aos-delay="2800" data-aos-duration="300"></div>
-                </div>
-                <div>
-                  <h4 className="text-xl md:text-2xl font-bold text-[#031b4e] mb-2 md:mb-3">3. Configure</h4>
-                  <p className="text-gray-500 font-medium md:px-4 leading-relaxed">Assign granular viewing and downloading permissions.</p>
-                </div>
-              </div>
-
-              {/* Step 4 */}
-              <div className="flex-1 flex flex-row md:flex-col items-center md:text-center text-left" data-aos="fade-up" data-aos-delay="600">
-                <div className="w-10 h-10 rounded-full border-[3px] border-[var(--brand)] bg-white p-1 flex items-center justify-center shrink-0 md:mb-6 z-10 shadow-sm mr-6 md:mr-0">
-                  <div className="w-3 h-3 rounded-full bg-[var(--brand)]" data-aos="fade-in-dot" data-aos-delay="3800" data-aos-duration="300"></div>
-                </div>
-                <div>
-                  <h4 className="text-xl md:text-2xl font-bold text-[#031b4e] mb-2 md:mb-3">4. Invite</h4>
-                  <p className="text-gray-500 font-medium md:px-4 leading-relaxed">Invite users securely and track activity via analytics.</p>
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 6. Testimonials (Placeholder for Richness) */}
-      <section className="py-24 bg-gray-50 bg-dot-pattern">
-        <div className="max-w-7xl mx-auto px-6 md:px-16">
-          {/* Header removed as requested */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="glass-card bg-white p-8 rounded-xl shadow-sm border border-gray-100 flex flex-col" data-aos="fade-up">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-[var(--brand)] font-bold">JW</div>
-                <div><h4 className="font-bold text-gray-900">Partner</h4><p className="text-sm text-gray-500">Leading Capital Firm</p></div>
-              </div>
-              <p className="text-gray-700 text-lg mb-8 leading-relaxed flex-1">"SecureVDR reduced our document prep time significantly. The watermarking and granular audit logs give us the peace of mind we need."</p>
-              <div className="flex gap-1 text-yellow-400 text-sm mt-auto"><i className="fas fa-star"></i><i className="fas fa-star"></i><i className="fas fa-star"></i><i className="fas fa-star"></i><i className="fas fa-star"></i></div>
-            </div>
-            <div className="glass-card bg-white p-8 rounded-xl shadow-sm border border-gray-100 flex flex-col" data-aos="fade-up" data-aos-delay="100">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-[var(--brand)] font-bold">DO</div>
-                <div><h4 className="font-bold text-gray-900">General Counsel</h4><p className="text-sm text-gray-500">Enterprise Legal Group</p></div>
-              </div>
-              <p className="text-gray-700 text-lg mb-8 leading-relaxed flex-1">"A VDR that combines enterprise security with a modern UI. Our team loves the built-in redaction tool and Q&A module."</p>
-              <div className="flex gap-1 text-yellow-400 text-sm mt-auto"><i className="fas fa-star"></i><i className="fas fa-star"></i><i className="fas fa-star"></i><i className="fas fa-star"></i><i className="fas fa-star"></i></div>
-            </div>
-            <div className="glass-card bg-white p-8 rounded-xl shadow-sm border border-gray-100 flex flex-col" data-aos="fade-up" data-aos-delay="200">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-[var(--brand)] font-bold">PM</div>
-                <div><h4 className="font-bold text-gray-900">CFO</h4><p className="text-sm text-gray-500">Tech Startup</p></div>
-              </div>
-              <p className="text-gray-700 text-lg mb-8 leading-relaxed flex-1">"Best decision for our recent fundraising. Real-time analytics helped us track investor interest and engage effectively."</p>
-              <div className="flex gap-1 text-yellow-400 text-sm mt-auto"><i className="fas fa-star"></i><i className="fas fa-star"></i><i className="fas fa-star"></i><i className="fas fa-star"></i><i className="fas fa-star"></i></div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 7. Pricing */}
-      <section id="pricing" className="py-24 px-6 md:px-16 bg-gray-50 bg-dot-pattern">
-        <h2 className="text-3xl md:text-5xl font-black text-center text-gray-900 mb-4">Flexible Plans for Every Business</h2>
-        <p className="text-center text-gray-500 mb-16 font-medium">Choose a plan that scales with your needs.</p>
-
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
-
-          {/* Basic Plan */}
-          <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100 flex flex-col" data-aos="fade-up">
-            <div className="text-center mb-8">
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Basic</h3>
-              <div className="flex justify-center items-baseline">
-                <span className="text-5xl font-black text-gray-900">$249</span>
-                <span className="text-gray-500 ml-1">/month</span>
-              </div>
-            </div>
-            <ul className="space-y-4 mb-8 flex-1">
-              <li className="flex items-center text-gray-600 font-medium">
-                <i className="fas fa-check-circle text-green-500 mr-3"></i> Up to 5 users
-              </li>
-              <li className="flex items-center text-gray-600 font-medium">
-                <i className="fas fa-check-circle text-green-500 mr-3"></i> 50 GB storage
-              </li>
-              <li className="flex items-center text-gray-600 font-medium">
-                <i className="fas fa-check-circle text-green-500 mr-3"></i> Basic analytics
-              </li>
-            </ul>
-            <Link href="/register" className="block w-full text-center py-3 rounded-full font-bold border-2 border-[var(--brand)] text-[var(--brand)] hover:bg-[var(--brand)] hover:text-white transition-all">
-              Get Basic
-            </Link>
-          </div>
-
-          {/* Pro Plan */}
-          <div className="bg-[var(--brand)] rounded-xl p-8 shadow-sm relative flex flex-col transform md:-translate-y-4" data-aos="fade-up" data-aos-delay="100">
-            <div className="absolute top-0 right-8 bg-yellow-400 text-yellow-900 font-bold text-xs px-3 py-1 rounded-b-md uppercase tracking-wider">
-              Popular
-            </div>
-            <div className="text-center md:text-left mb-8 mt-2">
-              <h3 className="text-2xl font-bold text-white mb-4">Pro</h3>
-              <div className="flex justify-center md:justify-start items-baseline">
-                <span className="text-5xl font-black text-white">$599</span>
-              </div>
-            </div>
-            <ul className="space-y-4 mb-8 flex-1">
-              <li className="flex items-center text-white font-medium">
-                <i className="fas fa-check-circle text-white mr-3"></i> Unlimited users
-              </li>
-              <li className="flex items-center text-white font-medium">
-                <i className="fas fa-check-circle text-white mr-3"></i> 500 GB + advanced logs
-              </li>
-              <li className="flex items-center text-white font-medium">
-                <i className="fas fa-check-circle text-white mr-3"></i> Audit & watermarks
-              </li>
-            </ul>
-            <Link href="/register" className="block w-full text-center py-3 rounded-full font-bold bg-white text-[var(--brand)] hover:bg-gray-50 transition-all shadow-md">
-              Start Pro
-            </Link>
-          </div>
-
-          {/* Enterprise Plan */}
-          <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100 flex flex-col" data-aos="fade-up" data-aos-delay="200">
-            <div className="text-center mb-8">
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Enterprise</h3>
-              <div className="flex justify-center items-baseline mb-1">
-                <span className="text-5xl font-black text-gray-900">Custom</span>
-              </div>
-              <span className="text-gray-500 text-sm">Tailored solutions</span>
-            </div>
-            <ul className="space-y-4 mb-8 flex-1">
-              <li className="flex items-center text-gray-600 font-medium">
-                <i className="fas fa-check-circle text-green-500 mr-3"></i> SSO + API access
-              </li>
-              <li className="flex items-center text-gray-600 font-medium">
-                <i className="fas fa-check-circle text-green-500 mr-3"></i> Dedicated support
-              </li>
-              <li className="flex items-center text-gray-600 font-medium">
-                <i className="fas fa-check-circle text-green-500 mr-3"></i> Compliance (GDPR/SOC2)
-              </li>
-            </ul>
-            <Link href="/register" className="block w-full text-center py-3 rounded-full font-bold border-2 border-[var(--brand)] text-[var(--brand)] hover:bg-[var(--brand)] hover:text-white transition-all">
-              Contact Sales
-            </Link>
-          </div>
-
-        </div>
-      </section>
-
-      {/* 8. FAQs */}
-      <section className="py-24 bg-white relative">
-        <div className="max-w-7xl mx-auto px-6 md:px-16">
-          <div className="text-center mb-16" data-aos="fade-up">
-            <h2 className="text-[var(--brand)] font-bold tracking-wider uppercase text-sm mb-3">Got Questions?</h2>
-            <h3 className="text-3xl md:text-5xl font-black text-gray-900 mb-0">Frequently Asked Questions</h3>
-          </div>
-          <div className="space-y-4" data-aos="fade-up">
-            {faqs.map((faq, index) => (
-              <div
-                key={index}
-                className={`bg-white rounded-lg border transition-all duration-300 shadow-sm hover:shadow-md ${openFaq === index ? 'border-[var(--brand)] ring-1 ring-[var(--brand)]/20' : 'border-gray-100 hover:border-gray-300'}`}
-              >
-                <button
-                  className="w-full px-6 md:px-8 py-6 text-left flex justify-between items-center focus:outline-none group"
-                  onClick={() => toggleFaq(index)}
-                >
-                  <span className={`font-bold text-lg pr-4 transition-colors ${openFaq === index ? 'text-[var(--brand)]' : 'text-gray-900 group-hover:text-[var(--brand)]'}`}>{faq.q}</span>
-                  <span className={`flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full transition-all duration-300 ${openFaq === index ? 'bg-[var(--brand)] text-white rotate-180' : 'bg-gray-100 text-gray-500 group-hover:bg-[var(--brand)]/10 group-hover:text-[var(--brand)]'}`}>
-                    <FaChevronDown className="text-sm" />
-                  </span>
-                </button>
-                <div
-                  className={`px-6 md:px-8 pb-6 ${openFaq === index ? 'block' : 'hidden'}`}
-                >
-                  <div className="w-full h-px bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 mb-5"></div>
-                  <p className="text-gray-600 font-medium leading-relaxed">{faq.a}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 9. Footer */}
-      <footer className="bg-[#0f172a] text-gray-400 py-16 px-6 md:px-16 border-t border-gray-800">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
-
-            {/* Column 1 */}
-            <div className="col-span-1">
-              <div className="text-xl font-bold text-white flex items-center mb-4">
-                <i className="fas fa-shield-alt text-white mr-2"></i> SecureVDR
-              </div>
-              <p className="text-sm text-gray-400 leading-relaxed max-w-xs">
-                Enterprise Data Rooms<br />with next-gen security.
+              <h3 className="text-xl sm:text-2xl font-bold text-slate-900 group-hover:text-[#00a877] transition-colors mb-3 tracking-tight">
+                Virtual Data Room (VDR)
+              </h3>
+              <p className="text-slate-500 text-sm sm:text-[15px] font-medium leading-relaxed max-w-xs">
+                DPDP-aligned virtual data room built for M&amp;A, IPO, and fundraising.
               </p>
             </div>
 
-            {/* Column 2 */}
-            <div>
-              <h4 className="text-white font-bold mb-4">Product</h4>
-              <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-white transition-colors">Features</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Security</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Pricing</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">API</a></li>
-              </ul>
+            {/* Product 2: Document Management System */}
+            <div className="flex flex-col items-center group p-8 sm:p-10 rounded-2xl bg-white border border-slate-200/90 hover:border-emerald-300 shadow-sm hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300" data-aos="fade-up" data-aos-delay="100">
+              <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-emerald-50 text-[#00a877] border border-emerald-200/70 flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 group-hover:bg-[#00a877] group-hover:text-white transition-all duration-300">
+                {/* Archive / Document Safe Icon */}
+                <svg className="w-9 h-9" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+              </div>
+              <h3 className="text-xl sm:text-2xl font-bold text-slate-900 group-hover:text-[#00a877] transition-colors mb-3 tracking-tight">
+                Document Management System
+              </h3>
+              <p className="text-slate-500 text-sm sm:text-[15px] font-medium leading-relaxed max-w-xs">
+                One secure document hub. Right version, right stakeholder, right time.
+              </p>
             </div>
 
-            {/* Column 3 */}
-            <div>
-              <h4 className="text-white font-bold mb-4">Resources</h4>
-              <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-white transition-colors">Help Center</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Webinars</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Compliance</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
-              </ul>
+            {/* Product 3: Deal Management System */}
+            <div className="flex flex-col items-center group p-8 sm:p-10 rounded-2xl bg-white border border-slate-200/90 hover:border-emerald-300 shadow-sm hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300" data-aos="fade-up" data-aos-delay="200">
+              <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-emerald-50 text-[#00a877] border border-emerald-200/70 flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 group-hover:bg-[#00a877] group-hover:text-white transition-all duration-300">
+                {/* Lightning Deal / Lightbulb Icon */}
+                <svg className="w-9 h-9" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <h3 className="text-xl sm:text-2xl font-bold text-slate-900 group-hover:text-[#00a877] transition-colors mb-3 tracking-tight">
+                Deal Management System
+              </h3>
+              <p className="text-slate-500 text-sm sm:text-[15px] font-medium leading-relaxed max-w-xs">
+                Manage deals, tasks, and workstreams from one integrated dashboard.
+              </p>
             </div>
 
-            {/* Column 4 */}
-            <div>
-              <h4 className="text-white font-bold mb-4">Contact</h4>
-              <ul className="space-y-3 text-sm">
-                <li className="flex items-center gap-2"><i className="fas fa-envelope"></i> hello@securevdr.com</li>
-                <li className="flex items-center gap-2"><i className="fas fa-phone"></i> +1 (888) 452-8637</li>
-              </ul>
-              <div className="flex gap-4 mt-6">
-                <a href="#" className="text-gray-400 hover:text-white text-lg"><i className="fab fa-linkedin"></i></a>
-                <a href="#" className="text-gray-400 hover:text-white text-lg"><i className="fab fa-twitter"></i></a>
-                <a href="#" className="text-gray-400 hover:text-white text-lg"><i className="fab fa-github"></i></a>
+          </div>
+        </div>
+      </section>
+
+      {/* 7.1 Solutions for Every Critical Business Process (Interactive Tabs & Spotlights) */}
+      <BusinessProcessesShowcase />
+
+      {/* 7.1 Insights & Market Intelligence Resources */}
+      <InsightsResources />
+
+      {/* 8. Pre-Footer Seamless CTA Banner (Slim & Compact in Vibrant Teal Gradient) */}
+      <section className="w-full bg-gradient-to-r from-[#00a877] via-[#059669] to-[#088382] py-7 sm:py-9 px-6 md:px-16 text-white relative shadow-inner overflow-hidden border-b border-white/10">
+        {/* Ambient Subtle Glow */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.18),transparent_70%)] pointer-events-none"></div>
+
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-6 relative z-10">
+          {/* Left Headline & Subtitle (Compact) */}
+          <div className="max-w-2xl text-center lg:text-left" data-aos="fade-right">
+            <h2 className="text-xl sm:text-2xl md:text-[26px] font-extrabold leading-snug tracking-tight text-white mb-1.5">
+              Your next transaction deserves a data room with a global track record.
+            </h2>
+            <p className="text-xs sm:text-sm text-white/90 font-medium leading-normal">
+              Join 955,633+ dealmakers in 170 countries. Discover how deals get done.
+            </p>
+          </div>
+
+          {/* Right Action CTA Buttons (Compact & Sleek) */}
+          <div className="flex flex-wrap items-center justify-center lg:justify-end gap-3 shrink-0" data-aos="fade-left">
+            <Link
+              href="/register"
+              className="px-5 py-2.5 sm:px-6 sm:py-3 rounded-full border border-white text-white font-bold hover:bg-white hover:text-slate-900 transition-all duration-300 text-xs sm:text-sm shadow-xs"
+            >
+              Get a Demo
+            </Link>
+            <Link
+              href="/register"
+              className="px-5 py-2.5 sm:px-6 sm:py-3 rounded-full bg-[#020b33] text-white font-bold hover:bg-black hover:scale-105 transition-all duration-300 text-xs sm:text-sm shadow-md"
+            >
+              Start for Free
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* 9. Premium Enterprise Footer (FirmsData Theme with Teal Certification Ribbon) */}
+      <footer className="bg-[#020b33] text-slate-300 font-sans">
+        {/* Main Footer Links Container */}
+        <div className="max-w-7xl mx-auto px-6 md:px-16 pt-16 pb-14">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12">
+
+            {/* Column 1: Brand & Contact Info */}
+            <div className="flex flex-col gap-4">
+              {/* Logo */}
+              <div className="flex items-center gap-2.5 text-white font-black text-2xl tracking-wider">
+                <i className="fas fa-shield-alt text-[var(--brand)] text-2xl"></i>
+                <span className="font-extrabold tracking-tight text-2xl text-white">SecureVDR</span>
+              </div>
+
+              {/* Address */}
+              <p className="text-[13px] text-slate-300 leading-relaxed mt-1">
+                8th Floor, GM IT Park, 32-33, Sector 142,<br />
+                Noida, Uttar Pradesh 201304
+              </p>
+
+              {/* Phone */}
+              <div className="flex items-center gap-2.5 text-[13px] text-slate-300 mt-1">
+                <svg className="w-4 h-4 text-slate-300 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" />
+                </svg>
+                <span>+91-9873694065</span>
+              </div>
+
+              {/* Email */}
+              <div className="flex items-center gap-2.5 text-[13px] text-slate-300">
+                <svg className="w-4 h-4 text-slate-300 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+                </svg>
+                <a href="mailto:contact@securevdr.com" className="hover:text-white transition-colors">
+                  contact@securevdr.com
+                </a>
+              </div>
+
+              {/* Social Icon Badges (X & in) */}
+              <div className="flex items-center gap-2.5 mt-2">
+                {/* X (Twitter) */}
+                <a 
+                  href="#" 
+                  className="w-8 h-8 rounded-lg bg-[#00d09c] text-[#020b33] font-black flex items-center justify-center hover:bg-emerald-400 hover:scale-105 transition-all shadow-xs"
+                  aria-label="X (Twitter)"
+                >
+                  <span className="font-mono text-sm font-black">X</span>
+                </a>
+                {/* LinkedIn */}
+                <a 
+                  href="#" 
+                  className="w-8 h-8 rounded-lg bg-[#00d09c] text-[#020b33] font-black flex items-center justify-center hover:bg-emerald-400 hover:scale-105 transition-all shadow-xs"
+                  aria-label="LinkedIn"
+                >
+                  <span className="font-sans text-xs font-black">in</span>
+                </a>
               </div>
             </div>
 
-          </div>
+            {/* Column 2: Company */}
+            <div>
+              <h4 className="text-white font-bold text-base mb-4 tracking-wide">Company</h4>
+              <ul className="space-y-2.5 text-[13px] text-slate-300">
+                <li><a href="#" className="hover:text-white transition-colors">Why SecureVDR</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Case Studies</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Career</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Contact Us</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">SLA &amp; Terms</a></li>
+                <li><a href="#pricing" className="hover:text-white transition-colors">Pricing</a></li>
+              </ul>
+            </div>
 
-          <div className="border-t border-gray-800 pt-8 text-center text-sm">
-            <p>&copy; {new Date().getFullYear()} SecureVDR — All rights reserved. Data protection at its core.</p>
+            {/* Column 3: Products & Solutions */}
+            <div>
+              <h4 className="text-white font-bold text-base mb-4 tracking-wide">Products &amp; Solutions</h4>
+              <ul className="space-y-2.5 text-[13px] text-slate-300">
+                <li><a href="#" className="hover:text-white transition-colors">Virtual Data Room</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Document Management System</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Deal Management System</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Security &amp; Compliance</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">IPO Advisory</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Legal Data Room</a></li>
+              </ul>
+            </div>
+
+            {/* Column 4: Industry */}
+            <div>
+              <h4 className="text-white font-bold text-base mb-4 tracking-wide">Industry</h4>
+              <ul className="space-y-2.5 text-[13px] text-slate-300">
+                <li><a href="#" className="hover:text-white transition-colors">Energy</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Real Estate</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Life Sciences</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Financial Services</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Technology, Media, &amp; Telecom</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Consumer Retail</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Oil &amp; Gas</a></li>
+              </ul>
+            </div>
+
           </div>
+        </div>
+
+        {/* Middle Security Certifications Bar (High-Resolution Vector Badges) */}
+        <SecurityCertBadges />
+
+        {/* Bottom Copyright Row */}
+        <div className="py-4 sm:py-5 px-6 text-center text-xs sm:text-[13px] text-slate-300 font-medium">
+          Copyright &copy; 2026 SecureVDR. All rights reserved.
         </div>
       </footer>
 
