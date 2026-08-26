@@ -1856,47 +1856,47 @@ function UnifiedWorkspace() {
                     onClick={() => setMobileItemActionSheet(null)}
                 >
                     <div 
-                        className="w-full max-w-sm sm:max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden animate-scale-up flex flex-col max-h-[82vh] border border-slate-200/80 my-auto"
+                        className="w-full max-w-sm sm:max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden animate-scale-up flex flex-col max-h-[85vh] border border-slate-200/90 my-auto"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        {/* Card Header */}
-                        <div className="px-4.5 py-3.5 border-b border-slate-100 bg-slate-50/70 flex items-center justify-between gap-3 shrink-0">
-                            <div className="flex items-center gap-3 min-w-0">
-                                <div className="w-10 h-10 rounded-2xl bg-white border border-slate-200/80 flex items-center justify-center shrink-0 text-xl shadow-2xs">
+                        {/* Card Header with Modern Gray Shade */}
+                        <div className="px-5 py-4 border-b border-slate-200 bg-slate-100/90 flex items-center justify-between gap-3 shrink-0">
+                            <div className="flex items-center gap-3.5 min-w-0">
+                                <div className="w-11 h-11 rounded-2xl bg-white border border-slate-200/90 flex items-center justify-center shrink-0 text-xl shadow-xs">
                                     {mobileItemActionSheet.type === 'folder' ? (
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#fcd34d"><path d="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z" /></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#f59e0b"><path d="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z" /></svg>
                                     ) : (
                                         getFileIcon(mobileItemActionSheet.name)
                                     )}
                                 </div>
                                 <div className="min-w-0">
-                                    <div className="flex items-center gap-1.5 mb-0.5">
-                                        <span className="text-[10px] font-mono font-bold text-slate-500 bg-slate-200/70 px-1.5 py-0.5 rounded shrink-0">
+                                    <div className="flex items-center gap-1.5 mb-1">
+                                        <span className="text-[10px] font-mono font-bold text-slate-700 bg-slate-200/90 border border-slate-300 px-1.5 py-0.5 rounded shrink-0">
                                             {mobileItemActionSheet.displayIndex || '—'}
                                         </span>
-                                        <h3 className="text-sm font-bold text-slate-900 truncate">
+                                        <h3 className="text-[14px] font-bold text-slate-900 truncate">
                                             {mobileItemActionSheet.name}
                                         </h3>
                                     </div>
-                                    <div className="text-[11px] text-slate-400 font-medium flex items-center gap-1.5">
-                                        <span className="text-slate-600 font-bold">{mobileItemActionSheet.version ? (String(mobileItemActionSheet.version).toUpperCase().startsWith('V') ? mobileItemActionSheet.version : `V${mobileItemActionSheet.version}`) : 'V1'}</span>
+                                    <div className="text-[11px] text-slate-500 font-medium flex items-center gap-1.5">
+                                        <span className="text-slate-700 font-bold bg-slate-200 px-1.5 py-0.5 rounded text-[10px]">{mobileItemActionSheet.version ? (String(mobileItemActionSheet.version).toUpperCase().startsWith('V') ? mobileItemActionSheet.version : `V${mobileItemActionSheet.version}`) : 'V1'}</span>
                                         <span>•</span>
-                                        <span>{mobileItemActionSheet.type === 'folder' ? 'Folder' : (mobileItemActionSheet.size || '2.4 MB')}</span>
+                                        <span className="capitalize">{mobileItemActionSheet.type === 'folder' ? 'Folder' : (mobileItemActionSheet.size || '2.4 MB')}</span>
                                         <span>•</span>
-                                        <span>{mobileItemActionSheet.dateCreated || (mobileItemActionSheet.created_at ? new Date(mobileItemActionSheet.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }) : '19 Aug')}</span>
+                                        <span>{mobileItemActionSheet.dateCreated || (mobileItemActionSheet.created_at ? new Date(mobileItemActionSheet.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }) : '17 Aug')}</span>
                                     </div>
                                 </div>
                             </div>
                             <button 
                                 onClick={() => setMobileItemActionSheet(null)}
-                                className="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-700 rounded-full hover:bg-slate-200/60 transition-colors cursor-pointer shrink-0"
+                                className="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-700 bg-white hover:bg-slate-200/70 border border-slate-200 rounded-full transition-all cursor-pointer shrink-0 shadow-2xs text-sm"
                             >
                                 ✕
                             </button>
                         </div>
 
-                        {/* Action Items List Body */}
-                        <div className="p-2.5 sm:p-3 overflow-y-auto flex flex-col gap-1 max-h-[60vh]">
+                        {/* Action Items List Body with Crisp Divider Lines */}
+                        <div className="overflow-y-auto flex flex-col divide-y divide-slate-100 max-h-[60vh] bg-white">
                             {currentView !== 'trash' && (
                                 <>
                                     {mobileItemActionSheet.type === 'folder' ? (
@@ -1906,10 +1906,15 @@ function UnifiedWorkspace() {
                                                 setMobileItemActionSheet(null); 
                                                 setCurrentFolderId(folderId); 
                                             }}
-                                            className="w-full text-left px-3.5 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-100 active:bg-slate-100 flex items-center gap-3 rounded-xl transition-colors cursor-pointer"
+                                            className="w-full text-left px-4.5 py-3.5 text-[13px] font-semibold text-slate-700 hover:bg-slate-50/90 active:bg-slate-100/80 flex items-center justify-between transition-colors cursor-pointer group"
                                         >
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" className="text-[var(--brand)]"><path d="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z" /></svg>
-                                            <span>Open Folder</span>
+                                            <div className="flex items-center gap-3 min-w-0">
+                                                <div className="w-8 h-8 rounded-xl bg-blue-50 text-[var(--brand)] border border-blue-100/80 flex items-center justify-center shrink-0 shadow-2xs">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z" /></svg>
+                                                </div>
+                                                <span className="font-bold text-slate-800 group-hover:text-slate-950">Open Folder</span>
+                                            </div>
+                                            <svg className="w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-colors shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6" /></svg>
                                         </button>
                                     ) : (
                                         <button 
@@ -1919,10 +1924,15 @@ function UnifiedWorkspace() {
                                                 if (canUser('can_view', item)) window.open(`/view/${item.id}`, '_blank');
                                                 else showAlert("You do not have permission to view this file.", "Access Denied");
                                             }}
-                                            className="w-full text-left px-3.5 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-100 active:bg-slate-100 flex items-center gap-3 rounded-xl transition-colors cursor-pointer"
+                                            className="w-full text-left px-4.5 py-3.5 text-[13px] font-semibold text-slate-700 hover:bg-slate-50/90 active:bg-slate-100/80 flex items-center justify-between transition-colors cursor-pointer group"
                                         >
-                                            <FaEye className="text-base text-[var(--brand)]" />
-                                            <span>View Document</span>
+                                            <div className="flex items-center gap-3 min-w-0">
+                                                <div className="w-8 h-8 rounded-xl bg-blue-50 text-[var(--brand)] border border-blue-100/80 flex items-center justify-center shrink-0 shadow-2xs">
+                                                    <FaEye className="text-sm" />
+                                                </div>
+                                                <span className="font-bold text-slate-800 group-hover:text-slate-950">View Document</span>
+                                            </div>
+                                            <svg className="w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-colors shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6" /></svg>
                                         </button>
                                     )}
 
@@ -1933,10 +1943,15 @@ function UnifiedWorkspace() {
                                                 setMobileItemActionSheet(null); 
                                                 executeDownloadWrapper('edit', item);
                                             }}
-                                            className="w-full text-left px-3.5 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-100 active:bg-slate-100 flex items-center gap-3 rounded-xl transition-colors cursor-pointer"
+                                            className="w-full text-left px-4.5 py-3.5 text-[13px] font-semibold text-slate-700 hover:bg-slate-50/90 active:bg-slate-100/80 flex items-center justify-between transition-colors cursor-pointer group"
                                         >
-                                            <FaEdit className="text-base text-[var(--brand)]" />
-                                            <span>Edit Document</span>
+                                            <div className="flex items-center gap-3 min-w-0">
+                                                <div className="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-100/80 flex items-center justify-center shrink-0 shadow-2xs">
+                                                    <FaEdit className="text-sm" />
+                                                </div>
+                                                <span className="font-bold text-slate-800 group-hover:text-slate-950">Edit Document</span>
+                                            </div>
+                                            <svg className="w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-colors shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6" /></svg>
                                         </button>
                                     )}
 
@@ -1950,10 +1965,15 @@ function UnifiedWorkspace() {
                                                 setRenameValue(item.name);
                                                 setIsRenameModalOpen(true);
                                             }}
-                                            className="w-full text-left px-3.5 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-100 active:bg-slate-100 flex items-center gap-3 rounded-xl transition-colors cursor-pointer"
+                                            className="w-full text-left px-4.5 py-3.5 text-[13px] font-semibold text-slate-700 hover:bg-slate-50/90 active:bg-slate-100/80 flex items-center justify-between transition-colors cursor-pointer group"
                                         >
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-slate-600"><path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" /></svg>
-                                            <span>Rename</span>
+                                            <div className="flex items-center gap-3 min-w-0">
+                                                <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-600 border border-slate-200/80 flex items-center justify-center shrink-0 shadow-2xs">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" /></svg>
+                                                </div>
+                                                <span className="font-bold text-slate-800 group-hover:text-slate-950">Rename</span>
+                                            </div>
+                                            <svg className="w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-colors shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6" /></svg>
                                         </button>
                                     )}
 
@@ -1965,10 +1985,15 @@ function UnifiedWorkspace() {
                                                 setMobileItemActionSheet(null); 
                                                 executeDownloadWrapper('original', item);
                                             }}
-                                            className="w-full text-left px-3.5 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-100 active:bg-slate-100 flex items-center gap-3 rounded-xl transition-colors cursor-pointer"
+                                            className="w-full text-left px-4.5 py-3.5 text-[13px] font-semibold text-slate-700 hover:bg-slate-50/90 active:bg-slate-100/80 flex items-center justify-between transition-colors cursor-pointer group"
                                         >
-                                            <FaDownload className="text-base text-emerald-600" />
-                                            <span>Download Original</span>
+                                            <div className="flex items-center gap-3 min-w-0">
+                                                <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100/80 flex items-center justify-center shrink-0 shadow-2xs">
+                                                    <FaDownload className="text-sm" />
+                                                </div>
+                                                <span className="font-bold text-slate-800 group-hover:text-slate-950">Download Original</span>
+                                            </div>
+                                            <svg className="w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-colors shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6" /></svg>
                                         </button>
                                     )}
 
@@ -1980,10 +2005,15 @@ function UnifiedWorkspace() {
                                                 setMobileItemActionSheet(null); 
                                                 executeDownloadWrapper('secure', item);
                                             }}
-                                            className="w-full text-left px-3.5 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-100 active:bg-slate-100 flex items-center gap-3 rounded-xl transition-colors cursor-pointer"
+                                            className="w-full text-left px-4.5 py-3.5 text-[13px] font-semibold text-slate-700 hover:bg-slate-50/90 active:bg-slate-100/80 flex items-center justify-between transition-colors cursor-pointer group"
                                         >
-                                            <FaShieldAlt className="text-base text-[var(--brand)]" />
-                                            <span>Download Secure (.html)</span>
+                                            <div className="flex items-center gap-3 min-w-0">
+                                                <div className="w-8 h-8 rounded-xl bg-sky-50 text-[var(--brand)] border border-sky-100/80 flex items-center justify-center shrink-0 shadow-2xs">
+                                                    <FaShieldAlt className="text-sm" />
+                                                </div>
+                                                <span className="font-bold text-slate-800 group-hover:text-slate-950">Download Secure (.html)</span>
+                                            </div>
+                                            <svg className="w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-colors shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6" /></svg>
                                         </button>
                                     )}
 
@@ -1994,10 +2024,15 @@ function UnifiedWorkspace() {
                                             setMobileItemActionSheet(null); 
                                             router.push(item.type === 'folder' ? `/qa?folderId=${item.id}` : `/qa?fileId=${item.id}`);
                                         }}
-                                        className="w-full text-left px-3.5 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-100 active:bg-slate-100 flex items-center gap-3 rounded-xl transition-colors cursor-pointer"
+                                        className="w-full text-left px-4.5 py-3.5 text-[13px] font-semibold text-slate-700 hover:bg-slate-50/90 active:bg-slate-100/80 flex items-center justify-between transition-colors cursor-pointer group"
                                     >
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" className="text-slate-600"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" /></svg>
-                                        <span>Questions &amp; Answers (Q&amp;A)</span>
+                                        <div className="flex items-center gap-3 min-w-0">
+                                            <div className="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 border border-purple-100/80 flex items-center justify-center shrink-0 shadow-2xs">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" /></svg>
+                                            </div>
+                                            <span className="font-bold text-slate-800 group-hover:text-slate-950">Questions &amp; Answers (Q&amp;A)</span>
+                                        </div>
+                                        <svg className="w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-colors shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6" /></svg>
                                     </button>
 
                                     {/* BOOKMARK */}
@@ -2007,12 +2042,17 @@ function UnifiedWorkspace() {
                                             setMobileItemActionSheet(null); 
                                             handleToggleBookmark(item, e);
                                         }}
-                                        className="w-full text-left px-3.5 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-100 active:bg-slate-100 flex items-center gap-3 rounded-xl transition-colors cursor-pointer"
+                                        className="w-full text-left px-4.5 py-3.5 text-[13px] font-semibold text-slate-700 hover:bg-slate-50/90 active:bg-slate-100/80 flex items-center justify-between transition-colors cursor-pointer group"
                                     >
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill={bookmarkedIds.has(mobileItemActionSheet.id) ? "#fbbf24" : "none"} stroke={bookmarkedIds.has(mobileItemActionSheet.id) ? "#fbbf24" : "#64748b"} strokeWidth="2.5">
-                                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                                        </svg>
-                                        <span>{bookmarkedIds.has(mobileItemActionSheet.id) ? 'Remove Bookmark' : 'Add to Bookmarks'}</span>
+                                        <div className="flex items-center gap-3 min-w-0">
+                                            <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-500 border border-amber-100/80 flex items-center justify-center shrink-0 shadow-2xs">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill={bookmarkedIds.has(mobileItemActionSheet.id) ? "#f59e0b" : "none"} stroke={bookmarkedIds.has(mobileItemActionSheet.id) ? "#f59e0b" : "currentColor"} strokeWidth="2.5">
+                                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                                </svg>
+                                            </div>
+                                            <span className="font-bold text-slate-800 group-hover:text-slate-950">{bookmarkedIds.has(mobileItemActionSheet.id) ? 'Remove Bookmark' : 'Add to Bookmarks'}</span>
+                                        </div>
+                                        <svg className="w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-colors shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6" /></svg>
                                     </button>
 
                                     {/* MOVE */}
@@ -2024,10 +2064,15 @@ function UnifiedWorkspace() {
                                                 setSelectedIds(new Set([item.id]));
                                                 setIsMoveModalOpen(true);
                                             }}
-                                            className="w-full text-left px-3.5 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-100 active:bg-slate-100 flex items-center gap-3 rounded-xl transition-colors cursor-pointer"
+                                            className="w-full text-left px-4.5 py-3.5 text-[13px] font-semibold text-slate-700 hover:bg-slate-50/90 active:bg-slate-100/80 flex items-center justify-between transition-colors cursor-pointer group"
                                         >
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-slate-600"><polyline points="5 9 2 12 5 15" /><polyline points="9 5 12 2 15 5" /><line x1="2" y1="12" x2="22" y2="12" /><line x1="12" y1="2" x2="12" y2="22" /></svg>
-                                            <span>Move Item</span>
+                                            <div className="flex items-center gap-3 min-w-0">
+                                                <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-600 border border-slate-200/80 flex items-center justify-center shrink-0 shadow-2xs">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="5 9 2 12 5 15" /><polyline points="9 5 12 2 15 5" /><line x1="2" y1="12" x2="22" y2="12" /><line x1="12" y1="2" x2="12" y2="22" /></svg>
+                                                </div>
+                                                <span className="font-bold text-slate-800 group-hover:text-slate-950">Move Item</span>
+                                            </div>
+                                            <svg className="w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-colors shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6" /></svg>
                                         </button>
                                     )}
 
@@ -2040,10 +2085,15 @@ function UnifiedWorkspace() {
                                                 setSelectedIds(new Set([item.id]));
                                                 setIsDeleteModalOpen(true);
                                             }}
-                                            className="w-full text-left px-3.5 py-2.5 text-xs font-bold text-rose-600 hover:bg-rose-50 active:bg-rose-100 flex items-center gap-3 rounded-xl transition-colors cursor-pointer mt-1 pt-2 border-t border-slate-100"
+                                            className="w-full text-left px-4.5 py-3.5 text-[13px] font-bold text-rose-600 hover:bg-rose-50/70 active:bg-rose-100/70 flex items-center justify-between transition-colors cursor-pointer group"
                                         >
-                                            <FaTrash className="text-base text-rose-500" />
-                                            <span>Move to Trash</span>
+                                            <div className="flex items-center gap-3 min-w-0">
+                                                <div className="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 border border-rose-200/70 flex items-center justify-center shrink-0 shadow-2xs">
+                                                    <FaTrash className="text-sm" />
+                                                </div>
+                                                <span className="text-rose-600 group-hover:text-rose-700">Move to Trash</span>
+                                            </div>
+                                            <svg className="w-4 h-4 text-rose-300 group-hover:text-rose-500 transition-colors shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6" /></svg>
                                         </button>
                                     )}
                                 </>
@@ -2057,21 +2107,32 @@ function UnifiedWorkspace() {
                                             setMobileItemActionSheet(null); 
                                             executeRecoverSingle(item);
                                         }}
-                                        className="w-full text-left px-3.5 py-2.5 text-xs font-bold text-emerald-600 hover:bg-emerald-50 active:bg-emerald-100 flex items-center gap-3 rounded-xl transition-colors cursor-pointer"
+                                        className="w-full text-left px-4.5 py-3.5 text-[13px] font-bold text-emerald-600 hover:bg-emerald-50/70 active:bg-emerald-100/70 flex items-center justify-between transition-colors cursor-pointer group"
                                     >
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" /></svg>
-                                        <span>Recover Item</span>
+                                        <div className="flex items-center gap-3 min-w-0">
+                                            <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200/70 flex items-center justify-center shrink-0 shadow-2xs">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" /></svg>
+                                            </div>
+                                            <span className="text-emerald-700">Recover Item</span>
+                                        </div>
+                                        <svg className="w-4 h-4 text-emerald-300 group-hover:text-emerald-500 transition-colors shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6" /></svg>
                                     </button>
+
                                     <button 
                                         onClick={() => { 
                                             const item = mobileItemActionSheet;
                                             setMobileItemActionSheet(null); 
                                             executePermanentDeleteSingle(item);
                                         }}
-                                        className="w-full text-left px-3.5 py-2.5 text-xs font-bold text-rose-600 hover:bg-rose-50 active:bg-rose-100 flex items-center gap-3 rounded-xl transition-colors cursor-pointer mt-1 pt-2 border-t border-slate-100"
+                                        className="w-full text-left px-4.5 py-3.5 text-[13px] font-bold text-rose-600 hover:bg-rose-50/70 active:bg-rose-100/70 flex items-center justify-between transition-colors cursor-pointer group"
                                     >
-                                        <FaTrash className="text-base text-rose-500" />
-                                        <span>Permanently Delete</span>
+                                        <div className="flex items-center gap-3 min-w-0">
+                                            <div className="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 border border-rose-200/70 flex items-center justify-center shrink-0 shadow-2xs">
+                                                <FaTrash className="text-sm" />
+                                            </div>
+                                            <span className="text-rose-600 group-hover:text-rose-700">Permanently Delete</span>
+                                        </div>
+                                        <svg className="w-4 h-4 text-rose-300 group-hover:text-rose-500 transition-colors shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6" /></svg>
                                     </button>
                                 </>
                             )}

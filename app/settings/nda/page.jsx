@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useDialog } from '@/components/ui/DialogProvider';
 const qB = { then: (r) => r({data:[],error:null}), single: async()=>({data:null,error:null}), maybeSingle: async()=>({data:null,error:null}) }; qB.eq = () => qB; qB.order = () => qB; qB.select = () => qB; qB.insert = () => qB; qB.update = () => qB; qB.delete = () => qB; const supabase = { auth: { getSession: async () => ({ data: { session: null } }), signOut: async () => ({}) }, storage: { from: () => ({ createSignedUrl: async () => ({ data: { signedUrl: "" } }), upload: async () => ({ data: {}, error: null }), remove: async () => ({}), getPublicUrl: () => ({ data: { publicUrl: "" } }) }) }, from: () => qB };
 import { Pencil, UploadCloud, Bold, Italic, Underline, List, ListOrdered, Check, Download, ShieldAlert, FileText } from 'lucide-react';
@@ -16,7 +16,38 @@ export default function NdaSettingsPage() {
   const [ndaUsersList, setNdaUsersList] = useState([]);
   const [loadingUsers, setLoadingUsers] = useState(false);
   const { showAlert } = useDialog();
-  const editorRef = React.useRef(null);
+  const editorRef = useRef(null);
+  const tableRef = useRef(null);
+
+  // Permanent Non-Fading Scrollbar State
+  const [thumbLeft, setThumbLeft] = useState(0);
+  const [thumbWidth, setThumbWidth] = useState(40);
+  const [isScrollable, setIsScrollable] = useState(true);
+
+  const updateScrollbar = useCallback(() => {
+    if (!tableRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = tableRef.current;
+    if (scrollWidth <= clientWidth) {
+      setIsScrollable(false);
+      setThumbWidth(100);
+      setThumbLeft(0);
+      return;
+    }
+    setIsScrollable(true);
+    const visibleRatio = clientWidth / scrollWidth;
+    const calculatedWidth = Math.max(Math.min(visibleRatio * 100, 80), 18); // between 18% and 80%
+    const maxScroll = scrollWidth - clientWidth;
+    const scrollPercent = maxScroll > 0 ? scrollLeft / maxScroll : 0;
+    const maxLeft = 100 - calculatedWidth;
+    setThumbWidth(calculatedWidth);
+    setThumbLeft(scrollPercent * maxLeft);
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => updateScrollbar();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [updateScrollbar]);
 
   // ——— BACKEND API CALLS ———
   const fetchUsersAndInvites = useCallback(async () => {
@@ -56,8 +87,17 @@ export default function NdaSettingsPage() {
   }, []);
 
   useEffect(() => {
-    if (activeTab === 'users') fetchUsersAndInvites();
+    if (activeTab === 'users') {
+      fetchUsersAndInvites();
+    }
   }, [activeTab, fetchUsersAndInvites]);
+
+  useEffect(() => {
+    if (activeTab === 'users') {
+      setTimeout(updateScrollbar, 50);
+      setTimeout(updateScrollbar, 300);
+    }
+  }, [activeTab, ndaUsersList, updateScrollbar]);
 
   const handleRequireNdaForUser = async (userId) => {
     try {
@@ -186,7 +226,7 @@ export default function NdaSettingsPage() {
                   color: #1e293b;
                   line-height: 1.6;
                   padding: 40px;
-                  max-w: 800px;
+                  max-width: 800px;
                   margin: 0 auto;
                   background: #ffffff;
               }
@@ -274,7 +314,7 @@ export default function NdaSettingsPage() {
       <body>
           <div class="header">
               <h1>NON-DISCLOSURE AGREEMENT (NDA)</h1>
-              <p>Virtual Data Room â€¢ Cryptographically Executed Agreement Copy</p>
+              <p>Virtual Data Room • Cryptographically Executed Agreement Copy</p>
           </div>
 
           <div class="content">
@@ -297,7 +337,7 @@ export default function NdaSettingsPage() {
           </div>
 
           <div class="audit-footer">
-              Executed via Virtual Data Room Platform â€¢ Document Audit Trail Active
+              Executed via Virtual Data Room Platform • Document Audit Trail Active
           </div>
 
           <script>
@@ -317,7 +357,19 @@ export default function NdaSettingsPage() {
   };
 
   return (
-    <div className="p-8 max-w-7xl mx-auto w-full">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
+      {/* Hide native auto-fading scrollbar to let our permanent scrollbar take over */}
+      <style>{`
+        .nda-hide-native-scroll {
+          -ms-overflow-style: none !important;
+          scrollbar-width: none !important;
+        }
+        .nda-hide-native-scroll::-webkit-scrollbar {
+          display: none !important;
+          height: 0px !important;
+        }
+      `}</style>
+
       {toastMessage && (
         <div className="fixed top-8 right-8 z-50 flex items-center gap-2 px-4 py-3 bg-green-50 text-green-700 border border-green-200 rounded-xl shadow-sm animate-in slide-in-from-top-4 fade-in duration-300">
           <Check size={18} className="text-green-500" />
@@ -325,14 +377,14 @@ export default function NdaSettingsPage() {
         </div>
       )}
 
-      <div className="mb-8 border-b border-gray-200">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">Non-Disclosure Agreement (NDA)</h1>
-        <div className="flex gap-8">
-          <button onClick={() => setActiveTab('settings')} className={`pb-4 text-[15px] font-semibold transition-all relative ${activeTab === 'settings' ? 'text-[var(--brand)]' : 'text-gray-500 hover:text-gray-700'}`}>
+      <div className="mb-6 sm:mb-8 border-b border-gray-200">
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">Non-Disclosure Agreement (NDA)</h1>
+        <div className="flex gap-6 sm:gap-8">
+          <button onClick={() => setActiveTab('settings')} className={`pb-3 sm:pb-4 text-sm sm:text-[15px] font-semibold transition-all relative ${activeTab === 'settings' ? 'text-[var(--brand)]' : 'text-gray-500 hover:text-gray-700'}`}>
             NDA Settings
             {activeTab === 'settings' && <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[var(--brand)] rounded-t-full"></span>}
           </button>
-          <button onClick={() => setActiveTab('users')} className={`pb-4 text-[15px] font-semibold transition-all relative ${activeTab === 'users' ? 'text-[var(--brand)]' : 'text-gray-500 hover:text-gray-700'}`}>
+          <button onClick={() => setActiveTab('users')} className={`pb-3 sm:pb-4 text-sm sm:text-[15px] font-semibold transition-all relative ${activeTab === 'users' ? 'text-[var(--brand)]' : 'text-gray-500 hover:text-gray-700'}`}>
             NDA Users
             {activeTab === 'users' && <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[var(--brand)] rounded-t-full"></span>}
           </button>
@@ -344,7 +396,7 @@ export default function NdaSettingsPage() {
           <div className="mb-10">
             <h3 className="text-[15px] font-bold text-gray-900 mb-3">NDA Document Content</h3>
             <p className="text-[13px] text-gray-500 mb-4">Upload a new text file (.txt) OR edit the currently active NDA.</p>
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4">
               <label className="inline-flex items-center gap-2 px-5 py-2.5 bg-[var(--brand)] text-white text-sm font-semibold rounded-lg shadow-md shadow-[var(--brand)]/20 hover:bg-[var(--brand)]/90 transition-all cursor-pointer">
                 <UploadCloud size={18} />
                 <span>Upload New File</span>
@@ -356,14 +408,6 @@ export default function NdaSettingsPage() {
               </button>
             </div>
           </div>
-
-          {/* <div className="mb-8">
-            <h3 className="text-[15px] font-bold text-gray-900 mb-3">Show NDA at</h3>
-            <select value={showNdaAt} onChange={(e) => setShowNdaAt(e.target.value)} className="w-80 px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-[14px] text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 appearance-none shadow-sm" style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em' }}>
-              <option value="First time workspace open">First time workspace open</option>
-              <option value="Every time workspace open">Every time workspace open</option>
-            </select>
-          </div> */}
 
           {showEditor && (
             <div className="mb-10 animate-in fade-in slide-in-from-top-4 duration-500">
@@ -393,53 +437,75 @@ export default function NdaSettingsPage() {
 
       {activeTab === 'users' && (
         <div className="animate-in fade-in duration-300">
-          <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
+          <div className="bg-white border border-gray-200 rounded-2xl shadow-2xs overflow-hidden">
+            {/* Table Container */}
+            <div
+              ref={tableRef}
+              onScroll={updateScrollbar}
+              className="overflow-x-auto nda-hide-native-scroll"
+            >
+              <table className="w-full text-left border-collapse min-w-[850px]">
                 <thead>
                   <tr className="bg-gray-50/80 border-b border-gray-200">
-                    <th className="px-4 py-3.5 text-[12.5px] font-bold text-gray-600 uppercase tracking-wider whitespace-nowrap">S.No</th>
-                    <th className="px-4 py-3.5 text-[12.5px] font-bold text-gray-600 uppercase tracking-wider whitespace-nowrap">Name</th>
-                    <th className="px-4 py-3.5 text-[12.5px] font-bold text-gray-600 uppercase tracking-wider whitespace-nowrap">Date Accepted</th>
-                    <th className="px-4 py-3.5 text-[12.5px] font-bold text-gray-600 uppercase tracking-wider whitespace-nowrap">Time Accepted</th>
-                    <th className="px-4 py-3.5 text-[12.5px] font-bold text-gray-600 uppercase tracking-wider whitespace-nowrap">Audit IP / ID</th>
-                    <th className="px-4 py-3.5 text-[12.5px] font-bold text-gray-600 uppercase tracking-wider whitespace-nowrap">NDA Attached</th>
-                    <th className="px-4 py-3.5 text-[12.5px] font-bold text-gray-600 uppercase tracking-wider whitespace-nowrap">Status</th>
-                    <th className="px-4 py-3.5 text-[12.5px] font-bold text-gray-600 uppercase tracking-wider text-center whitespace-nowrap">Action</th>
+                    <th className="px-4 py-3.5 text-[12px] font-extrabold text-gray-500 uppercase tracking-wider whitespace-nowrap">S.No</th>
+                    <th className="px-4 py-3.5 text-[12px] font-extrabold text-gray-500 uppercase tracking-wider whitespace-nowrap">Name</th>
+                    <th className="px-4 py-3.5 text-[12px] font-extrabold text-gray-500 uppercase tracking-wider whitespace-nowrap">Date Accepted</th>
+                    <th className="px-4 py-3.5 text-[12px] font-extrabold text-gray-500 uppercase tracking-wider whitespace-nowrap">Time Accepted</th>
+                    <th className="px-4 py-3.5 text-[12px] font-extrabold text-gray-500 uppercase tracking-wider whitespace-nowrap">Audit IP / ID</th>
+                    <th className="px-4 py-3.5 text-[12px] font-extrabold text-gray-500 uppercase tracking-wider whitespace-nowrap">NDA Attached</th>
+                    <th className="px-4 py-3.5 text-[12px] font-extrabold text-gray-500 uppercase tracking-wider whitespace-nowrap">Status</th>
+                    <th className="px-4 py-3.5 text-[12px] font-extrabold text-gray-500 uppercase tracking-wider text-center whitespace-nowrap">Action</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   {loadingUsers ? (
-                    <tr><td colSpan="8" className="text-center py-8 text-gray-500">Loading users...</td></tr>
+                    <tr><td colSpan="8" className="text-center py-8 text-gray-500 font-medium">Loading users...</td></tr>
+                  ) : ndaUsersList.length === 0 ? (
+                    <tr>
+                      <td colSpan="8" className="p-12 text-center">
+                        <FileText size={44} className="mx-auto text-gray-300 mb-3" />
+                        <h3 className="text-gray-900 font-bold text-sm mb-1">No Users Found</h3>
+                        <p className="text-gray-500 text-xs">When users are registered or invited, they will appear here.</p>
+                      </td>
+                    </tr>
                   ) : ndaUsersList.map((u, index) => (
-                    <tr key={u.id} className="hover:bg-gray-50/50 transition-colors">
-                      <td className="px-4 py-3.5 whitespace-nowrap text-[13.5px] text-gray-500 font-medium">{index + 1}</td>
-                      <td className="px-4 py-3.5 whitespace-nowrap"><span className="text-[14px] font-semibold text-gray-900">{u.name}</span></td>
-                      <td className="px-4 py-3.5 whitespace-nowrap text-[13.5px] text-gray-600">{u.dateAccepted}</td>
-                      <td className="px-4 py-3.5 whitespace-nowrap text-[13.5px] text-gray-600">{u.timeAccepted}</td>
+                    <tr key={u.id} className="hover:bg-slate-50/70 transition-colors">
+                      <td className="px-4 py-3.5 whitespace-nowrap text-[13px] text-gray-500 font-medium">{index + 1}</td>
+                      <td className="px-4 py-3.5 whitespace-nowrap">
+                        <span className="text-[13.5px] font-bold text-gray-900">{u.name}</span>
+                        {u.email && <span className="block text-[11px] text-gray-400 font-normal">{u.email}</span>}
+                      </td>
+                      <td className="px-4 py-3.5 whitespace-nowrap text-[13px] text-gray-600 font-semibold">{u.dateAccepted}</td>
+                      <td className="px-4 py-3.5 whitespace-nowrap text-[13px] text-gray-600 font-medium">{u.timeAccepted}</td>
                       <td className="px-4 py-3.5 whitespace-nowrap">
                         <div className="flex flex-col">
-                          <span className="text-[13.5px] font-medium text-gray-900">{u.ipAddress || 'Logged (Protected)'}</span>
-                          <span className="text-[11.5px] text-gray-400" title={`User ID: ${u.id}`}>ID: {u.id?.slice(0, 8)}...</span>
+                          <span className="text-[13px] font-semibold text-gray-900">{u.ipAddress || 'Logged (Protected)'}</span>
+                          <span className="text-[11px] text-gray-400 font-mono" title={`User ID: ${u.id}`}>ID: {u.id?.slice(0, 8)}...</span>
                         </div>
                       </td>
                       <td className="px-4 py-3.5 whitespace-nowrap">
-                        <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-[12px] font-semibold ${u.ndaAttached === 'Yes' ? 'bg-blue-50 text-blue-700' : 'bg-gray-100 text-gray-600'}`}>{u.ndaAttached}</span>
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-md text-[11px] font-bold ${u.ndaAttached === 'Yes' ? 'bg-blue-50 text-[var(--brand)] border border-blue-100' : 'bg-gray-100 text-gray-600'}`}>{u.ndaAttached}</span>
                       </td>
                       <td className="px-4 py-3.5 whitespace-nowrap">
-                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] font-bold ${u.status === 'Accepted' ? 'bg-green-100 text-green-700' : u.status === 'Pending' || u.status === 'Pending Invite' ? 'bg-orange-100 text-orange-700' : 'bg-gray-100 text-gray-600'}`}>
-                          {u.status === 'Accepted' && <Check size={12} strokeWidth={3} />}
+                        <span className={`inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-[11px] font-extrabold border ${
+                          u.status === 'Accepted' 
+                            ? 'bg-blue-50 text-[var(--brand)] border-blue-200' 
+                            : u.status === 'Pending' || u.status === 'Pending Invite' 
+                            ? 'bg-amber-50 text-amber-700 border-amber-200' 
+                            : 'bg-gray-100 text-gray-600 border-gray-200'
+                        }`}>
+                          <span className={`w-1.5 h-1.5 rounded-full ${u.status === 'Accepted' ? 'bg-[var(--brand)]' : 'bg-slate-400'}`}></span>
                           {u.status}
                         </span>
                       </td>
                       <td className="px-4 py-3.5 whitespace-nowrap text-center">
                         <div className="flex items-center justify-center gap-2">
                           <button disabled={u.status !== 'Accepted'} onClick={() => handleDownloadUserNDA(u)} className={`inline-flex items-center justify-center p-2 rounded-lg transition-all ${u.status === 'Accepted' ? 'bg-[var(--brand)] text-white hover:bg-[var(--brand)]/90 shadow-sm hover:shadow-md' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`} title={u.status === 'Accepted' ? 'Download Signed Document' : 'Pending Acceptance'}>
-                            <Download size={16} />
+                            <Download size={15} />
                           </button>
                           {u.isRealUser && u.rawStatus !== 'pending' && u.rawStatus !== 'accepted' && (
-                            <button onClick={() => handleRequireNdaForUser(u.id)} className="inline-flex items-center gap-1 px-3 py-2 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg text-xs font-bold transition-all shadow-sm" title="Force old user to sign NDA on next login">
-                              <ShieldAlert size={14} /> Require NDA
+                            <button onClick={() => handleRequireNdaForUser(u.id)} className="inline-flex items-center gap-1 px-3 py-1.5 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg text-xs font-bold transition-all shadow-xs border border-rose-200/60" title="Force old user to sign NDA on next login">
+                              <ShieldAlert size={13} /> Require NDA
                             </button>
                           )}
                         </div>
@@ -449,11 +515,30 @@ export default function NdaSettingsPage() {
                 </tbody>
               </table>
             </div>
-            {!loadingUsers && ndaUsersList.length === 0 && (
-              <div className="p-12 text-center">
-                <FileText size={48} className="mx-auto text-gray-300 mb-4" />
-                <h3 className="text-gray-900 font-bold mb-1">No Users Found</h3>
-                <p className="text-gray-500 text-sm">When users are registered or invited, they will appear here.</p>
+
+            {/* Permanent Non-Fading Scrollbar Bar (Always Visible, Light & Clean) */}
+            {isScrollable && (
+              <div className="px-4 py-2 bg-white border-t border-slate-100 flex items-center">
+                <div
+                  onClick={(e) => {
+                    if (!tableRef.current) return;
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const clickX = e.clientX - rect.left;
+                    const clickPercent = clickX / rect.width;
+                    const maxScroll = tableRef.current.scrollWidth - tableRef.current.clientWidth;
+                    tableRef.current.scrollTo({ left: clickPercent * maxScroll, behavior: 'smooth' });
+                  }}
+                  className="w-full h-1.5 bg-slate-100 hover:bg-slate-200/70 rounded-full relative cursor-pointer overflow-hidden transition-colors"
+                  title="Click to scroll table"
+                >
+                  <div
+                    className="absolute top-0 bottom-0 bg-slate-300 hover:bg-slate-400 rounded-full transition-all duration-75"
+                    style={{
+                      width: `${thumbWidth}%`,
+                      left: `${thumbLeft}%`
+                    }}
+                  />
+                </div>
               </div>
             )}
           </div>
@@ -462,195 +547,3 @@ export default function NdaSettingsPage() {
     </div>
   );
 }
-//               </label>
-//             ) : (
-//               <div className="flex flex-col gap-4">
-//                 <div className="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-xl shadow-sm max-w-md">
-//                   <div className="flex items-center gap-3">
-//                     <div className="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center text-red-500">
-//                       <FileText size={20} />
-//                     </div>
-//                     <div>
-//                       <p className="text-sm font-medium text-gray-900 truncate max-w-[200px]">{uploadedFile.name}</p>
-//                       <p className="text-xs text-gray-400">{(uploadedFile.size / 1024 / 1024).toFixed(2)} MB</p>
-//                     </div>
-//                   </div>
-//                   <div className="flex items-center gap-2">
-//                     <button onClick={() => setShowEditor(true)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors flex items-center gap-1 text-xs font-semibold">
-//                       <Pencil size={14} /> Edit
-//                     </button>
-//                     <button onClick={handleRemoveFile} className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors">
-//                       <X size={16} />
-//                     </button>
-//                   </div>
-//                 </div>
-//               </div>
-//             )}
-//           </div> */}
-//           <div className="mb-10">
-//             <h3 className="text-[15px] font-bold text-gray-900 mb-3">NDA Document Content</h3>
-//             <p className="text-[13px] text-gray-500 mb-4">Upload a new text file (.txt) OR edit the currently active NDA.</p>
-
-//             <div className="flex items-center gap-4">
-//               {/* Button 1: Upload New File */}
-//               <label className="inline-flex items-center gap-2 px-5 py-2.5 bg-[var(--brand)] text-white text-sm font-semibold rounded-lg shadow-md shadow-[var(--brand)]/20 hover:bg-[var(--brand)]/90 transition-all cursor-pointer">
-//                 <UploadCloud size={18} />
-//                 <span>Upload New File</span>
-//                 <input type="file" className="hidden" accept=".txt,text/plain" onChange={handleFileUpload} />
-//               </label>
-
-//               {/* Button 2: Edit Existing DB Text */}
-//               <button
-//                 onClick={() => setShowEditor(true)}
-//                 className="inline-flex items-center gap-2 px-5 py-2.5 bg-white border border-gray-300 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-50 transition-all shadow-sm"
-//               >
-//                 <Pencil size={16} className="text-blue-500" />
-//                 <span>Preview & Edit Current NDA</span>
-//               </button>
-//             </div>
-//           </div>
-
-//           <div className="mb-8">
-//             <h3 className="text-[15px] font-bold text-gray-900 mb-3">Show NDA at</h3>
-//             <select
-//               value={showNdaAt}
-//               onChange={(e) => setShowNdaAt(e.target.value)}
-//               className="w-80 px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-[14px] text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 appearance-none shadow-sm"
-//               style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em' }}
-//             >
-//               <option value="First time workspace open">First time workspace open</option>
-//               <option value="Every time workspace open">Every time workspace open</option>
-//             </select>
-//           </div>
-
-//           {showEditor && (
-//             <div className="mb-10 animate-in fade-in slide-in-from-top-4 duration-500">
-//               <h3 className="text-[15px] font-bold text-gray-900 mb-3">Edit terms here</h3>
-//               <div className="border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm">
-//                 <style>{`
-//                   .editor-content ul { list-style-type: disc; margin-left: 1.5rem; margin-top: 0.5rem; margin-bottom: 0.5rem; }
-//                   .editor-content ol { list-style-type: decimal; margin-left: 1.5rem; margin-top: 0.5rem; margin-bottom: 0.5rem; }
-//                   .editor-content blockquote { border-left: 4px solid #e5e7eb; padding-left: 1rem; font-style: italic; color: #6b7280; margin-top: 0.5rem; margin-bottom: 0.5rem; }
-//                 `}</style>
-//                 <div className="border-b border-gray-100 p-2 flex flex-wrap items-center gap-1 bg-gray-50/50">
-//                   <select onChange={(e) => handleFormat('formatBlock', e.target.value)} className="px-3 py-1.5 text-[13px] text-gray-600 bg-transparent border-none focus:outline-none cursor-pointer hover:bg-gray-100 rounded" defaultValue="P">
-//                     <option value="P">Paragraph</option>
-//                     <option value="H1">Heading 1</option>
-//                     <option value="H2">Heading 2</option>
-//                   </select>
-//                   <div className="w-px h-5 bg-gray-200 mx-1"></div>
-//                   <button title="Bold" onMouseDown={(e) => { e.preventDefault(); handleFormat('bold'); }} className="p-1.5 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors"><Bold size={16} /></button>
-//                   <button title="Italic" onMouseDown={(e) => { e.preventDefault(); handleFormat('italic'); }} className="p-1.5 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors"><Italic size={16} /></button>
-//                   <button title="Underline" onMouseDown={(e) => { e.preventDefault(); handleFormat('underline'); }} className="p-1.5 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors"><Underline size={16} /></button>
-//                   <div className="w-px h-5 bg-gray-200 mx-1"></div>
-//                   <button title="Bullet List" onMouseDown={(e) => { e.preventDefault(); handleFormat('insertUnorderedList'); }} className="p-1.5 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors"><List size={16} /></button>
-//                   <button title="Numbered List" onMouseDown={(e) => { e.preventDefault(); handleFormat('insertOrderedList'); }} className="p-1.5 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors"><ListOrdered size={16} /></button>
-//                 </div>
-//                 <div
-//                   ref={editorRef}
-//                   className="editor-content w-full min-h-[250px] p-4 text-[14px] text-gray-800 focus:outline-none overflow-y-auto"
-//                   contentEditable={true}
-//                   onBlur={(e) => setNdaText(e.currentTarget.innerHTML)}
-//                   style={{ minHeight: '250px' }}
-//                 ></div>
-//               </div>
-
-//               <div className="mt-4 flex justify-end gap-3">
-//                 <button onClick={() => setShowEditor(false)} className="px-6 py-2.5 bg-gray-100 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-200 transition-colors">
-//                   Cancel
-//                 </button>
-//                 <button onClick={handleSaveTerms} className="flex items-center gap-2 px-6 py-2.5 bg-[var(--brand)] text-white text-sm font-semibold rounded-lg shadow-md shadow-[var(--brand)]/20 hover:bg-[var(--brand)]/90 transition-all">
-//                   <Check size={16} /> Save Terms
-//                 </button>
-//               </div>
-//             </div>
-//           )}
-//         </div>
-//       )}
-
-//       {/* NDA USERS TAB */}
-//       {activeTab === 'users' && (
-//         <div className="animate-in fade-in duration-300">
-//           <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
-//             <div className="overflow-x-auto">
-//               <table className="w-full text-left border-collapse">
-//                 <thead>
-//                   <tr className="bg-gray-50/80 border-b border-gray-200">
-//                     <th className="px-6 py-4 text-[13px] font-bold text-gray-600 uppercase tracking-wider">S.No</th>
-//                     <th className="px-6 py-4 text-[13px] font-bold text-gray-600 uppercase tracking-wider">Name</th>
-//                     <th className="px-6 py-4 text-[13px] font-bold text-gray-600 uppercase tracking-wider">Date Accepted</th>
-//                     <th className="px-6 py-4 text-[13px] font-bold text-gray-600 uppercase tracking-wider">NDA Attached</th>
-//                     <th className="px-6 py-4 text-[13px] font-bold text-gray-600 uppercase tracking-wider">Status</th>
-//                     <th className="px-6 py-4 text-[13px] font-bold text-gray-600 uppercase tracking-wider text-center">Action</th>
-//                   </tr>
-//                 </thead>
-//                 <tbody className="divide-y divide-gray-100">
-//                   {loadingUsers ? (
-//                     <tr><td colSpan="6" className="text-center py-8 text-gray-500">Loading users...</td></tr>
-//                   ) : ndaUsersList.map((u, index) => (
-//                     <tr key={u.id} className="hover:bg-gray-50/50 transition-colors">
-//                       <td className="px-6 py-4 text-[14px] text-gray-500 font-medium">{index + 1}</td>
-//                       <td className="px-6 py-4">
-//                         <span className="text-[14px] font-semibold text-gray-900">{u.name}</span>
-//                       </td>
-//                       <td className="px-6 py-4 text-[14px] text-gray-600">{u.datetime}</td>
-//                       <td className="px-6 py-4">
-//                         <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-[12px] font-semibold ${u.ndaAttached === 'Yes' ? 'bg-blue-50 text-blue-700' : 'bg-gray-100 text-gray-600'}`}>
-//                           {u.ndaAttached}
-//                         </span>
-//                       </td>
-//                       <td className="px-6 py-4">
-//                         <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] font-bold ${u.status === 'Accepted' ? 'bg-green-100 text-green-700' :
-//                           u.status === 'Pending' || u.status === 'Pending Invite' ? 'bg-orange-100 text-orange-700' :
-//                             'bg-gray-100 text-gray-600'
-//                           }`}>
-//                           {u.status === 'Accepted' && <Check size={12} strokeWidth={3} />}
-//                           {u.status}
-//                         </span>
-//                       </td>
-//                       <td className="px-6 py-4 text-center flex justify-center gap-2">
-//                         {/* Download Signed Copy (Only if accepted) */}
-//                         <button
-//                           disabled={u.status !== 'Accepted'}
-//                           className={`inline-flex items-center justify-center p-2 rounded-lg transition-all ${u.status === 'Accepted' ? 'bg-[var(--brand)] text-white hover:bg-[var(--brand)]/90 shadow-sm hover:shadow-md' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`}
-//                           title={u.status === 'Accepted' ? 'Download Signed Document' : 'Pending Acceptance'}
-//                         >
-//                           <Download size={16} />
-//                         </button>
-
-
-
-//                         {/* Force User to Sign NDA */}
-//                         {u.isRealUser && u.rawStatus !== 'pending' && (
-//                           <button
-//                             onClick={() => handleRequireNdaForUser(u.id)}
-//                             className="inline-flex items-center gap-1 px-3 py-2 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg text-xs font-bold transition-all shadow-sm"
-//                             title={u.rawStatus === 'accepted' ? "Force user to sign updated agreement" : "Force old user to sign NDA on next login"}
-//                           >
-//                             <ShieldAlert size={14} /> Require NDA
-//                           </button>
-//                         )}
-
-//                       </td>
-//                     </tr>
-//                   ))}
-//                 </tbody>
-//               </table>
-//             </div>
-
-//             {!loadingUsers && ndaUsersList.length === 0 && (
-//               <div className="p-12 text-center">
-//                 <FileText size={48} className="mx-auto text-gray-300 mb-4" />
-//                 <h3 className="text-gray-900 font-bold mb-1">No Users Found</h3>
-//                 <p className="text-gray-500 text-sm">When users are registered or invited, they will appear here.</p>
-//               </div>
-//             )}
-//           </div>
-//         </div>
-//       )}
-
-//     </div>
-//   );
-// }
-
-

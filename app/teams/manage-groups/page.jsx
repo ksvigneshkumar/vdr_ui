@@ -382,108 +382,209 @@ export default function ManageGroupsPage() {
           <p className="text-sm text-slate-400 font-semibold">No groups found</p>
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-2xs overflow-hidden transition-all duration-300 hover:shadow-md">
-          <div className="overflow-x-auto no-scrollbar">
-            <table className="w-full text-left border-collapse select-none min-w-[620px]">
-              <thead>
-                <tr className="bg-slate-50/80 text-slate-400 font-extrabold text-[11px] tracking-wider border-b border-slate-200">
-                  {/* Master Checkbox */}
-                  <th className="py-3.5 sm:py-4 px-4 sm:px-5 w-10">
-                    <input
-                      type="checkbox"
-                      checked={filteredGroups.length > 0 && selectedGroupIds.length === filteredGroups.length}
-                      onChange={handleSelectAll}
-                      className="w-4 h-4 rounded border-slate-300 text-[var(--brand)] focus:ring-[var(--brand)]/20 cursor-pointer"
-                    />
-                  </th>
-                  <th className="py-3.5 sm:py-4 px-3 sm:px-4">GROUP NAME</th>
-                  <th className="py-3.5 sm:py-4 px-4 sm:px-5">CREATED BY</th>
-                  <th className="py-3.5 sm:py-4 px-4 sm:px-5">CREATED DATE</th>
-                  <th className="py-3.5 sm:py-4 px-3 sm:px-4 text-center w-12">ACTIONS</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {filteredGroups.map(group => {
-                  const isSelected = selectedGroupIds.includes(group.id);
+        <>
+          {/* ── MOBILE LIST VIEW (Visible on < md screens) ── */}
+          <div className="md:hidden space-y-3">
+            {/* Mobile Select All Header */}
+            <div className="flex items-center justify-between px-3.5 py-2.5 bg-white rounded-xl border border-slate-200/90 shadow-2xs">
+              <label className="flex items-center gap-2 cursor-pointer select-none text-xs font-bold text-slate-800">
+                <input
+                  type="checkbox"
+                  checked={filteredGroups.length > 0 && selectedGroupIds.length === filteredGroups.length}
+                  onChange={handleSelectAll}
+                  className="w-4 h-4 rounded border-slate-300 text-[var(--brand)] focus:ring-[var(--brand)]/20 cursor-pointer"
+                />
+                <span>Select All ({filteredGroups.length})</span>
+              </label>
+              {selectedGroupIds.length > 0 && (
+                <span className="px-2 py-0.5 rounded-md text-[11px] font-bold bg-blue-50 text-[var(--brand)] border border-blue-100">
+                  {selectedGroupIds.length} selected
+                </span>
+              )}
+            </div>
 
-                  return (
-                    <tr
-                      key={group.id}
-                      onContextMenu={(e) => handleContextMenu(e, group)}
-                      className={`hover:bg-slate-50/60 transition-colors duration-200 cursor-context-menu ${isSelected ? 'bg-slate-50/80' : ''
-                        }`}
-                    >
-                      {/* Checkbox Column */}
-                      <td className="py-3 sm:py-4 px-4 sm:px-5">
+            {/* Mobile Cards List */}
+            {filteredGroups.map(group => {
+              const isSelected = selectedGroupIds.includes(group.id);
+
+              return (
+                <div
+                  key={group.id}
+                  onClick={() => handleSelectGroup(group.id)}
+                  className={`p-3.5 rounded-2xl border transition-all duration-150 cursor-pointer select-none ${
+                    isSelected
+                      ? 'bg-blue-50/90 border-[var(--brand)] shadow-xs ring-1 ring-[var(--brand)]/20'
+                      : 'bg-white border-slate-200/90 hover:border-slate-300 shadow-2xs'
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-start gap-3 min-w-0 flex-1">
+                      <div className="pt-1" onClick={(e) => e.stopPropagation()}>
                         <input
                           type="checkbox"
                           checked={isSelected}
                           onChange={() => handleSelectGroup(group.id)}
                           className="w-4 h-4 rounded border-slate-300 text-[var(--brand)] focus:ring-[var(--brand)]/20 cursor-pointer"
                         />
-                      </td>
+                      </div>
 
-                      {/* Group Name */}
-                      <td className="py-3 sm:py-4 px-3 sm:px-4">
-                        <div className="flex items-center gap-2.5">
-                          <div className="w-7 h-7 rounded-lg bg-teal-50 flex items-center justify-center border border-teal-100/30 shrink-0">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" strokeWidth="2.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" /></svg>
-                          </div>
-                          <div>
-                            <span className="font-bold text-slate-900 text-xs sm:text-[13px] hover:text-[var(--brand)] transition-colors block">
-                              {group.name}
-                            </span>
-                            {group.description && (
-                              <span className="text-[10px] text-slate-400 font-medium truncate block max-w-[200px] sm:max-w-[280px]">
-                                {group.description}
-                              </span>
-                            )}
-                          </div>
+                      <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-xs shrink-0 transition-all ${
+                        isSelected 
+                          ? 'bg-[var(--brand)] text-white shadow-2xs' 
+                          : 'bg-blue-50 text-[var(--brand)] border border-blue-100/80'
+                      }`}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" /></svg>
+                      </div>
+
+                      <div className="min-w-0 flex-1">
+                        <span className={`font-bold text-xs sm:text-sm tracking-tight truncate block ${isSelected ? 'text-[var(--brand)]' : 'text-slate-900'}`}>
+                          {group.name}
+                        </span>
+                        {group.description && (
+                          <p className="text-[11px] text-slate-500 font-medium mt-0.5 truncate">
+                            {group.description}
+                          </p>
+                        )}
+                        <div className="flex items-center gap-2 text-[10px] text-slate-400 font-semibold mt-1">
+                          <span>Created by {group.creator_name}</span>
+                          <span>•</span>
+                          <span>{formatDate(group.created_at)}</span>
                         </div>
-                      </td>
+                      </div>
+                    </div>
 
-                      {/* Created By */}
-                      <td className="py-3 sm:py-4 px-4 sm:px-5 text-xs sm:text-[13px] text-slate-700 font-bold">
-                        {group.creator_name}
-                      </td>
-
-                      {/* Created Date */}
-                      <td className="py-3 sm:py-4 px-4 sm:px-5 text-xs sm:text-[13px] text-slate-500 font-semibold">
-                        {formatDate(group.created_at)}
-                      </td>
-
-                      {/* Quick 3-dots Action Menu */}
-                      <td className="py-3 sm:py-4 px-3 sm:px-4 text-center">
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            const rect = e.currentTarget.getBoundingClientRect();
-                            const menuHeight = 110;
-                            const openUpwards = rect.bottom + menuHeight > window.innerHeight;
-                            setContextMenu({
-                              x: Math.max(10, Math.min(rect.right - 180, window.innerWidth - 190)),
-                              y: openUpwards ? Math.max(10, rect.top - menuHeight) : rect.bottom + 4,
-                              group
-                            });
-                          }}
-                          className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition-colors"
-                          title="Actions"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-                            <circle cx="12" cy="5" r="2" />
-                            <circle cx="12" cy="12" r="2" />
-                            <circle cx="12" cy="19" r="2" />
-                          </svg>
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const rect = e.currentTarget.getBoundingClientRect();
+                        const menuHeight = 110;
+                        const openUpwards = rect.bottom + menuHeight > window.innerHeight;
+                        setContextMenu({
+                          x: Math.max(10, Math.min(rect.right - 180, window.innerWidth - 190)),
+                          y: openUpwards ? Math.max(10, rect.top - menuHeight) : rect.bottom + 4,
+                          group
+                        });
+                      }}
+                      className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition-colors shrink-0"
+                      title="Actions"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <circle cx="12" cy="5" r="2" />
+                        <circle cx="12" cy="12" r="2" />
+                        <circle cx="12" cy="19" r="2" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
           </div>
-        </div>
+
+          {/* ── DESKTOP TABLE VIEW (Visible on >= md screens) ── */}
+          <div className="hidden md:block bg-white rounded-2xl border border-slate-200/80 shadow-2xs overflow-hidden transition-all duration-300 hover:shadow-md">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse select-none min-w-[620px]">
+                <thead>
+                  <tr className="bg-slate-50/80 text-slate-400 font-extrabold text-[11px] tracking-wider border-b border-slate-200">
+                    {/* Master Checkbox */}
+                    <th className="py-3.5 sm:py-4 px-4 sm:px-5 w-10">
+                      <input
+                        type="checkbox"
+                        checked={filteredGroups.length > 0 && selectedGroupIds.length === filteredGroups.length}
+                        onChange={handleSelectAll}
+                        className="w-4 h-4 rounded border-slate-300 text-[var(--brand)] focus:ring-[var(--brand)]/20 cursor-pointer"
+                      />
+                    </th>
+                    <th className="py-3.5 sm:py-4 px-3 sm:px-4">GROUP NAME</th>
+                    <th className="py-3.5 sm:py-4 px-4 sm:px-5">CREATED BY</th>
+                    <th className="py-3.5 sm:py-4 px-4 sm:px-5">CREATED DATE</th>
+                    <th className="py-3.5 sm:py-4 px-3 sm:px-4 text-center w-12">ACTIONS</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {filteredGroups.map(group => {
+                    const isSelected = selectedGroupIds.includes(group.id);
+
+                    return (
+                      <tr
+                        key={group.id}
+                        onContextMenu={(e) => handleContextMenu(e, group)}
+                        className={`hover:bg-slate-50/60 transition-colors duration-200 cursor-context-menu ${isSelected ? 'bg-blue-50/80' : ''
+                          }`}
+                      >
+                        {/* Checkbox Column */}
+                        <td className="py-3 sm:py-4 px-4 sm:px-5">
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={() => handleSelectGroup(group.id)}
+                            className="w-4 h-4 rounded border-slate-300 text-[var(--brand)] focus:ring-[var(--brand)]/20 cursor-pointer"
+                          />
+                        </td>
+
+                        {/* Group Name */}
+                        <td className="py-3 sm:py-4 px-3 sm:px-4">
+                          <div className="flex items-center gap-2.5">
+                            <div className="w-7 h-7 rounded-lg bg-teal-50 flex items-center justify-center border border-teal-100/30 shrink-0">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" strokeWidth="2.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" /></svg>
+                            </div>
+                            <div>
+                              <span className="font-bold text-slate-900 text-xs sm:text-[13px] hover:text-[var(--brand)] transition-colors block">
+                                {group.name}
+                              </span>
+                              {group.description && (
+                                <span className="text-[10px] text-slate-400 font-medium truncate block max-w-[200px] sm:max-w-[280px]">
+                                  {group.description}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </td>
+
+                        {/* Created By */}
+                        <td className="py-3 sm:py-4 px-4 sm:px-5 text-xs sm:text-[13px] text-slate-700 font-bold">
+                          {group.creator_name}
+                        </td>
+
+                        {/* Created Date */}
+                        <td className="py-3 sm:py-4 px-4 sm:px-5 text-xs sm:text-[13px] text-slate-500 font-semibold">
+                          {formatDate(group.created_at)}
+                        </td>
+
+                        {/* Quick 3-dots Action Menu */}
+                        <td className="py-3 sm:py-4 px-3 sm:px-4 text-center">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const rect = e.currentTarget.getBoundingClientRect();
+                              const menuHeight = 110;
+                              const openUpwards = rect.bottom + menuHeight > window.innerHeight;
+                              setContextMenu({
+                                x: Math.max(10, Math.min(rect.right - 180, window.innerWidth - 190)),
+                                y: openUpwards ? Math.max(10, rect.top - menuHeight) : rect.bottom + 4,
+                                group
+                              });
+                            }}
+                            className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition-colors"
+                            title="Actions"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                              <circle cx="12" cy="5" r="2" />
+                              <circle cx="12" cy="12" r="2" />
+                              <circle cx="12" cy="19" r="2" />
+                            </svg>
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </>
       )}
 
       {/* Helper Context Instructions */}

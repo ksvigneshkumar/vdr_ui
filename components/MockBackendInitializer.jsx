@@ -167,10 +167,10 @@ export default function MockBackendInitializer() {
                 const mockGroup = { id: slug, name: slug.replace(/-/g, " "), description: "Demo group for managing " + slug.replace(/-/g, " ") + " access" };
                 
                 const dummyMembers = [
-                  { id: "u-1", name: "John Doe", email: "john@demo.com", phone: "+1 555-0100", status: "Active", role: "Admin" },
-                  { id: "u-2", name: "Alice Smith", email: "alice@demo.com", phone: "+1 555-0101", status: "Active", role: "Member" },
-                  { id: "u-3", name: "Bob Johnson", email: "bob@demo.com", phone: "+1 555-0102", status: "Pending", role: "Member" },
-                  { id: "u-4", name: "Emma Davis", email: "emma@demo.com", phone: "+1 555-0103", status: "Active", role: "Member" }
+                  { id: "u-1", name: "John Doe", email: "john@demo.com", phone: "+91 98765 43210", phone_number: "+91 98765 43210", status: "Active", role: "Admin" },
+                  { id: "u-2", name: "Alice Smith", email: "alice@demo.com", phone: "+91 98451 23456", phone_number: "+91 98451 23456", status: "Active", role: "Member" },
+                  { id: "u-3", name: "Bob Johnson", email: "bob@demo.com", phone: "+91 97890 65432", phone_number: "+91 97890 65432", status: "Active", role: "Member" },
+                  { id: "u-4", name: "Emma Davis", email: "emma@demo.com", phone: "+91 99401 87654", phone_number: "+91 99401 87654", status: "Active", role: "Member" }
                 ];
 
                 mockData = {
@@ -338,7 +338,12 @@ export default function MockBackendInitializer() {
                 mockData = { 
                   success: true, 
                   group: { id: "grp-1", name: "kln grp Group", description: "Manage access and administration settings for members in this group." },
-                  members: [],
+                  members: [
+                    { id: "u-1", name: "John Doe", email: "john@demo.com", phone: "+91 98765 43210", phone_number: "+91 98765 43210", status: "active", role: "Admin" },
+                    { id: "u-2", name: "Alice Smith", email: "alice@demo.com", phone: "+91 98451 23456", phone_number: "+91 98451 23456", status: "active", role: "Member" },
+                    { id: "u-3", name: "Bob Johnson", email: "bob@demo.com", phone: "+91 97890 65432", phone_number: "+91 97890 65432", status: "active", role: "Member" },
+                    { id: "u-4", name: "Emma Davis", email: "emma@demo.com", phone: "+91 99401 87654", phone_number: "+91 99401 87654", status: "active", role: "Member" }
+                  ],
                   canAddMembers: true,
                   canRemoveMembers: true,
                   canEditPermissions: true

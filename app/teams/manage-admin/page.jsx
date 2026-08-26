@@ -43,12 +43,12 @@ export default function ManageAdminPage() {
   const fetchData = async () => {
     setLoading(true);
     const mockAdmins = [
-      { id: 1, name: "Vishwa Bhai", company_name: "Vishwa Tech", email: "vishwa@gmail.com", phone_number: "9894886657", created_at: null, status: "active" },
-      { id: 2, name: "Vairajothi P", company_name: "Vishwa Tech", email: "vairajothi@gmail.com", phone_number: "78899975576", created_at: null, status: "active" },
-      { id: 3, name: "dhanush", company_name: "Vishwa Tech", email: "dhanush@gmail.com", phone_number: "5379891726", created_at: null, status: "active" },
-      { id: 4, name: "anusiya", company_name: "Vishwa Tech", email: "anusiya@gmail.com", phone_number: "7878987", created_at: null, status: "active" },
-      { id: 5, name: "nagaraj", company_name: "Vishwa Tech", email: "nagaadmin@gmail.com", phone_number: "2345678901", created_at: null, status: "active" },
-      { id: 6, name: "ragul", company_name: "Vishwa Tech", email: "ragul@gmail.com", phone_number: "1234567890", created_at: null, status: "active" },
+      { id: 1, name: "Vishwa Bhai", company_name: "Vishwa Tech", email: "vishwa@gmail.com", phone_number: "9894886657", created_at: null, expiry_date: "26 Aug 2027", status: "active" },
+      { id: 2, name: "Vairajothi P", company_name: "Vishwa Tech", email: "vairajothi@gmail.com", phone_number: "78899975576", created_at: null, expiry_date: "15 Dec 2026", status: "active" },
+      { id: 3, name: "dhanush", company_name: "Vishwa Tech", email: "dhanush@gmail.com", phone_number: "5379891726", created_at: null, expiry_date: "31 Dec 2026", status: "active" },
+      { id: 4, name: "anusiya", company_name: "Vishwa Tech", email: "anusiya@gmail.com", phone_number: "7878987", created_at: null, expiry_date: "28 Feb 2027", status: "active" },
+      { id: 5, name: "nagaraj", company_name: "Vishwa Tech", email: "nagaadmin@gmail.com", phone_number: "2345678901", created_at: null, expiry_date: "10 Jan 2027", status: "active" },
+      { id: 6, name: "ragul", company_name: "Vishwa Tech", email: "ragul@gmail.com", phone_number: "1234567890", created_at: null, expiry_date: "18 Mar 2027", status: "active" },
     ];
     setAdmins(mockAdmins);
     setLoading(false);
@@ -329,10 +329,29 @@ export default function ManageAdminPage() {
     });
   };
 
-  // Expiry Date generator (created_at + 1 year, matching MM/DD/YY in drawing)
-  const formatExpiryDate = () => {
-    return "--";
+  const staticExpiryDates = [
+    "26 Aug 2027",
+    "15 Dec 2026",
+    "31 Dec 2026",
+    "28 Feb 2027",
+    "10 Jan 2027",
+    "18 Mar 2027",
+  ];
+
+  // Expiry Date generator (static fallback / created_at + 1 year)
+  const formatExpiryDate = (createdAt, adminId, explicitDate) => {
+    if (explicitDate) return explicitDate;
+    if (createdAt) {
+      try {
+        const d = new Date(createdAt);
+        d.setFullYear(d.getFullYear() + 1);
+        return d.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+      } catch (e) {}
+    }
+    const idx = (typeof adminId === 'number' ? adminId - 1 : 0) % staticExpiryDates.length;
+    return staticExpiryDates[Math.max(0, idx)] || "26 Aug 2027";
   };
+
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto relative min-h-full font-sans">
       {/* Dynamic Toasts */}
@@ -374,7 +393,7 @@ export default function ManageAdminPage() {
           <div className="relative w-full sm:w-60 lg:w-72">
             <input
               type="text"
-              placeholder="Search admin..."
+              placeholder="Search administrators..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full h-9 pl-9 pr-8 bg-white border border-slate-200 focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/10 rounded-full text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none transition-all shadow-xs font-medium"
@@ -417,126 +436,249 @@ export default function ManageAdminPage() {
           <p className="text-sm text-slate-400 font-semibold">No administrators found</p>
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-2xs overflow-hidden transition-all duration-300 hover:shadow-md">
-          <div className="overflow-x-auto no-scrollbar">
-            <table className="w-full text-left border-collapse select-none min-w-[740px]">
-              <thead>
-                <tr className="bg-slate-50/80 text-slate-400 font-extrabold text-[11px] tracking-wider border-b border-slate-200">
-                  {/* Master Checkbox */}
-                  <th className="py-3.5 sm:py-4 px-4 sm:px-5 w-10">
-                    <input
-                      type="checkbox"
-                      checked={filteredAdmins.length > 0 && selectedAdminIds.length === filteredAdmins.length}
-                      onChange={handleSelectAll}
-                      className="w-4 h-4 rounded border-slate-300 text-[var(--brand)] focus:ring-[var(--brand)]/20 cursor-pointer"
-                    />
-                  </th>
-                  <th className="py-3.5 sm:py-4 px-3 sm:px-4">NAME</th>
-                  <th className="py-3.5 sm:py-4 px-4 sm:px-5">ORGANIZATION</th>
-                  <th className="py-3.5 sm:py-4 px-4 sm:px-5">EMAIL</th>
-                  <th className="py-3.5 sm:py-4 px-4 sm:px-5">MOBILE</th>
-                  <th className="py-3.5 sm:py-4 px-4 sm:px-5">EXPIRY DATE</th>
-                  <th className="py-3.5 sm:py-4 px-4 sm:px-5">STATUS</th>
-                  <th className="py-3.5 sm:py-4 px-3 sm:px-4 text-center w-12">ACTIONS</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {filteredAdmins.map(admin => {
-                  const isSelected = selectedAdminIds.includes(admin.id);
-                  const isUserActive = admin.status === 'active';
+        <>
+          {/* ── MOBILE LIST VIEW (Visible on < md screens) ── */}
+          <div className="md:hidden space-y-3">
+            {/* Mobile Select All Header */}
+            <div className="flex items-center justify-between px-3.5 py-2.5 bg-white rounded-xl border border-slate-200/90 shadow-2xs">
+              <label className="flex items-center gap-2 cursor-pointer select-none text-xs font-bold text-slate-800">
+                <input
+                  type="checkbox"
+                  checked={filteredAdmins.length > 0 && selectedAdminIds.length === filteredAdmins.length}
+                  onChange={handleSelectAll}
+                  className="w-4 h-4 rounded border-slate-300 text-[var(--brand)] focus:ring-[var(--brand)]/20 cursor-pointer"
+                />
+                <span>Select All ({filteredAdmins.length})</span>
+              </label>
+              {selectedAdminIds.length > 0 && (
+                <span className="px-2 py-0.5 rounded-md text-[11px] font-bold bg-blue-50 text-[var(--brand)] border border-blue-100">
+                  {selectedAdminIds.length} selected
+                </span>
+              )}
+            </div>
 
-                  return (
-                    <tr
-                      key={admin.id}
-                      onContextMenu={(e) => handleContextMenu(e, admin)}
-                      className={`hover:bg-slate-50/60 transition-colors duration-200 cursor-context-menu ${isSelected ? 'bg-slate-50/80' : ''
-                        } ${!isUserActive ? 'opacity-70' : ''}`}
-                    >
-                      {/* Checkbox Column */}
-                      <td className="py-3 sm:py-4 px-4 sm:px-5">
+            {/* Mobile Cards List */}
+            {filteredAdmins.map(admin => {
+              const isSelected = selectedAdminIds.includes(admin.id);
+              const isUserActive = admin.status === 'active';
+
+              return (
+                <div
+                  key={admin.id}
+                  onClick={() => handleSelectAdmin(admin.id)}
+                  className={`p-3.5 rounded-2xl border transition-all duration-150 cursor-pointer select-none ${
+                    isSelected
+                      ? 'bg-blue-50/90 border-[var(--brand)] shadow-xs ring-1 ring-[var(--brand)]/20'
+                      : 'bg-white border-slate-200/90 hover:border-slate-300 shadow-2xs'
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-start gap-3 min-w-0 flex-1">
+                      <div className="pt-1" onClick={(e) => e.stopPropagation()}>
                         <input
                           type="checkbox"
                           checked={isSelected}
                           onChange={() => handleSelectAdmin(admin.id)}
                           className="w-4 h-4 rounded border-slate-300 text-[var(--brand)] focus:ring-[var(--brand)]/20 cursor-pointer"
                         />
-                      </td>
+                      </div>
 
-                      {/* Name */}
-                      <td className="py-3 sm:py-4 px-3 sm:px-4">
-                        <div className="flex items-center gap-2.5">
-                          <div className="w-7 h-7 rounded-full bg-[var(--brand)]/10 text-[var(--brand)] font-bold text-[11px] flex items-center justify-center shrink-0">
-                            {admin.name?.charAt(0)?.toUpperCase() || 'A'}
-                          </div>
-                          <span className="font-bold text-slate-900 text-xs sm:text-[13px] hover:text-[var(--brand)] transition-colors truncate max-w-[160px]">
+                      <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-xs shrink-0 transition-all ${
+                        isSelected 
+                          ? 'bg-[var(--brand)] text-white shadow-2xs' 
+                          : 'bg-blue-50 text-[var(--brand)] border border-blue-100/80'
+                      }`}>
+                        {admin.name?.charAt(0)?.toUpperCase() || 'A'}
+                      </div>
+
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className={`font-bold text-xs sm:text-sm tracking-tight truncate ${isSelected ? 'text-[var(--brand)]' : 'text-slate-900'}`}>
                             {admin.name}
                           </span>
+                          <span className="bg-slate-100 text-slate-700 text-[10px] font-bold px-1.5 py-0.5 rounded border border-slate-200/80 shrink-0">
+                            {admin.company_name || companyName || 'Vishwa Tech'}
+                          </span>
                         </div>
-                      </td>
 
-                      {/* Org */}
-                      <td className="py-3 sm:py-4 px-4 sm:px-5 text-xs sm:text-[13px] text-slate-600 font-bold">
-                        {admin.company_name || companyName}
-                      </td>
+                        <div className="flex items-center gap-1.5 text-[11px] text-slate-500 font-medium mt-1 truncate">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" className="shrink-0 text-slate-400"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                          <span className="truncate">{admin.email}</span>
+                        </div>
 
-                      {/* Email */}
-                      <td className="py-3 sm:py-4 px-4 sm:px-5 text-xs sm:text-[13px] text-slate-500 font-medium">
-                        {admin.email}
-                      </td>
+                        <div className="flex items-center gap-1.5 text-[11px] text-slate-600 font-semibold mt-0.5">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" className="shrink-0 text-slate-400"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                          <span>{admin.phone_number ? `+91 ${admin.phone_number}` : '--'}</span>
+                        </div>
 
-                      {/* Mobile */}
-                      <td className="py-3 sm:py-4 px-4 sm:px-5 text-xs sm:text-[13px] text-slate-500 font-medium">
-                        {admin.phone_number ? `+91 ${admin.phone_number}` : '--'}
-                      </td>
+                        <div className="flex items-center gap-1.5 text-[10px] text-slate-400 font-semibold mt-0.5">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" className="shrink-0 text-slate-400"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                          <span>Expires: {formatExpiryDate(admin.created_at, admin.id, admin.expiry_date)}</span>
+                        </div>
+                      </div>
+                    </div>
 
-                      {/* Expiry Date */}
-                      <td className="py-3 sm:py-4 px-4 sm:px-5 text-xs sm:text-[13px] text-slate-500 font-semibold">
-                        {formatExpiryDate(admin.created_at)}
-                      </td>
+                    <div className="flex flex-col items-end gap-2 shrink-0">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const rect = e.currentTarget.getBoundingClientRect();
+                          const menuHeight = 150;
+                          const openUpwards = rect.bottom + menuHeight > window.innerHeight;
+                          setContextMenu({
+                            x: Math.max(10, Math.min(rect.right - 180, window.innerWidth - 190)),
+                            y: openUpwards ? Math.max(10, rect.top - menuHeight) : rect.bottom + 4,
+                            admin
+                          });
+                        }}
+                        className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition-colors"
+                        title="Actions"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                          <circle cx="12" cy="5" r="2" />
+                          <circle cx="12" cy="12" r="2" />
+                          <circle cx="12" cy="19" r="2" />
+                        </svg>
+                      </button>
 
-                      {/* Status */}
-                      <td className="py-3 sm:py-4 px-4 sm:px-5">
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-extrabold border ${isUserActive
-                            ? 'bg-emerald-50 text-emerald-700 border-emerald-100/60'
-                            : 'bg-slate-100 text-slate-600 border-slate-200'
-                          }`}>
-                          <span className={`w-1.5 h-1.5 rounded-full ${isUserActive ? 'bg-emerald-500' : 'bg-slate-400'}`}></span>
-                          {isUserActive ? 'Active' : 'Inactive'}
-                        </span>
-                      </td>
-
-                      {/* Quick 3-dots Action Menu */}
-                      <td className="py-3 sm:py-4 px-3 sm:px-4 text-center">
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            const rect = e.currentTarget.getBoundingClientRect();
-                            const menuHeight = 150;
-                            const openUpwards = rect.bottom + menuHeight > window.innerHeight;
-                            setContextMenu({
-                              x: Math.max(10, Math.min(rect.right - 180, window.innerWidth - 190)),
-                              y: openUpwards ? Math.max(10, rect.top - menuHeight) : rect.bottom + 4,
-                              admin
-                            });
-                          }}
-                          className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition-colors"
-                          title="Actions"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-                            <circle cx="12" cy="5" r="2" />
-                            <circle cx="12" cy="12" r="2" />
-                            <circle cx="12" cy="19" r="2" />
-                          </svg>
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                      <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-bold border ${
+                        isUserActive
+                          ? 'bg-blue-50 text-[var(--brand)] border-blue-200/80'
+                          : 'bg-slate-100 text-slate-600 border-slate-200'
+                      }`}>
+                        <span className={`w-1.5 h-1.5 rounded-full ${isUserActive ? 'bg-[var(--brand)]' : 'bg-slate-400'}`}></span>
+                        {isUserActive ? 'Active' : 'Inactive'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
-        </div>
+
+          {/* ── DESKTOP TABLE VIEW (Visible on >= md screens) ── */}
+          <div className="hidden md:block bg-white rounded-2xl border border-slate-200/80 shadow-2xs overflow-hidden transition-all duration-300 hover:shadow-md">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse select-none min-w-[740px]">
+                <thead>
+                  <tr className="bg-slate-50/80 text-slate-400 font-extrabold text-[11px] tracking-wider border-b border-slate-200">
+                    {/* Master Checkbox */}
+                    <th className="py-3.5 sm:py-4 px-4 sm:px-5 w-10">
+                      <input
+                        type="checkbox"
+                        checked={filteredAdmins.length > 0 && selectedAdminIds.length === filteredAdmins.length}
+                        onChange={handleSelectAll}
+                        className="w-4 h-4 rounded border-slate-300 text-[var(--brand)] focus:ring-[var(--brand)]/20 cursor-pointer"
+                      />
+                    </th>
+                    <th className="py-3.5 sm:py-4 px-3 sm:px-4">NAME</th>
+                    <th className="py-3.5 sm:py-4 px-4 sm:px-5">ORGANIZATION</th>
+                    <th className="py-3.5 sm:py-4 px-4 sm:px-5">EMAIL</th>
+                    <th className="py-3.5 sm:py-4 px-4 sm:px-5">MOBILE</th>
+                    <th className="py-3.5 sm:py-4 px-4 sm:px-5">EXPIRY DATE</th>
+                    <th className="py-3.5 sm:py-4 px-4 sm:px-5">STATUS</th>
+                    <th className="py-3.5 sm:py-4 px-3 sm:px-4 text-center w-12">ACTIONS</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {filteredAdmins.map(admin => {
+                    const isSelected = selectedAdminIds.includes(admin.id);
+                    const isUserActive = admin.status === 'active';
+
+                    return (
+                      <tr
+                        key={admin.id}
+                        onContextMenu={(e) => handleContextMenu(e, admin)}
+                        className={`hover:bg-slate-50/60 transition-colors duration-200 cursor-context-menu ${isSelected ? 'bg-blue-50/80' : ''
+                          } ${!isUserActive ? 'opacity-70' : ''}`}
+                      >
+                        {/* Checkbox Column */}
+                        <td className="py-3 sm:py-4 px-4 sm:px-5">
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={() => handleSelectAdmin(admin.id)}
+                            className="w-4 h-4 rounded border-slate-300 text-[var(--brand)] focus:ring-[var(--brand)]/20 cursor-pointer"
+                          />
+                        </td>
+
+                        {/* Name */}
+                        <td className="py-3 sm:py-4 px-3 sm:px-4">
+                          <div className="flex items-center gap-2.5">
+                            <div className="w-7 h-7 rounded-full bg-[var(--brand)]/10 text-[var(--brand)] font-bold text-[11px] flex items-center justify-center shrink-0">
+                              {admin.name?.charAt(0)?.toUpperCase() || 'A'}
+                            </div>
+                            <span className="font-bold text-slate-900 text-xs sm:text-[13px] hover:text-[var(--brand)] transition-colors truncate max-w-[160px]">
+                              {admin.name}
+                            </span>
+                          </div>
+                        </td>
+
+                        {/* Org */}
+                        <td className="py-3 sm:py-4 px-4 sm:px-5 text-xs sm:text-[13px] text-slate-600 font-bold">
+                          {admin.company_name || companyName}
+                        </td>
+
+                        {/* Email */}
+                        <td className="py-3 sm:py-4 px-4 sm:px-5 text-xs sm:text-[13px] text-slate-500 font-medium">
+                          {admin.email}
+                        </td>
+
+                        {/* Mobile */}
+                        <td className="py-3 sm:py-4 px-4 sm:px-5 text-xs sm:text-[13px] text-slate-500 font-medium">
+                          {admin.phone_number ? `+91 ${admin.phone_number}` : '--'}
+                        </td>
+
+                        {/* Expiry Date */}
+                        <td className="py-3 sm:py-4 px-4 sm:px-5 text-xs sm:text-[13px] text-slate-600 font-semibold">
+                          {formatExpiryDate(admin.created_at, admin.id, admin.expiry_date)}
+                        </td>
+
+                        {/* Status */}
+                        <td className="py-3 sm:py-4 px-4 sm:px-5">
+                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-extrabold border ${isUserActive
+                              ? 'bg-blue-50 text-[var(--brand)] border-blue-200'
+                              : 'bg-slate-100 text-slate-600 border-slate-200'
+                            }`}>
+                            <span className={`w-1.5 h-1.5 rounded-full ${isUserActive ? 'bg-[var(--brand)]' : 'bg-slate-400'}`}></span>
+                            {isUserActive ? 'Active' : 'Inactive'}
+                          </span>
+                        </td>
+
+                        {/* Quick 3-dots Action Menu */}
+                        <td className="py-3 sm:py-4 px-3 sm:px-4 text-center">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const rect = e.currentTarget.getBoundingClientRect();
+                              const menuHeight = 150;
+                              const openUpwards = rect.bottom + menuHeight > window.innerHeight;
+                              setContextMenu({
+                                x: Math.max(10, Math.min(rect.right - 180, window.innerWidth - 190)),
+                                y: openUpwards ? Math.max(10, rect.top - menuHeight) : rect.bottom + 4,
+                                admin
+                              });
+                            }}
+                            className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition-colors"
+                            title="Actions"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                              <circle cx="12" cy="5" r="2" />
+                              <circle cx="12" cy="12" r="2" />
+                              <circle cx="12" cy="19" r="2" />
+                            </svg>
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </>
       )}
 
       {/* Instructions Overlay at the bottom */}
