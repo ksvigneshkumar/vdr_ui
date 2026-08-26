@@ -72,6 +72,15 @@ button.brand-button:hover {
   background-color: var(--brand-soft) !important;
 }
 
+.text-brand-adaptive {
+  background-color: var(--brand) !important;
+  background-image: var(--brand-gradient, none) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+
 .bg-brand-50 {
   background-color: var(--brand-50) !important;
 }

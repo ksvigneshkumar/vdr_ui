@@ -90,10 +90,10 @@ export default function FeaturesShowcaseCarousel() {
         
         {/* Section Header */}
         <div className="text-center mb-12 sm:mb-16" data-aos="fade-up">
-          <div className="inline-block px-4 py-1 mb-3.5 rounded-full bg-emerald-50 text-[#00a877] font-bold text-xs uppercase tracking-widest border border-emerald-200/60 shadow-2xs">
+          <div className="inline-block px-4 py-1 mb-3.5 rounded-full bg-brand-50 text-brand font-bold text-xs uppercase tracking-widest border border-brand-200/60 shadow-2xs">
             Security &amp; Governance
           </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black bg-gradient-to-r from-[#00a877] via-[#059669] to-[#088382] bg-clip-text text-transparent tracking-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-brand-adaptive tracking-tight">
             Next-Gen Security &amp; Deal Protection
           </h2>
           <p className="text-slate-500 font-medium text-sm sm:text-base mt-2.5 max-w-2xl mx-auto">
@@ -108,7 +108,7 @@ export default function FeaturesShowcaseCarousel() {
             type="button"
             onClick={handleScrollLeft}
             aria-label="Scroll Left"
-            className="hidden md:flex absolute -left-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white text-slate-800 border border-slate-200 shadow-xl items-center justify-center z-20 hover:scale-110 hover:border-emerald-400 hover:text-[#00a877] transition-all cursor-pointer"
+            className="hidden md:flex absolute -left-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white text-slate-800 border border-slate-200 shadow-xl items-center justify-center z-20 hover:scale-110 hover:border-brand-400 hover:text-brand transition-all cursor-pointer"
           >
             &#10094;
           </button>
@@ -118,7 +118,7 @@ export default function FeaturesShowcaseCarousel() {
             type="button"
             onClick={handleScrollRight}
             aria-label="Scroll Right"
-            className="hidden md:flex absolute -right-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white text-slate-800 border border-slate-200 shadow-xl items-center justify-center z-20 hover:scale-110 hover:border-emerald-400 hover:text-[#00a877] transition-all cursor-pointer"
+            className="hidden md:flex absolute -right-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white text-slate-800 border border-slate-200 shadow-xl items-center justify-center z-20 hover:scale-110 hover:border-brand-400 hover:text-brand transition-all cursor-pointer"
           >
             &#10095;
           </button>
@@ -146,7 +146,7 @@ export default function FeaturesShowcaseCarousel() {
                     </div>
 
                     {/* UI Screenshot Mockup Box */}
-                    <div className="w-full h-52 sm:h-56 bg-slate-50/90 rounded-xl flex items-center justify-center p-3 mb-6 border border-slate-100 overflow-hidden group-hover:border-emerald-200 group-hover:shadow-md transition-all duration-500">
+                    <div className="w-full h-52 sm:h-56 bg-slate-50/90 rounded-xl flex items-center justify-center p-3 mb-6 border border-slate-100 overflow-hidden group-hover:border-brand-200 group-hover:shadow-md transition-all duration-500">
                       <img
                         src={item.image}
                         alt={item.title}
@@ -156,7 +156,7 @@ export default function FeaturesShowcaseCarousel() {
                     </div>
 
                     {/* Feature Title */}
-                    <h3 className="text-xl sm:text-2xl font-black text-slate-900 mb-3 tracking-tight group-hover:text-[#00a877] transition-colors">
+                    <h3 className="text-xl sm:text-2xl font-black text-slate-900 mb-3 tracking-tight group-hover:text-brand transition-colors">
                       {item.title}
                     </h3>
 
@@ -168,7 +168,7 @@ export default function FeaturesShowcaseCarousel() {
 
                   {/* Bottom Action Pill */}
                   <div className="pt-2">
-                    <span className="inline-block px-5 py-2 rounded-full font-bold text-xs bg-[#a3e635] text-slate-950 shadow-2xs group-hover:bg-[#00a877] group-hover:text-white transition-all duration-300">
+                    <span className="inline-block px-5 py-2 rounded-full font-bold text-xs bg-[#a3e635] text-slate-950 shadow-2xs group-hover:bg-brand group-hover:text-white transition-all duration-300">
                       {item.buttonText}
                     </span>
                   </div>

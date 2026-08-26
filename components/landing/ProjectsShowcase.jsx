@@ -201,7 +201,7 @@ export default function ProjectsShowcase() {
   }, [isPaused]);
 
   return (
-    <section className="w-full bg-gradient-to-r from-[#00a877] via-[#059669] to-[#088382] py-10 sm:py-14 select-none overflow-hidden relative shadow-inner">
+    <section className="w-full bg-brand py-10 sm:py-14 select-none overflow-hidden relative shadow-inner">
       {/* Background Subtle Ambient Glow */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.18),transparent_70%)] pointer-events-none"></div>
 
@@ -234,7 +234,7 @@ export default function ProjectsShowcase() {
             >
               {/* Top Index Number (Sleek 2-digit Badge) */}
               <div className="flex items-center justify-between">
-                <span className="text-[13px] font-mono font-black text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-2.5 py-1 rounded-lg shadow-2xs">
+                <span className="text-[13px] font-mono font-black text-brand bg-brand-50 border border-brand-200/80 px-2.5 py-1 rounded-lg shadow-2xs">
                   {String(serialNumber).padStart(2, '0')}
                 </span>
                 <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider font-mono">

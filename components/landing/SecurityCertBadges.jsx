@@ -14,7 +14,7 @@ export default function SecurityCertBadges() {
               <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" strokeWidth="4" />
               <circle cx="50" cy="50" r="38" fill="none" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 2" />
               <text x="50" y="32" textAnchor="middle" fontSize="12" fontWeight="900" fill="currentColor" fontFamily="sans-serif">AICPA</text>
-              <text x="50" y="55" textAnchor="middle" fontSize="18" fontWeight="900" fill="#00a877" fontFamily="sans-serif">SOC</text>
+              <text x="50" y="55" textAnchor="middle" fontSize="18" fontWeight="900" fill="var(--brand)" fontFamily="sans-serif">SOC</text>
               <text x="50" y="70" textAnchor="middle" fontSize="8" fontWeight="bold" fill="currentColor" fontFamily="sans-serif">TYPE II</text>
             </svg>
           </div>
@@ -38,7 +38,7 @@ export default function SecurityCertBadges() {
                   <polygon
                     key={i}
                     points={`${cx},${cy-3} ${cx+1},${cy-1} ${cx+3},${cy-1} ${cx+1.5},${cy+0.5} ${cx+2},${cy+2.5} ${cx},${cy+1} ${cx-2},${cy+2.5} ${cx-1.5},${cy+0.5} ${cx-3},${cy-1} ${cx-1},${cy-1}`}
-                    fill="#00a877"
+                    fill="var(--brand)"
                   />
                 );
               })}
@@ -57,8 +57,8 @@ export default function SecurityCertBadges() {
             <svg viewBox="0 0 100 100" className="w-full h-full text-[#020b33]">
               <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" strokeWidth="4" />
               {/* Caduceus / Health Cross Emblem */}
-              <path d="M50 20 V80 M35 32 Q50 24 65 32 M35 44 Q50 36 65 44" fill="none" stroke="#00a877" strokeWidth="3" strokeLinecap="round" />
-              <circle cx="50" cy="20" r="5" fill="#00a877" />
+              <path d="M50 20 V80 M35 32 Q50 24 65 32 M35 44 Q50 36 65 44" fill="none" stroke="var(--brand)" strokeWidth="3" strokeLinecap="round" />
+              <circle cx="50" cy="20" r="5" fill="var(--brand)" />
               <text x="50" y="65" textAnchor="middle" fontSize="13" fontWeight="900" fill="#020b33" fontFamily="sans-serif">HIPAA</text>
             </svg>
           </div>
@@ -75,7 +75,7 @@ export default function SecurityCertBadges() {
               <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" strokeWidth="4" />
               <circle cx="50" cy="50" r="38" fill="none" stroke="currentColor" strokeWidth="1.5" />
               <text x="50" y="32" textAnchor="middle" fontSize="11" fontWeight="bold" fill="currentColor" fontFamily="sans-serif">ISO</text>
-              <text x="50" y="52" textAnchor="middle" fontSize="15" fontWeight="900" fill="#00a877" fontFamily="sans-serif">27001</text>
+              <text x="50" y="52" textAnchor="middle" fontSize="15" fontWeight="900" fill="var(--brand)" fontFamily="sans-serif">27001</text>
               <text x="50" y="68" textAnchor="middle" fontSize="8" fontWeight="bold" fill="currentColor" fontFamily="sans-serif">CERTIFIED</text>
             </svg>
           </div>

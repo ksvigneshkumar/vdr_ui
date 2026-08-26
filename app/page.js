@@ -52,13 +52,13 @@ export default function Home() {
       {/* 1. Navigation */}
       <nav className="fixed top-0 left-0 w-full bg-white shadow-sm z-50 py-4 px-6 md:px-16 flex justify-between items-center transition-all duration-300">
         <div className="text-2xl font-black text-gray-900 tracking-tight flex items-center">
-          <i className="fas fa-shield-alt text-[var(--brand)] mr-2 text-3xl"></i> SecureVDR
+          <i className="fas fa-shield-alt text-brand mr-2 text-3xl"></i> SecureVDR
         </div>
 
         <div className="hidden lg:flex gap-8 items-center font-medium text-gray-600">
-          <a href="#features" className="hover:text-[var(--brand)] transition-colors">Features</a>
-          <a href="#products" className="hover:text-[var(--brand)] transition-colors">Products</a>
-          <a href="#insights" className="hover:text-[var(--brand)] transition-colors">Insights</a>
+          <a href="#features" className="hover:text-brand transition-colors">Features</a>
+          <a href="#products" className="hover:text-brand transition-colors">Products</a>
+          <a href="#insights" className="hover:text-brand transition-colors">Insights</a>
         </div>
 
         {/* Desktop Navigation Buttons */}
@@ -66,7 +66,7 @@ export default function Home() {
           {/* Business Owner Button */}
           <Link 
             href="/business-owner/login" 
-            className="btn-bo-hover px-5 py-2 border-2 border-[var(--brand)] text-[var(--brand)] rounded-full font-semibold flex items-center gap-2 transition-all duration-700"
+            className="btn-bo-hover px-5 py-2 border-2 border-brand text-brand rounded-full font-semibold flex items-center gap-2 transition-all duration-700"
           >
             <i className="fas fa-chart-line"></i> Business Owner
           </Link>
@@ -74,7 +74,7 @@ export default function Home() {
           {/* Login Button */}
           <a 
             href="/login" 
-            className="btn-bo-hover px-5 py-2 border-2 border-[var(--brand)] text-[var(--brand)] rounded-full font-semibold transition-all duration-700"
+            className="btn-bo-hover px-5 py-2 border-2 border-brand text-brand rounded-full font-semibold transition-all duration-700"
           >
             Login
           </a>
@@ -82,7 +82,7 @@ export default function Home() {
           {/* Register Button */}
           <Link 
             href="/register" 
-            className="btn-bo-hover px-5 py-2 border-2 border-[var(--brand)] text-[var(--brand)] rounded-full font-semibold transition-all duration-700"
+            className="btn-bo-hover px-5 py-2 border-2 border-brand text-brand rounded-full font-semibold transition-all duration-700"
           >
             Register
           </Link>
@@ -99,10 +99,10 @@ export default function Home() {
           <a href="#features" className="text-lg font-medium text-gray-700 py-2 border-b border-gray-50" onClick={() => setIsMobileMenuOpen(false)}>Features</a>
           <a href="#products" className="text-lg font-medium text-gray-700 py-2 border-b border-gray-50" onClick={() => setIsMobileMenuOpen(false)}>Products</a>
           <a href="#insights" className="text-lg font-medium text-gray-700 py-2 border-b border-gray-50" onClick={() => setIsMobileMenuOpen(false)}>Insights</a>
-          <Link href="/business-owner/login" className="text-lg font-medium text-[var(--brand)] py-2 border-b border-gray-50 flex items-center gap-2" onClick={() => setIsMobileMenuOpen(false)}><i className="fas fa-chart-line"></i> Business Owner Login</Link>
+          <Link href="/business-owner/login" className="text-lg font-medium text-brand py-2 border-b border-gray-50 flex items-center gap-2" onClick={() => setIsMobileMenuOpen(false)}><i className="fas fa-chart-line"></i> Business Owner Login</Link>
           <div className="flex flex-col gap-3 mt-4">
-            <a href="/login" className="w-full text-center px-6 py-3 border-2 border-[var(--brand)] text-[var(--brand)] rounded-full font-bold" onClick={() => setIsMobileMenuOpen(false)}>Log In</a>
-            <Link href="/register" className="w-full text-center px-6 py-3 bg-[var(--brand)] text-white rounded-full font-bold shadow-md" onClick={() => setIsMobileMenuOpen(false)}>Get Started</Link>
+            <a href="/login" className="w-full text-center px-6 py-3 border-2 border-brand text-brand rounded-full font-bold" onClick={() => setIsMobileMenuOpen(false)}>Log In</a>
+            <Link href="/register" className="w-full text-center px-6 py-3 bg-brand text-white rounded-full font-bold shadow-md" onClick={() => setIsMobileMenuOpen(false)}>Get Started</Link>
           </div>
         </div>
       )}
@@ -116,8 +116,8 @@ export default function Home() {
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+CjxwYXRoIGQ9Ik0wIDBoNDB2NDBIMHoiIGZpbGw9Im5vbmUiLz4KPGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMCwwLDAsMC4xKSIvPgo8L3N2Zz4=')] opacity-50"></div>
 
           {/* Aurora Glows */}
-          <div className="absolute -top-[20%] -left-[10%] w-[70vw] h-[70vh] rounded-full bg-gradient-to-br from-[#00e5a3]/20 to-[#3b82f6]/15 blur-[120px] animate-float"></div>
-          <div className="absolute top-[20%] -right-[10%] w-[50vw] h-[80vh] rounded-full bg-gradient-to-bl from-[#3b82f6]/10 to-[#8b5cf6]/10 blur-[150px] animate-float-delayed"></div>
+          <div className="absolute -top-[20%] -left-[10%] w-[70vw] h-[70vh] rounded-full bg-brand opacity-15 blur-[120px] animate-float"></div>
+          <div className="absolute top-[20%] -right-[10%] w-[50vw] h-[80vh] rounded-full bg-brand opacity-10 blur-[150px] animate-float-delayed"></div>
 
           {/* Bottom Fade Mask */}
           <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-white to-transparent"></div>
@@ -127,7 +127,7 @@ export default function Home() {
 
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-[#0f172a] leading-tight mb-4 tracking-tight">
             Secure Document Sharing. Complete Control.<br />
-            <span className="text-[var(--brand)]">Zero Leaks.</span>
+            <span className="text-brand">Zero Leaks.</span>
           </h1>
 
           <p className="text-lg sm:text-xl text-gray-500 mb-12 max-w-3xl mx-auto font-medium">
@@ -174,10 +174,10 @@ export default function Home() {
         <div className="max-w-7xl mx-auto text-center relative z-10">
           {/* Section Header */}
           <div className="mb-16" data-aos="fade-up">
-            <div className="inline-block px-4 py-1 mb-3.5 rounded-full bg-emerald-50 text-[#00a877] font-bold text-xs uppercase tracking-widest border border-emerald-200/60 shadow-2xs">
+            <div className="inline-block px-4 py-1 mb-3.5 rounded-full bg-brand-50 text-brand font-bold text-xs uppercase tracking-widest border border-brand-200/60 shadow-2xs">
               Enterprise Suite
             </div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black bg-gradient-to-r from-[#00a877] via-[#059669] to-[#088382] bg-clip-text text-transparent tracking-tight mb-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-brand-adaptive tracking-tight mb-4">
               Our Products
             </h2>
             <p className="text-slate-500 font-medium text-sm sm:text-base md:text-lg max-w-3xl mx-auto leading-relaxed">
@@ -189,8 +189,8 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10 text-center items-stretch">
             
             {/* Product 1: Virtual Data Room (VDR) */}
-            <div className="flex flex-col items-center group p-8 sm:p-10 rounded-2xl bg-white border border-slate-200/90 hover:border-emerald-300 shadow-sm hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300" data-aos="fade-up" data-aos-delay="0">
-              <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-emerald-50 text-[#00a877] border border-emerald-200/70 flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 group-hover:bg-[#00a877] group-hover:text-white transition-all duration-300">
+            <div className="flex flex-col items-center group p-8 sm:p-10 rounded-2xl bg-white border border-slate-200/90 hover:border-brand shadow-sm hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300" data-aos="fade-up" data-aos-delay="0">
+              <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-brand-50 text-brand border border-brand-200/70 flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 group-hover:bg-brand group-hover:text-white transition-all duration-300">
                 {/* Filing Cabinet / VDR Icon */}
                 <svg className="w-9 h-9" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <rect x="3" y="3" width="18" height="18" rx="2" strokeWidth="2.2" />
@@ -201,7 +201,7 @@ export default function Home() {
                   <line x1="10" y1="18" x2="14" y2="18" strokeWidth="2.5" strokeLinecap="round" />
                 </svg>
               </div>
-              <h3 className="text-xl sm:text-2xl font-bold text-slate-900 group-hover:text-[#00a877] transition-colors mb-3 tracking-tight">
+              <h3 className="text-xl sm:text-2xl font-bold text-slate-900 group-hover:text-brand transition-colors mb-3 tracking-tight">
                 Virtual Data Room (VDR)
               </h3>
               <p className="text-slate-500 text-sm sm:text-[15px] font-medium leading-relaxed max-w-xs">
@@ -210,14 +210,14 @@ export default function Home() {
             </div>
 
             {/* Product 2: Document Management System */}
-            <div className="flex flex-col items-center group p-8 sm:p-10 rounded-2xl bg-white border border-slate-200/90 hover:border-emerald-300 shadow-sm hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300" data-aos="fade-up" data-aos-delay="100">
-              <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-emerald-50 text-[#00a877] border border-emerald-200/70 flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 group-hover:bg-[#00a877] group-hover:text-white transition-all duration-300">
+            <div className="flex flex-col items-center group p-8 sm:p-10 rounded-2xl bg-white border border-slate-200/90 hover:border-brand shadow-sm hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300" data-aos="fade-up" data-aos-delay="100">
+              <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-brand-50 text-brand border border-brand-200/70 flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 group-hover:bg-brand group-hover:text-white transition-all duration-300">
                 {/* Archive / Document Safe Icon */}
                 <svg className="w-9 h-9" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                 </svg>
               </div>
-              <h3 className="text-xl sm:text-2xl font-bold text-slate-900 group-hover:text-[#00a877] transition-colors mb-3 tracking-tight">
+              <h3 className="text-xl sm:text-2xl font-bold text-slate-900 group-hover:text-brand transition-colors mb-3 tracking-tight">
                 Document Management System
               </h3>
               <p className="text-slate-500 text-sm sm:text-[15px] font-medium leading-relaxed max-w-xs">
@@ -226,14 +226,14 @@ export default function Home() {
             </div>
 
             {/* Product 3: Deal Management System */}
-            <div className="flex flex-col items-center group p-8 sm:p-10 rounded-2xl bg-white border border-slate-200/90 hover:border-emerald-300 shadow-sm hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300" data-aos="fade-up" data-aos-delay="200">
-              <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-emerald-50 text-[#00a877] border border-emerald-200/70 flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 group-hover:bg-[#00a877] group-hover:text-white transition-all duration-300">
+            <div className="flex flex-col items-center group p-8 sm:p-10 rounded-2xl bg-white border border-slate-200/90 hover:border-brand shadow-sm hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300" data-aos="fade-up" data-aos-delay="200">
+              <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-brand-50 text-brand border border-brand-200/70 flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 group-hover:bg-brand group-hover:text-white transition-all duration-300">
                 {/* Lightning Deal / Lightbulb Icon */}
                 <svg className="w-9 h-9" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
-              <h3 className="text-xl sm:text-2xl font-bold text-slate-900 group-hover:text-[#00a877] transition-colors mb-3 tracking-tight">
+              <h3 className="text-xl sm:text-2xl font-bold text-slate-900 group-hover:text-brand transition-colors mb-3 tracking-tight">
                 Deal Management System
               </h3>
               <p className="text-slate-500 text-sm sm:text-[15px] font-medium leading-relaxed max-w-xs">
@@ -252,7 +252,7 @@ export default function Home() {
       <InsightsResources />
 
       {/* 8. Pre-Footer Seamless CTA Banner (Slim & Compact in Vibrant Teal Gradient) */}
-      <section className="w-full bg-gradient-to-r from-[#00a877] via-[#059669] to-[#088382] py-7 sm:py-9 px-6 md:px-16 text-white relative shadow-inner overflow-hidden border-b border-white/10">
+      <section className="w-full bg-brand py-7 sm:py-9 px-6 md:px-16 text-white relative shadow-inner overflow-hidden border-b border-white/10">
         {/* Ambient Subtle Glow */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.18),transparent_70%)] pointer-events-none"></div>
 
@@ -295,7 +295,7 @@ export default function Home() {
             <div className="flex flex-col gap-4">
               {/* Logo */}
               <div className="flex items-center gap-2.5 text-white font-black text-2xl tracking-wider">
-                <i className="fas fa-shield-alt text-[var(--brand)] text-2xl"></i>
+                <i className="fas fa-shield-alt text-brand text-2xl"></i>
                 <span className="font-extrabold tracking-tight text-2xl text-white">SecureVDR</span>
               </div>
 
@@ -328,7 +328,7 @@ export default function Home() {
                 {/* X (Twitter) */}
                 <a 
                   href="#" 
-                  className="w-8 h-8 rounded-lg bg-[#00d09c] text-[#020b33] font-black flex items-center justify-center hover:bg-emerald-400 hover:scale-105 transition-all shadow-xs"
+                  className="w-8 h-8 rounded-lg bg-brand text-[#020b33] font-black flex items-center justify-center hover:bg-brand hover:scale-105 transition-all shadow-xs"
                   aria-label="X (Twitter)"
                 >
                   <span className="font-mono text-sm font-black">X</span>
@@ -336,7 +336,7 @@ export default function Home() {
                 {/* LinkedIn */}
                 <a 
                   href="#" 
-                  className="w-8 h-8 rounded-lg bg-[#00d09c] text-[#020b33] font-black flex items-center justify-center hover:bg-emerald-400 hover:scale-105 transition-all shadow-xs"
+                  className="w-8 h-8 rounded-lg bg-brand text-[#020b33] font-black flex items-center justify-center hover:bg-brand hover:scale-105 transition-all shadow-xs"
                   aria-label="LinkedIn"
                 >
                   <span className="font-sans text-xs font-black">in</span>
@@ -399,7 +399,7 @@ export default function Home() {
       </footer>
 
       {/* Scroll to Top Button */}
-      <div id="scrollTopBtn" className="fixed bottom-6 right-6 bg-gray-900 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-md cursor-pointer opacity-0 invisible transition-all duration-300 hover:bg-[var(--brand)] hover:-translate-y-1 z-50 [&.show]:opacity-100 [&.show]:visible">
+      <div id="scrollTopBtn" className="fixed bottom-6 right-6 bg-gray-900 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-md cursor-pointer opacity-0 invisible transition-all duration-300 hover:bg-brand hover:-translate-y-1 z-50 [&.show]:opacity-100 [&.show]:visible">
         <FaChevronUp />
       </div>
 

@@ -78,10 +78,10 @@ export default function CustomerStoriesCarousel() {
         
         {/* Section Header */}
         <div className="text-center mb-10 sm:mb-12" data-aos="fade-up">
-          <div className="inline-block px-4 py-1 mb-3.5 rounded-full bg-emerald-50 text-[#00a877] font-bold text-xs uppercase tracking-widest border border-emerald-200/60 shadow-2xs">
+          <div className="inline-block px-4 py-1 mb-3.5 rounded-full bg-brand-50 text-brand font-bold text-xs uppercase tracking-widest border border-brand-200/60 shadow-2xs">
             Customer Stories
           </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black bg-gradient-to-r from-[#00a877] via-[#059669] to-[#088382] bg-clip-text text-transparent tracking-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-brand-adaptive tracking-tight">
             Trusted by the best. Discover why.
           </h2>
           <p className="text-slate-500 font-medium text-sm sm:text-base mt-2.5 max-w-xl mx-auto">
@@ -141,7 +141,7 @@ export default function CustomerStoriesCarousel() {
                 <button
                   type="button"
                   onClick={() => setActiveModal(current)}
-                  className="inline-flex items-center gap-2 px-6 py-2.5 sm:px-7 sm:py-3 rounded-full bg-gradient-to-r from-[#00a877] via-[#059669] to-[#088382] text-white font-bold text-xs sm:text-sm hover:opacity-95 hover:scale-105 active:scale-95 transition-all shadow-lg hover:shadow-emerald-500/30 cursor-pointer"
+                  className="inline-flex items-center gap-2 px-6 py-2.5 sm:px-7 sm:py-3 rounded-full bg-brand text-white font-bold text-xs sm:text-sm hover:opacity-95 hover:scale-105 active:scale-95 transition-all shadow-lg hover:shadow-brand-500/30 cursor-pointer"
                 >
                   <span>Watch Now</span>
                   <span className="text-xs">▷</span>
@@ -151,7 +151,7 @@ export default function CustomerStoriesCarousel() {
                 <button
                   type="button"
                   onClick={() => setActiveModal(current)}
-                  className="inline-flex items-center px-6 py-2.5 sm:px-7 sm:py-3 rounded-full bg-black/40 border border-white/40 text-white font-medium text-xs sm:text-sm hover:bg-[#00a877] hover:border-[#00a877] hover:shadow-lg hover:shadow-emerald-500/30 hover:scale-105 transition-all duration-300 cursor-pointer"
+                  className="inline-flex items-center px-6 py-2.5 sm:px-7 sm:py-3 rounded-full bg-black/40 border border-white/40 text-white font-medium text-xs sm:text-sm hover:bg-brand hover:border-brand hover:shadow-lg hover:shadow-brand-500/30 hover:scale-105 transition-all duration-300 cursor-pointer"
                 >
                   {current.readStoryText}
                 </button>
@@ -199,7 +199,7 @@ export default function CustomerStoriesCarousel() {
               aria-label={`Go to slide ${dotIdx + 1}`}
               className={`transition-all duration-300 rounded-full cursor-pointer ${
                 dotIdx === currentIndex
-                  ? "w-8 h-2.5 bg-gradient-to-r from-[#00a877] via-[#059669] to-[#088382] shadow-sm"
+                  ? "w-8 h-2.5 bg-brand shadow-sm"
                   : "w-2.5 h-2.5 bg-slate-300 hover:bg-slate-400"
               }`}
             />
@@ -234,7 +234,7 @@ export default function CustomerStoriesCarousel() {
                 className="w-full h-full object-cover opacity-60"
               />
               <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center p-6 text-center">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white text-slate-900 flex items-center justify-center text-2xl pl-1 shadow-2xl mb-4 hover:scale-110 hover:bg-gradient-to-r hover:from-[#00a877] hover:via-[#059669] hover:to-[#088382] hover:text-white transition-all cursor-pointer">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white text-slate-900 flex items-center justify-center text-2xl pl-1 shadow-2xl mb-4 hover:scale-110 hover:bg-gradient-to-r hover:from-brand hover:via-brand hover:to-[var(--brand-secondary)] hover:text-white transition-all cursor-pointer">
                   ▶
                 </div>
                 <h5 className="text-white text-lg sm:text-2xl font-black mb-1">

@@ -109,10 +109,10 @@ export default function BusinessProcessesShowcase() {
         
         {/* Section Header */}
         <div className="text-center mb-12 sm:mb-16" data-aos="fade-up">
-          <div className="inline-block px-4 py-1 mb-3.5 rounded-full bg-emerald-50 text-[#00a877] font-bold text-xs uppercase tracking-widest border border-emerald-200/60 shadow-2xs">
+          <div className="inline-block px-4 py-1 mb-3.5 rounded-full bg-brand-50 text-brand font-bold text-xs uppercase tracking-widest border border-brand-200/60 shadow-2xs">
             Purpose-Built Solutions
           </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black bg-gradient-to-r from-[#00a877] via-[#059669] to-[#088382] bg-clip-text text-transparent tracking-tight max-w-4xl mx-auto leading-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-brand-adaptive tracking-tight max-w-4xl mx-auto leading-tight">
             One Virtual Data Room for Every Critical Business Process
           </h2>
           <p className="text-slate-500 font-medium text-sm sm:text-base md:text-lg mt-3.5 max-w-3xl mx-auto leading-relaxed">
@@ -131,11 +131,11 @@ export default function BusinessProcessesShowcase() {
                 onClick={() => setSelectedId(proc.id)}
                 className={`px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-300 flex items-center gap-2 cursor-pointer ${
                   isActive
-                    ? "bg-gradient-to-r from-[#00a877] via-[#059669] to-[#088382] text-white shadow-md shadow-emerald-500/20 scale-105"
-                    : "bg-white text-slate-700 hover:text-[#00a877] hover:bg-slate-50 border border-slate-200/90 shadow-2xs"
+                    ? "bg-brand text-white shadow-md shadow-brand-500/20 scale-105"
+                    : "bg-white text-slate-700 hover:text-brand hover:bg-slate-50 border border-slate-200/90 shadow-2xs"
                 }`}
               >
-                <span className={`w-2 h-2 rounded-full ${isActive ? "bg-white" : "bg-[#00a877]"}`}></span>
+                <span className={`w-2 h-2 rounded-full ${isActive ? "bg-white" : "bg-brand"}`}></span>
                 <span>{proc.name}</span>
               </button>
             );
@@ -153,7 +153,7 @@ export default function BusinessProcessesShowcase() {
             {/* Left Content Area */}
             <div className="lg:col-span-7 flex flex-col justify-center">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-[#00a877] border border-emerald-200/70 flex items-center justify-center shadow-xs">
+                <div className="w-12 h-12 rounded-2xl bg-brand-50 text-brand border border-brand-200/70 flex items-center justify-center shadow-xs">
                   {selected.icon}
                 </div>
                 <div>
@@ -174,7 +174,7 @@ export default function BusinessProcessesShowcase() {
               <div className="space-y-3 mb-8">
                 {selected.features.map((feat, idx) => (
                   <div key={idx} className="flex items-center gap-3">
-                    <div className="w-5 h-5 rounded-full bg-emerald-100 text-[#00a877] flex items-center justify-center text-xs font-bold shrink-0">
+                    <div className="w-5 h-5 rounded-full bg-brand-100 text-brand flex items-center justify-center text-xs font-bold shrink-0">
                       ✓
                     </div>
                     <span className="text-slate-700 text-sm sm:text-[15px] font-medium">
@@ -188,7 +188,7 @@ export default function BusinessProcessesShowcase() {
               <div>
                 <a
                   href="/register"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-[#00a877] via-[#059669] to-[#088382] text-white font-bold text-sm shadow-md hover:shadow-lg hover:shadow-emerald-500/25 hover:scale-105 active:scale-95 transition-all"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-brand text-white font-bold text-sm shadow-md hover:shadow-lg hover:shadow-brand-500/25 hover:scale-105 active:scale-95 transition-all"
                 >
                   <span>Explore {selected.name} Data Room</span>
                   <span>→</span>
@@ -206,9 +206,9 @@ export default function BusinessProcessesShowcase() {
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full bg-red-400"></div>
                     <div className="w-3 h-3 rounded-full bg-amber-400"></div>
-                    <div className="w-3 h-3 rounded-full bg-emerald-400"></div>
+                    <div className="w-3 h-3 rounded-full bg-brand-400"></div>
                   </div>
-                  <span className="text-xs font-mono text-emerald-400 font-bold uppercase tracking-wider">
+                  <span className="text-xs font-mono text-brand-400 font-bold uppercase tracking-wider">
                     ● Active Vault
                   </span>
                 </div>
@@ -216,20 +216,20 @@ export default function BusinessProcessesShowcase() {
                 <div className="space-y-4">
                   <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <span className="text-emerald-400 text-lg">📁</span>
+                      <span className="text-brand-400 text-lg">📁</span>
                       <div>
                         <div className="text-xs font-bold text-white">{selected.name} Diligence Index</div>
                         <div className="text-[11px] text-slate-400">128 Documents &bull; AES-256</div>
                       </div>
                     </div>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-300 border border-brand-500/30">
                       Protected
                     </span>
                   </div>
 
                   <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <span className="text-emerald-400 text-lg">🔒</span>
+                      <span className="text-brand-400 text-lg">🔒</span>
                       <div>
                         <div className="text-xs font-bold text-white">Dynamic Watermark Policy</div>
                         <div className="text-[11px] text-slate-400">Viewer IP &amp; Live Timestamp</div>
@@ -242,7 +242,7 @@ export default function BusinessProcessesShowcase() {
 
                   <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <span className="text-emerald-400 text-lg">⚡</span>
+                      <span className="text-brand-400 text-lg">⚡</span>
                       <div>
                         <div className="text-xs font-bold text-white">Audit &amp; Intelligence Log</div>
                         <div className="text-[11px] text-slate-400">Real-time view tracking</div>
@@ -256,7 +256,7 @@ export default function BusinessProcessesShowcase() {
 
                 <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-xs text-slate-400">
                   <span>Compliance: SOC2 &bull; GDPR &bull; ISO</span>
-                  <span className="text-emerald-400 font-bold">100% Zero-Leak</span>
+                  <span className="text-brand-400 font-bold">100% Zero-Leak</span>
                 </div>
               </div>
             </div>
@@ -272,13 +272,13 @@ export default function BusinessProcessesShowcase() {
               onClick={() => setSelectedId(item.id)}
               className={`p-4 rounded-2xl border transition-all duration-300 cursor-pointer flex items-center gap-3.5 ${
                 item.id === selectedId
-                  ? "bg-emerald-50/70 border-emerald-300 shadow-sm"
-                  : "bg-white border-slate-200/80 hover:border-emerald-200 hover:bg-slate-50"
+                  ? "bg-brand-50/70 border-brand shadow-sm"
+                  : "bg-white border-slate-200/80 hover:border-brand-200 hover:bg-slate-50"
               }`}
             >
               <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
                 item.id === selectedId
-                  ? "bg-[#00a877] text-white"
+                  ? "bg-brand text-white"
                   : "bg-slate-100 text-slate-700"
               }`}>
                 {item.icon}

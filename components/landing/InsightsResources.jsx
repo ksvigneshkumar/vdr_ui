@@ -38,10 +38,10 @@ export default function InsightsResources() {
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Section Header with Teal Gradient Letters */}
         <div className="text-center mb-14" data-aos="fade-up">
-          <div className="inline-block px-4 py-1 mb-3.5 rounded-full bg-emerald-50 text-[#00a877] font-bold text-xs uppercase tracking-widest border border-emerald-200/60 shadow-2xs">
+          <div className="inline-block px-4 py-1 mb-3.5 rounded-full bg-brand-50 text-brand font-bold text-xs uppercase tracking-widest border border-brand-200/60 shadow-2xs">
             Insights &amp; Market Intelligence
           </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black bg-gradient-to-r from-[#00a877] via-[#059669] to-[#088382] bg-clip-text text-transparent tracking-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-brand-adaptive tracking-tight">
             Latest News, Deals &amp; Podcasts
           </h2>
           <p className="text-slate-500 font-medium text-sm sm:text-base mt-3 max-w-xl mx-auto">
@@ -56,7 +56,7 @@ export default function InsightsResources() {
               key={item.id}
               data-aos="fade-up"
               data-aos-delay={idx * 100}
-              className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between border border-slate-200/90 hover:border-emerald-300"
+              className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between border border-slate-200/90 hover:border-brand"
             >
               {/* Card Top Real Editorial Image */}
               <div className="w-full h-52 sm:h-56 overflow-hidden relative border-b border-gray-100 bg-slate-900">
@@ -73,12 +73,12 @@ export default function InsightsResources() {
               <div className="p-7 sm:p-8 flex flex-col justify-between flex-1 bg-white">
                 <div>
                   {/* Category Pill / Tag in Teal Gradient */}
-                  <div className="text-xs font-black tracking-widest text-[#00a877] uppercase mb-3 font-mono">
+                  <div className="text-xs font-black tracking-widest text-brand uppercase mb-3 font-mono">
                     {item.category}
                   </div>
 
                   {/* Title */}
-                  <h3 className="text-lg sm:text-xl font-bold text-slate-900 leading-snug tracking-tight mb-6 group-hover:text-[#00a877] transition-colors">
+                  <h3 className="text-lg sm:text-xl font-bold text-slate-900 leading-snug tracking-tight mb-6 group-hover:text-brand transition-colors">
                     {item.title}
                   </h3>
                 </div>
@@ -87,7 +87,7 @@ export default function InsightsResources() {
                 <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
                   <a
                     href="#"
-                    className="inline-flex items-center gap-1.5 text-xs font-black tracking-wider text-[#00a877] group-hover:text-emerald-800 uppercase transition-colors"
+                    className="inline-flex items-center gap-1.5 text-xs font-black tracking-wider text-brand group-hover:text-brand-800 uppercase transition-colors"
                   >
                     {item.iconType === "arrow-up-right" ? (
                       <span className="text-amber-500 font-bold text-sm">↗</span>
