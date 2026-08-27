@@ -59,6 +59,7 @@ export default function Home() {
 
         {/* Desktop / Large Tablet Navigation Links */}
         <div className="hidden lg:flex gap-8 items-center font-medium text-gray-600 text-sm md:text-base">
+          <a href="#functions" className="hover:text-brand transition-colors">Functions</a>
           <a href="#features" className="hover:text-brand transition-colors">Features</a>
           <a href="#products" className="hover:text-brand transition-colors">Products</a>
           <a href="#insights" className="hover:text-brand transition-colors">Insights</a>
@@ -112,6 +113,10 @@ export default function Home() {
 
           {/* Menu Drawer Content */}
           <div className="relative top-[60px] w-full bg-white shadow-2xl flex flex-col p-6 gap-3 border-b border-slate-200">
+            <a href="#functions" className="text-base font-bold text-slate-800 py-2.5 border-b border-slate-100 flex items-center justify-between" onClick={() => setIsMobileMenuOpen(false)}>
+              <span>Functions</span>
+              <span className="text-slate-400">→</span>
+            </a>
             <a href="#features" className="text-base font-bold text-slate-800 py-2.5 border-b border-slate-100 flex items-center justify-between" onClick={() => setIsMobileMenuOpen(false)}>
               <span>Features</span>
               <span className="text-slate-400">→</span>
@@ -216,7 +221,7 @@ export default function Home() {
       <CustomerStoriesCarousel />
 
       {/* 7. Our Products Section (Responsive Image Cards) */}
-      <section id="products" className="py-16 sm:py-20 md:py-24 px-4 sm:px-8 md:px-16 bg-white text-slate-900 relative border-t border-slate-100 select-none">
+      <section id="products" className="py-16 sm:py-20 md:py-24 px-4 sm:px-8 md:px-16 bg-white text-slate-900 relative border-t border-slate-100 select-none scroll-mt-16 sm:scroll-mt-20">
         <div className="max-w-7xl mx-auto text-center relative z-10">
           {/* Section Header */}
           <div className="mb-10 sm:mb-14 md:mb-16" data-aos="fade-up">

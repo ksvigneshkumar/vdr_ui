@@ -92,7 +92,7 @@ export default function FeaturesShowcaseCarousel() {
   const duplicatedFeatures = [...FEATURES_DATA, ...FEATURES_DATA];
 
   return (
-    <section id="features" className="w-full bg-white py-16 sm:py-20 md:py-24 select-none relative overflow-hidden border-t border-slate-100">
+    <section id="features" className="w-full bg-white py-16 sm:py-20 md:py-24 select-none relative overflow-hidden border-t border-slate-100 scroll-mt-16 sm:scroll-mt-20">
       <div className="max-w-[1560px] mx-auto px-4 sm:px-6 md:px-8 relative z-10">
         
         {/* Section Header */}

@@ -34,7 +34,7 @@ const INSIGHTS_DATA = [
 
 export default function InsightsResources() {
   return (
-    <section id="insights" className="w-full bg-white py-16 sm:py-20 md:py-24 px-4 sm:px-8 md:px-16 select-none relative border-t border-slate-100">
+    <section id="insights" className="w-full bg-white py-16 sm:py-20 md:py-24 px-4 sm:px-8 md:px-16 select-none relative border-t border-slate-100 scroll-mt-16 sm:scroll-mt-20">
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Section Header with Teal Gradient Letters */}
         <div className="text-center mb-10 sm:mb-14" data-aos="fade-up">

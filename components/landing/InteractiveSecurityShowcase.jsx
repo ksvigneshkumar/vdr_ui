@@ -57,8 +57,8 @@ export default function InteractiveSecurityShowcase() {
 
   return (
     <section 
-      id="interactive-features" 
-      className="w-full bg-white py-20 sm:py-24 select-none relative overflow-hidden border-t border-slate-100"
+      id="functions" 
+      className="w-full bg-white py-20 sm:py-24 select-none relative overflow-hidden border-t border-slate-100 scroll-mt-16 sm:scroll-mt-20"
     >
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 md:px-8 relative z-10">
         
