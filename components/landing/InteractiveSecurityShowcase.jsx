@@ -5,39 +5,55 @@ import React, { useState, useEffect } from "react";
 const FEATURES_DATA = [
   {
     id: 1,
-    title: "Role Based Access",
-    description: "Assign granular permissions to users and administrators to ensure that sensitive data is only accessible to authorized personnel.",
+    title: "Role-Based Access",
+    description: "Assigns access permissions according to user roles and responsibilities, controlling access to documents, users, and data rooms while maintaining security and preventing unauthorized access.",
     image: "/role based access.PNG"
   },
   {
     id: 2,
     title: "Document Access Control",
-    description: "Maintain strict control over document visibility. Apply view-only, download, and print restrictions instantly to secure your intellectual property.",
+    description: "Ensures users can view or download only authorized documents, preventing unauthorized users from opening, accessing, or downloading restricted files within the Data Room.",
     image: "/doc access control.PNG"
   },
   {
     id: 3,
-    title: "Groups",
-    description: "Organize users into logical groups for bulk permission management. Simplify access control across large teams and external stakeholders.",
+    title: "Teams & Groups",
+    description: "Enables authorized teams and groups to securely access, manage, and collaborate on assigned data while providing group-level analytics and controlled information access.",
     image: "/groups.PNG"
   },
   {
     id: 4,
     title: "Analytics",
-    description: "Gain deep insights into user activity and document engagement. Track who viewed what and when with comprehensive audit trails.",
+    description: "Provides real-time insights into document engagement, including viewers, views, downloads, and user activity, enabling organizations to monitor document usage and engagement effectively.",
     image: "/analytics.PNG"
+  },
+  {
+    id: 5,
+    title: "Agentic Q&A",
+    description: "Provides AI-powered, document-based answers in natural language, with direct citations to relevant documents and pages while maintaining secure, permission-based access to information.",
+    image: "/Agentic Q&A.png"
+  },
+  {
+    id: 6,
+    title: "AI Assistant",
+    description: "Enables intelligent document search, summarization, and follow-up queries while maintaining user-level access permissions and ensuring users receive information from authorized documents only.",
+    image: "/ai_assistant.jpg"
   }
 ];
 
 export default function InteractiveSecurityShowcase() {
   const [activeTab, setActiveTab] = useState(1);
+  const [isPaused, setIsPaused] = useState(false);
+
   useEffect(() => {
+    if (isPaused) return;
+
     const interval = setInterval(() => {
       setActiveTab((prev) => (prev === FEATURES_DATA.length ? 1 : prev + 1));
-    }, 2500);
+    }, 3000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [isPaused]);
 
   return (
     <section 
@@ -47,23 +63,28 @@ export default function InteractiveSecurityShowcase() {
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 md:px-8 relative z-10">
         
         {/* Section Header */}
-        <div className="text-center mb-16" data-aos="fade-up">
-          <div className="inline-block px-5 py-1.5 mb-5 rounded-full border border-indigo-200/80 bg-indigo-50/50 text-indigo-600 font-bold text-[11px] uppercase tracking-widest shadow-sm">
-            Security & Governance
-          </div>
-          <h2 className="text-3xl sm:text-4xl md:text-[42px] font-black text-[#0f172a] tracking-tight mb-4">
-            Next-Gen Security &amp; <span className="text-brand">Deal Protection</span>
+        <div className="text-center mb-12 sm:mb-16" data-aos="fade-up">
+          <h2 className="text-3xl sm:text-4xl md:text-[42px] font-black text-[#0f172a] tracking-tight mb-3 sm:mb-4">
+            Simplicity and speed <span className="text-brand">reimagined</span>
           </h2>
-          <p className="text-slate-500 font-medium text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
-            Bank-grade confidentiality, automated compliance, and dynamic threat protection built for high-stakes transactions.
+          <p className="text-slate-500 font-medium text-sm sm:text-base md:text-lg max-w-2xl mx-auto leading-relaxed px-2">
+            In a world where precision drives progress, we empower leaders to accelerate their projects with confidence
           </p>
         </div>
 
         {/* Interactive Layout */}
-        <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-start" data-aos="fade-up" data-aos-delay="100">
+        <div 
+          className="flex flex-col lg:flex-row gap-8 sm:gap-10 lg:gap-14 items-start" 
+          data-aos="fade-up" 
+          data-aos-delay="100"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+          onTouchStart={() => setIsPaused(true)}
+          onTouchEnd={() => setIsPaused(false)}
+        >
           
-          {/* Left Side - Dynamic Image Viewer */}
-          <div className="w-full lg:w-[55%] relative rounded-2xl shadow-2xl overflow-hidden border border-gray-200/60 bg-gray-50 flex items-center justify-center h-[300px] sm:h-[400px] lg:h-[500px]">
+          {/* Left Side - Dynamic Image Viewer (Sticky on Desktop) */}
+          <div className="w-full lg:w-[55%] relative rounded-2xl shadow-xl lg:shadow-2xl overflow-hidden border border-gray-200/60 bg-gray-50 flex items-center justify-center h-[260px] xs:h-[300px] sm:h-[380px] md:h-[460px] lg:h-[580px] lg:sticky lg:top-24">
             {FEATURES_DATA.map((feature) => (
               <div
                 key={feature.id}
@@ -76,14 +97,14 @@ export default function InteractiveSecurityShowcase() {
                 <img
                   src={feature.image}
                   alt={feature.title}
-                  className="w-full h-full object-contain p-2 sm:p-6 drop-shadow-xl"
+                  className="w-full h-full object-contain p-2 sm:p-4 md:p-6 drop-shadow-lg"
                 />
               </div>
             ))}
           </div>
 
           {/* Right Side - Accordion List */}
-          <div className="w-full lg:w-[45%] flex flex-col justify-center h-full lg:pt-4">
+          <div className="w-full lg:w-[45%] flex flex-col justify-center h-full">
             <div className="space-y-1 relative">
               {/* Vertical line indicator background */}
               <div className="absolute left-[23px] top-8 bottom-8 w-[2px] bg-gray-100 z-0"></div>
@@ -94,20 +115,29 @@ export default function InteractiveSecurityShowcase() {
                 return (
                   <div
                     key={feature.id}
-                    className={`relative z-10 cursor-pointer transition-all duration-300 rounded-xl px-4 py-4 sm:py-5 ${
-                      isActive ? "bg-white shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-gray-100/80 scale-[1.02]" : "hover:bg-gray-50/80 scale-100"
+                    className={`relative z-10 cursor-pointer transition-all duration-300 rounded-xl px-4 py-3.5 sm:py-4 border ${
+                      isActive 
+                        ? "bg-white shadow-[0_4px_20px_rgba(0,0,0,0.06)] border-brand-200/70 scale-[1.02]" 
+                        : "hover:bg-gray-50/80 scale-100 border-transparent"
                     }`}
-                    onClick={() => setActiveTab(feature.id)}
+                    onClick={() => {
+                      setActiveTab(feature.id);
+                      setIsPaused(true);
+                    }}
+                    onMouseEnter={() => {
+                      setActiveTab(feature.id);
+                      setIsPaused(true);
+                    }}
                   >
                     <div className="flex items-start gap-5 sm:gap-6">
                       {/* Number Indicator */}
                       <div className="flex flex-col items-center mt-1">
                         <span
                           className={`text-sm sm:text-base font-black transition-colors duration-300 ${
-                            isActive ? "text-slate-900" : "text-gray-300"
+                            isActive ? "text-brand" : "text-gray-300"
                           }`}
                         >
-                          {feature.id}
+                          0{feature.id}
                         </span>
                       </div>
                       
@@ -115,7 +145,7 @@ export default function InteractiveSecurityShowcase() {
                       <div className="flex-1">
                         <h3
                           className={`text-xl sm:text-2xl font-bold tracking-tight transition-colors duration-300 ${
-                            isActive ? "text-slate-900" : "text-gray-300"
+                            isActive ? "text-slate-900" : "text-gray-400"
                           }`}
                         >
                           {feature.title}

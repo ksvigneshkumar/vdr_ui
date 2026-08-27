@@ -78,9 +78,6 @@ export default function CustomerStoriesCarousel() {
         
         {/* Section Header */}
         <div className="text-center mb-10 sm:mb-12" data-aos="fade-up">
-          <div className="inline-block px-4 py-1 mb-3.5 rounded-full bg-brand-50 text-brand font-bold text-xs uppercase tracking-widest border border-brand-200/60 shadow-2xs">
-            Customer Stories
-          </div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-brand-adaptive tracking-tight">
             Trusted by the best. <span className="text-brand">Discover why.</span>
           </h2>
@@ -91,9 +88,11 @@ export default function CustomerStoriesCarousel() {
 
         {/* Main Big Hero Card Container */}
         <div
-          className="relative w-full h-[460px] sm:h-[520px] md:h-[560px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl bg-slate-900 border border-slate-200/60"
+          className="relative w-full h-[440px] xs:h-[480px] sm:h-[520px] md:h-[560px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl bg-slate-900 border border-slate-200/60"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
+          onTouchStart={() => setIsPaused(true)}
+          onTouchEnd={() => setIsPaused(false)}
         >
           {/* Background Images with Fade Transition */}
           {STORIES.map((item, idx) => (
@@ -109,49 +108,49 @@ export default function CustomerStoriesCarousel() {
                 className="w-full h-full object-cover"
               />
               {/* Cinematic Vignette Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/45 to-black/20"></div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/20"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/50 to-black/20"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/20"></div>
             </div>
           ))}
 
           {/* Glassmorphism Outline Card in Center-Left */}
-          <div className="absolute inset-y-0 left-0 w-full md:w-[65%] lg:w-[58%] p-6 sm:p-10 md:p-12 flex flex-col justify-center text-white z-10">
-            <div className="p-6 sm:p-8 md:p-9 rounded-2xl border border-white/35 bg-black/25 backdrop-blur-md shadow-2xl max-w-xl transition-all duration-500">
+          <div className="absolute inset-y-0 left-0 w-full md:w-[70%] lg:w-[58%] p-3.5 xs:p-5 sm:p-8 md:p-12 flex flex-col justify-center text-white z-10">
+            <div className="p-4 xs:p-5 sm:p-7 md:p-9 rounded-2xl border border-white/35 bg-black/35 backdrop-blur-md shadow-2xl max-w-xl transition-all duration-500">
               
               {/* Company Logo Header */}
-              <div className="flex items-baseline gap-2 mb-4">
-                <span className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-white font-sans">
+              <div className="flex items-baseline gap-2 mb-3 sm:mb-4">
+                <span className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-white font-sans">
                   {current.companyLogo}
                 </span>
                 {current.companySub && (
-                  <span className="text-xs sm:text-sm font-bold uppercase tracking-widest text-slate-300">
+                  <span className="text-[10px] sm:text-xs md:text-sm font-bold uppercase tracking-widest text-slate-300">
                     {current.companySub}
                   </span>
                 )}
               </div>
 
               {/* Story Quote */}
-              <p className="text-white/95 text-sm sm:text-base md:text-[17px] font-normal leading-relaxed mb-7 drop-shadow-xs">
+              <p className="text-white/95 text-xs xs:text-sm sm:text-base md:text-[17px] font-normal leading-relaxed mb-5 sm:mb-7 drop-shadow-xs">
                 {current.quote}
               </p>
 
               {/* Action Buttons */}
-              <div className="flex flex-wrap items-center gap-3">
-                {/* Watch Now Button (Permanently styled with Emerald-Teal Gradient) */}
+              <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
+                {/* Watch Now Button */}
                 <button
                   type="button"
                   onClick={() => setActiveModal(current)}
-                  className="inline-flex items-center gap-2 px-6 py-2.5 sm:px-7 sm:py-3 rounded-full bg-brand text-white font-bold text-xs sm:text-sm hover:opacity-95 hover:scale-105 active:scale-95 transition-all shadow-lg hover:shadow-brand-500/30 cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 sm:px-6 sm:py-2.5 md:px-7 md:py-3 rounded-full bg-brand text-white font-bold text-xs sm:text-sm hover:opacity-95 hover:scale-105 active:scale-95 transition-all shadow-lg hover:shadow-brand-500/30 cursor-pointer"
                 >
                   <span>Watch Now</span>
                   <span className="text-xs">▷</span>
                 </button>
 
-                {/* Read Story Button (Hover changes to Emerald-Teal Gradient) */}
+                {/* Read Story Button */}
                 <button
                   type="button"
                   onClick={() => setActiveModal(current)}
-                  className="inline-flex items-center px-6 py-2.5 sm:px-7 sm:py-3 rounded-full bg-black/40 border border-white/40 text-white font-medium text-xs sm:text-sm hover:bg-brand hover:border-brand hover:shadow-lg hover:shadow-brand-500/30 hover:scale-105 transition-all duration-300 cursor-pointer"
+                  className="inline-flex items-center px-4 py-2 sm:px-6 sm:py-2.5 md:px-7 md:py-3 rounded-full bg-black/40 border border-white/40 text-white font-medium text-xs sm:text-sm hover:bg-brand hover:border-brand hover:shadow-lg hover:shadow-brand-500/30 hover:scale-105 transition-all duration-300 cursor-pointer"
                 >
                   {current.readStoryText}
                 </button>

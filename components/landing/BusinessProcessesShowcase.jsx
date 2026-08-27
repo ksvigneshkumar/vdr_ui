@@ -109,9 +109,6 @@ export default function BusinessProcessesShowcase() {
         
         {/* Section Header */}
         <div className="text-center mb-12 sm:mb-16" data-aos="fade-up">
-          <div className="inline-block px-4 py-1 mb-3.5 rounded-full bg-brand-50 text-brand font-bold text-xs uppercase tracking-widest border border-brand-200/60 shadow-2xs">
-            Purpose-Built Solutions
-          </div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-brand-adaptive tracking-tight max-w-4xl mx-auto leading-tight">
             One Virtual Data Room for Every <span className="text-brand">Critical Business Process</span>
           </h2>
@@ -121,7 +118,7 @@ export default function BusinessProcessesShowcase() {
         </div>
 
         {/* Interactive Filter Pills */}
-        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-10 sm:mb-12" data-aos="fade-up" data-aos-delay="100">
+        <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2.5 mb-8 sm:mb-12" data-aos="fade-up" data-aos-delay="100">
           {PROCESSES.map((proc) => {
             const isActive = proc.id === selectedId;
             return (
@@ -129,13 +126,13 @@ export default function BusinessProcessesShowcase() {
                 key={proc.id}
                 type="button"
                 onClick={() => setSelectedId(proc.id)}
-                className={`px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-300 flex items-center gap-2 cursor-pointer ${
+                className={`px-3.5 sm:px-5 py-1.5 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-300 flex items-center gap-1.5 sm:gap-2 cursor-pointer ${
                   isActive
                     ? "bg-brand text-white shadow-md shadow-brand-500/20 scale-105"
                     : "bg-white text-slate-700 hover:text-brand hover:bg-slate-50 border border-slate-200/90 shadow-2xs"
                 }`}
               >
-                <span className={`w-2 h-2 rounded-full ${isActive ? "bg-white" : "bg-brand"}`}></span>
+                <span className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full ${isActive ? "bg-white" : "bg-brand"}`}></span>
                 <span>{proc.name}</span>
               </button>
             );
@@ -144,7 +141,7 @@ export default function BusinessProcessesShowcase() {
 
         {/* Featured Process Spotlight Card */}
         <div
-          className="bg-white rounded-3xl border border-slate-200/90 shadow-xl overflow-hidden p-8 sm:p-12 transition-all duration-500"
+          className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-xl overflow-hidden p-5 sm:p-8 md:p-10 lg:p-12 transition-all duration-500"
           data-aos="fade-up"
           data-aos-delay="200"
         >
@@ -200,7 +197,7 @@ export default function BusinessProcessesShowcase() {
             <div className="lg:col-span-5 flex flex-col justify-center">
               <div className="rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-[#020b33] p-6 sm:p-8 text-white shadow-2xl border border-slate-700/50 relative overflow-hidden">
                 {/* Decorative glow */}
-                <div className="absolute -top-10 -right-10 w-40 h-40 bg-[#0cd8b6]/20 rounded-full blur-2xl pointer-events-none"></div>
+                <div className="absolute -top-10 -right-10 w-40 h-40 bg-brand/20 rounded-full blur-2xl pointer-events-none"></div>
 
                 <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-6">
                   <div className="flex items-center gap-2">

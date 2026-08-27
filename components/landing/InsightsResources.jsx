@@ -34,23 +34,20 @@ const INSIGHTS_DATA = [
 
 export default function InsightsResources() {
   return (
-    <section id="insights" className="w-full bg-white py-20 sm:py-24 px-6 md:px-16 select-none relative border-t border-slate-100">
+    <section id="insights" className="w-full bg-white py-16 sm:py-20 md:py-24 px-4 sm:px-8 md:px-16 select-none relative border-t border-slate-100">
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Section Header with Teal Gradient Letters */}
-        <div className="text-center mb-14" data-aos="fade-up">
-          <div className="inline-block px-4 py-1 mb-3.5 rounded-full bg-brand-50 text-brand font-bold text-xs uppercase tracking-widest border border-brand-200/60 shadow-2xs">
-            Insights &amp; Market Intelligence
-          </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-brand-adaptive tracking-tight">
+        <div className="text-center mb-10 sm:mb-14" data-aos="fade-up">
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-brand-adaptive tracking-tight">
             Latest News, Deals &amp; <span className="text-brand">Podcasts</span>
           </h2>
-          <p className="text-slate-500 font-medium text-sm sm:text-base mt-3 max-w-xl mx-auto">
+          <p className="text-slate-500 font-medium text-xs sm:text-sm md:text-base mt-2.5 max-w-xl mx-auto px-2">
             Stay ahead with the latest industry intelligence, transaction trends, and M&amp;A innovation.
           </p>
         </div>
 
         {/* 3 Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
           {INSIGHTS_DATA.map((item, idx) => (
             <div
               key={item.id}
@@ -59,7 +56,7 @@ export default function InsightsResources() {
               className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between border border-slate-200/90 hover:border-brand"
             >
               {/* Card Top Real Editorial Image */}
-              <div className="w-full h-52 sm:h-56 overflow-hidden relative border-b border-gray-100 bg-slate-900">
+              <div className="w-full h-48 sm:h-52 md:h-56 overflow-hidden relative border-b border-gray-100 bg-slate-900">
                 <img
                   src={item.imageUrl}
                   alt={item.imageAlt}
@@ -70,10 +67,10 @@ export default function InsightsResources() {
               </div>
 
               {/* Card Body */}
-              <div className="p-7 sm:p-8 flex flex-col justify-between flex-1 bg-white">
+              <div className="p-5 sm:p-7 md:p-8 flex flex-col justify-between flex-1 bg-white">
                 <div>
                   {/* Category Pill / Tag in Teal Gradient */}
-                  <div className="text-xs font-black tracking-widest text-brand uppercase mb-3 font-mono">
+                  <div className="text-xs font-black tracking-widest text-brand uppercase mb-2 sm:mb-3 font-mono">
                     {item.category}
                   </div>
 

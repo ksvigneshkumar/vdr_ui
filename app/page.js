@@ -19,8 +19,8 @@ export default function Home() {
   useEffect(() => {
     AOS.init({
       duration: 800,
-      once: false,
-      mirror: true,
+      once: true,
+      mirror: false,
       offset: 50,
       easing: 'ease-out-cubic'
     });
@@ -51,31 +51,33 @@ export default function Home() {
     <main className="overflow-x-hidden relative w-full font-sans text-gray-800 bg-gray-50">
 
       {/* 1. Navigation */}
-      <nav className="fixed top-0 left-0 w-full bg-white shadow-sm z-50 py-4 px-6 md:px-16 flex justify-between items-center transition-all duration-300">
-        <div className="text-2xl font-black text-gray-900 tracking-tight flex items-center">
-          <i className="fas fa-shield-alt text-brand mr-2 text-3xl"></i> SecureVDR
-        </div>
+      <nav className="fixed top-0 left-0 w-full bg-white/95 backdrop-blur-md shadow-xs z-50 py-3.5 sm:py-4 px-4 sm:px-8 md:px-16 flex justify-between items-center transition-all duration-300 border-b border-slate-100">
+        <Link href="/" className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight flex items-center gap-2">
+          <i className="fas fa-shield-alt text-brand text-2xl sm:text-3xl"></i>
+          <span>SecureVDR</span>
+        </Link>
 
-        <div className="hidden lg:flex gap-8 items-center font-medium text-gray-600">
+        {/* Desktop / Large Tablet Navigation Links */}
+        <div className="hidden lg:flex gap-8 items-center font-medium text-gray-600 text-sm md:text-base">
           <a href="#features" className="hover:text-brand transition-colors">Features</a>
           <a href="#products" className="hover:text-brand transition-colors">Products</a>
           <a href="#insights" className="hover:text-brand transition-colors">Insights</a>
         </div>
 
-        {/* Desktop Navigation Buttons */}
-        <div className="hidden md:flex gap-4 items-center">
+        {/* Desktop / Tablet Navigation Action Buttons */}
+        <div className="hidden md:flex gap-2.5 lg:gap-3.5 items-center">
           {/* Business Owner Button */}
           <Link 
             href="/business-owner/login" 
-            className="btn-bo-hover px-5 py-2 border-2 border-brand text-brand rounded-full font-semibold flex items-center gap-2 transition-all duration-700"
+            className="px-3.5 lg:px-4 py-2 border-2 border-brand text-brand rounded-full font-bold text-xs lg:text-sm flex items-center gap-1.5 hover:bg-brand hover:text-white transition-all duration-300"
           >
-            <i className="fas fa-chart-line"></i> Business Owner
+            <i className="fas fa-chart-line text-xs"></i> <span>Business Owner</span>
           </Link>
 
           {/* Login Button */}
           <a 
             href="/login" 
-            className="btn-bo-hover px-5 py-2 border-2 border-brand text-brand rounded-full font-semibold transition-all duration-700"
+            className="px-4 lg:px-5 py-2 border-2 border-slate-200 text-slate-700 rounded-full font-bold text-xs lg:text-sm hover:border-brand hover:text-brand transition-all duration-300"
           >
             Login
           </a>
@@ -83,33 +85,64 @@ export default function Home() {
           {/* Register Button */}
           <Link 
             href="/register" 
-            className="btn-bo-hover px-5 py-2 border-2 border-brand text-brand rounded-full font-semibold transition-all duration-700"
+            className="px-4 lg:px-5 py-2 bg-brand text-white rounded-full font-bold text-xs lg:text-sm shadow-md hover:opacity-95 hover:scale-105 active:scale-95 transition-all duration-300"
           >
-            Register
+            Get Started
           </Link>
         </div>
 
-        <button className="md:hidden text-2xl text-gray-800 focus:outline-none" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+        {/* Mobile Hamburger Button */}
+        <button 
+          aria-label="Toggle Navigation Menu"
+          className="md:hidden w-10 h-10 rounded-xl bg-slate-100 text-slate-800 flex items-center justify-center text-lg focus:outline-none cursor-pointer" 
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        >
           {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
         </button>
       </nav>
 
-      {/* Mobile Menu */}
+      {/* Mobile Drawer Overlay & Menu */}
       {isMobileMenuOpen && (
-        <div className="fixed top-[72px] left-0 w-full bg-white shadow-sm z-40 flex flex-col p-6 md:hidden gap-4 animate-fade-in border-t border-gray-100">
-          <a href="#features" className="text-lg font-medium text-gray-700 py-2 border-b border-gray-50" onClick={() => setIsMobileMenuOpen(false)}>Features</a>
-          <a href="#products" className="text-lg font-medium text-gray-700 py-2 border-b border-gray-50" onClick={() => setIsMobileMenuOpen(false)}>Products</a>
-          <a href="#insights" className="text-lg font-medium text-gray-700 py-2 border-b border-gray-50" onClick={() => setIsMobileMenuOpen(false)}>Insights</a>
-          <Link href="/business-owner/login" className="text-lg font-medium text-brand py-2 border-b border-gray-50 flex items-center gap-2" onClick={() => setIsMobileMenuOpen(false)}><i className="fas fa-chart-line"></i> Business Owner Login</Link>
-          <div className="flex flex-col gap-3 mt-4">
-            <a href="/login" className="w-full text-center px-6 py-3 border-2 border-brand text-brand rounded-full font-bold" onClick={() => setIsMobileMenuOpen(false)}>Log In</a>
-            <Link href="/register" className="w-full text-center px-6 py-3 bg-brand text-white rounded-full font-bold shadow-md" onClick={() => setIsMobileMenuOpen(false)}>Get Started</Link>
+        <div className="fixed inset-0 z-40 md:hidden animate-fade-in">
+          {/* Backdrop Blur */}
+          <div 
+            className="absolute inset-0 bg-black/40 backdrop-blur-xs"
+            onClick={() => setIsMobileMenuOpen(false)}
+          ></div>
+
+          {/* Menu Drawer Content */}
+          <div className="relative top-[60px] w-full bg-white shadow-2xl flex flex-col p-6 gap-3 border-b border-slate-200">
+            <a href="#features" className="text-base font-bold text-slate-800 py-2.5 border-b border-slate-100 flex items-center justify-between" onClick={() => setIsMobileMenuOpen(false)}>
+              <span>Features</span>
+              <span className="text-slate-400">→</span>
+            </a>
+            <a href="#products" className="text-base font-bold text-slate-800 py-2.5 border-b border-slate-100 flex items-center justify-between" onClick={() => setIsMobileMenuOpen(false)}>
+              <span>Products</span>
+              <span className="text-slate-400">→</span>
+            </a>
+            <a href="#insights" className="text-base font-bold text-slate-800 py-2.5 border-b border-slate-100 flex items-center justify-between" onClick={() => setIsMobileMenuOpen(false)}>
+              <span>Insights</span>
+              <span className="text-slate-400">→</span>
+            </a>
+            <Link href="/business-owner/login" className="text-base font-bold text-brand py-2.5 border-b border-slate-100 flex items-center gap-2" onClick={() => setIsMobileMenuOpen(false)}>
+              <i className="fas fa-chart-line"></i> 
+              <span>Business Owner Portal</span>
+            </Link>
+
+            <div className="grid grid-cols-2 gap-3 mt-3 pt-2">
+              <a href="/login" className="w-full text-center px-4 py-2.5 border-2 border-slate-200 text-slate-700 rounded-full font-bold text-sm" onClick={() => setIsMobileMenuOpen(false)}>
+                Log In
+              </a>
+              <Link href="/register" className="w-full text-center px-4 py-2.5 bg-brand text-white rounded-full font-bold text-sm shadow-md" onClick={() => setIsMobileMenuOpen(false)}>
+                Get Started
+              </Link>
+            </div>
           </div>
         </div>
       )}
 
-      {/* 2. Hero Section (New Design) */}
-      <section className="relative min-h-[90vh] flex items-center justify-center px-6 md:px-16 pt-32 pb-20 overflow-hidden bg-white">
+      {/* 2. Hero Section (Responsive for Mobile & Tablet) */}
+      <section className="relative min-h-[85vh] sm:min-h-[90vh] flex items-center justify-center px-4 sm:px-8 md:px-16 pt-28 sm:pt-32 md:pt-36 pb-14 sm:pb-20 overflow-hidden bg-white">
 
         {/* Premium SaaS Background: Aurora + Grid */}
         <div className="absolute inset-0 w-full h-full z-0 pointer-events-none overflow-hidden">
@@ -126,37 +159,53 @@ export default function Home() {
 
         <div className="max-w-5xl w-full mx-auto text-center relative z-10" data-aos="fade-up">
 
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-[#0f172a] leading-tight mb-4 tracking-tight">
-            Secure Document Sharing. Complete Control.<br />
-            <span className="text-brand">Zero Leaks.</span>
+          {/* Main Hero Headline */}
+          <h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-[#0f172a] leading-tight mb-4 sm:mb-6 tracking-tight">
+            Secure Document Sharing. <br className="hidden sm:inline" />
+            Complete Control. <span className="text-brand">Zero Leaks.</span>
           </h1>
 
-          <p className="text-lg sm:text-xl text-gray-500 mb-12 max-w-3xl mx-auto font-medium">
-            Protect your sensitive files with built-in redaction, dynamic watermarking, and granular access controls.
+          <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-500 mb-8 sm:mb-10 max-w-3xl mx-auto font-medium px-2 leading-relaxed">
+            Protect your sensitive files with built-in redaction, dynamic watermarking, and granular access controls built for high-stakes dealmaking.
           </p>
 
-          {/* Features Bar */}
-          <div className="bg-white rounded-lg p-8 mb-12 border border-gray-100 shadow-sm">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 divide-x divide-gray-100">
-              <div className="px-4">
-                <div className="text-2xl md:text-3xl font-black text-[#0f172a] mb-1">AES-256</div>
-                <div className="text-sm font-medium text-gray-400">Data Encryption</div>
+          {/* Hero Action CTA Buttons */}
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mb-10 sm:mb-14">
+            <Link
+              href="/register"
+              className="px-6 sm:px-8 py-3 sm:py-3.5 rounded-full bg-brand text-white font-bold text-sm sm:text-base shadow-lg hover:shadow-brand-500/30 hover:scale-105 active:scale-95 transition-all duration-300"
+            >
+              Start Free Trial →
+            </Link>
+            <a
+              href="#products"
+              className="px-6 sm:px-8 py-3 sm:py-3.5 rounded-full bg-slate-50 border border-slate-200 text-slate-700 font-bold text-sm sm:text-base hover:bg-white hover:border-brand hover:text-brand transition-all duration-300"
+            >
+              Explore Products
+            </a>
+          </div>
+
+          {/* Features / Stats Bar (Fully Responsive 2x2 on Mobile, 4x1 on Tablet/Desktop) */}
+          <div className="bg-white/90 backdrop-blur-xs rounded-2xl p-4 sm:p-6 md:p-8 border border-slate-200/90 shadow-sm">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
+              <div className="p-3 sm:p-4 rounded-xl bg-slate-50/70 border border-slate-100 text-center">
+                <div className="text-xl sm:text-2xl md:text-3xl font-black text-[#0f172a] mb-0.5">AES-256</div>
+                <div className="text-xs sm:text-sm font-semibold text-slate-500">Data Encryption</div>
               </div>
-              <div className="px-4">
-                <div className="text-2xl md:text-3xl font-black text-[#0f172a] mb-1">Granular</div>
-                <div className="text-sm font-medium text-gray-400">Access Controls</div>
+              <div className="p-3 sm:p-4 rounded-xl bg-slate-50/70 border border-slate-100 text-center">
+                <div className="text-xl sm:text-2xl md:text-3xl font-black text-[#0f172a] mb-0.5">Granular</div>
+                <div className="text-xs sm:text-sm font-semibold text-slate-500">Access Controls</div>
               </div>
-              <div className="px-4">
-                <div className="text-2xl md:text-3xl font-black text-[#0f172a] mb-1">Dynamic</div>
-                <div className="text-sm font-medium text-gray-400">Watermarking</div>
+              <div className="p-3 sm:p-4 rounded-xl bg-slate-50/70 border border-slate-100 text-center">
+                <div className="text-xl sm:text-2xl md:text-3xl font-black text-[#0f172a] mb-0.5">Dynamic</div>
+                <div className="text-xs sm:text-sm font-semibold text-slate-500">Watermarking</div>
               </div>
-              <div className="px-4">
-                <div className="text-2xl md:text-3xl font-black text-[#0f172a] mb-1">Built-in</div>
-                <div className="text-sm font-medium text-gray-400">Redaction Tool</div>
+              <div className="p-3 sm:p-4 rounded-xl bg-slate-50/70 border border-slate-100 text-center">
+                <div className="text-xl sm:text-2xl md:text-3xl font-black text-[#0f172a] mb-0.5">Built-in</div>
+                <div className="text-xs sm:text-sm font-semibold text-slate-500">Redaction Tool</div>
               </div>
             </div>
           </div>
-
 
         </div>
       </section>
@@ -173,76 +222,137 @@ export default function Home() {
       {/* 6. Executive Customer Stories Carousel (Ansarada-Style Cinematic Slides) */}
       <CustomerStoriesCarousel />
 
-      {/* 7. Our Products Section (White Background with Teal Gradient Lettering) */}
-      <section id="products" className="py-20 sm:py-24 px-6 md:px-16 bg-white text-slate-900 relative border-t border-slate-100 select-none">
+      {/* 7. Our Products Section (Responsive Image Cards) */}
+      <section id="products" className="py-16 sm:py-20 md:py-24 px-4 sm:px-8 md:px-16 bg-white text-slate-900 relative border-t border-slate-100 select-none">
         <div className="max-w-7xl mx-auto text-center relative z-10">
           {/* Section Header */}
-          <div className="mb-16" data-aos="fade-up">
-            <div className="inline-block px-4 py-1 mb-3.5 rounded-full bg-brand-50 text-brand font-bold text-xs uppercase tracking-widest border border-brand-200/60 shadow-2xs">
-              Enterprise Suite
-            </div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-brand-adaptive tracking-tight mb-4">
+          <div className="mb-10 sm:mb-14 md:mb-16" data-aos="fade-up">
+            <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-brand-adaptive tracking-tight mb-3 sm:mb-4">
               Our <span className="text-brand">Products</span>
             </h2>
-            <p className="text-slate-500 font-medium text-sm sm:text-base md:text-lg max-w-3xl mx-auto leading-relaxed">
+            <p className="text-slate-500 font-medium text-xs sm:text-sm md:text-base lg:text-lg max-w-3xl mx-auto px-2 leading-relaxed">
               From secure document sharing to end-to-end deal execution, one platform, purpose-built for high-stakes transactions.
             </p>
           </div>
 
           {/* 3 Products Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10 text-center items-stretch">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 lg:gap-10 text-left items-stretch">
             
             {/* Product 1: Virtual Data Room (VDR) */}
-            <div className="flex flex-col items-center group p-8 sm:p-10 rounded-2xl bg-white border border-slate-200/90 hover:border-brand shadow-sm hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300" data-aos="fade-up" data-aos-delay="0">
-              <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-brand-50 text-brand border border-brand-200/70 flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 group-hover:bg-brand group-hover:text-white transition-all duration-300">
-                {/* Filing Cabinet / VDR Icon */}
-                <svg className="w-9 h-9" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <rect x="3" y="3" width="18" height="18" rx="2" strokeWidth="2.2" />
-                  <line x1="3" y1="9" x2="21" y2="9" strokeWidth="2" />
-                  <line x1="3" y1="15" x2="21" y2="15" strokeWidth="2" />
-                  <line x1="10" y1="6" x2="14" y2="6" strokeWidth="2.5" strokeLinecap="round" />
-                  <line x1="10" y1="12" x2="14" y2="12" strokeWidth="2.5" strokeLinecap="round" />
-                  <line x1="10" y1="18" x2="14" y2="18" strokeWidth="2.5" strokeLinecap="round" />
-                </svg>
+            <div className="group bg-white rounded-2xl overflow-hidden border border-slate-200/90 hover:border-brand shadow-sm hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between" data-aos="fade-up" data-aos-delay="0">
+              <div>
+                {/* Product Image */}
+                <div className="relative h-44 sm:h-48 md:h-52 w-full overflow-hidden bg-slate-900">
+                  <img
+                    src="/images/products/vdr_product.jpg"
+                    alt="Virtual Data Room (VDR)"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute top-3 left-3">
+                    <span className="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider bg-black/60 text-white backdrop-blur-md border border-white/20 shadow-xs">
+                      Core Platform
+                    </span>
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="p-5 sm:p-6 md:p-7">
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-black text-slate-900 group-hover:text-brand transition-colors mb-2 sm:mb-3 tracking-tight">
+                    Virtual Data Room (VDR)
+                  </h3>
+                  <p className="text-slate-600 text-xs sm:text-sm md:text-[15px] font-medium leading-relaxed">
+                    DPDP-aligned virtual data room built for high-stakes M&amp;A, IPO, and fundraising with bank-grade encryption.
+                  </p>
+                </div>
               </div>
-              <h3 className="text-xl sm:text-2xl font-bold text-slate-900 group-hover:text-brand transition-colors mb-3 tracking-tight">
-                Virtual Data Room (VDR)
-              </h3>
-              <p className="text-slate-500 text-sm sm:text-[15px] font-medium leading-relaxed max-w-xs">
-                DPDP-aligned virtual data room built for M&amp;A, IPO, and fundraising.
-              </p>
+
+              {/* Bottom Footer Link */}
+              <div className="px-5 sm:px-6 md:px-7 pb-5 sm:pb-6 pt-2 flex items-center justify-between border-t border-slate-100">
+                <span className="text-xs sm:text-sm font-bold text-brand flex items-center gap-1.5 group-hover:gap-2.5 transition-all">
+                  <span>Explore VDR</span>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                  </svg>
+                </span>
+              </div>
             </div>
 
             {/* Product 2: Document Management System */}
-            <div className="flex flex-col items-center group p-8 sm:p-10 rounded-2xl bg-white border border-slate-200/90 hover:border-brand shadow-sm hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300" data-aos="fade-up" data-aos-delay="100">
-              <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-brand-50 text-brand border border-brand-200/70 flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 group-hover:bg-brand group-hover:text-white transition-all duration-300">
-                {/* Archive / Document Safe Icon */}
-                <svg className="w-9 h-9" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                </svg>
+            <div className="group bg-white rounded-2xl overflow-hidden border border-slate-200/90 hover:border-brand shadow-sm hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between" data-aos="fade-up" data-aos-delay="100">
+              <div>
+                {/* Product Image */}
+                <div className="relative h-44 sm:h-48 md:h-52 w-full overflow-hidden bg-slate-900">
+                  <img
+                    src="/images/products/dms_product.jpg"
+                    alt="Document Management System"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute top-3 left-3">
+                    <span className="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider bg-black/60 text-white backdrop-blur-md border border-white/20 shadow-xs">
+                      Document Safe
+                    </span>
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="p-5 sm:p-6 md:p-7">
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-black text-slate-900 group-hover:text-brand transition-colors mb-2 sm:mb-3 tracking-tight">
+                    Document Management System
+                  </h3>
+                  <p className="text-slate-600 text-xs sm:text-sm md:text-[15px] font-medium leading-relaxed">
+                    One secure centralized document hub. Right version, right stakeholder, and automated folder indexing.
+                  </p>
+                </div>
               </div>
-              <h3 className="text-xl sm:text-2xl font-bold text-slate-900 group-hover:text-brand transition-colors mb-3 tracking-tight">
-                Document Management System
-              </h3>
-              <p className="text-slate-500 text-sm sm:text-[15px] font-medium leading-relaxed max-w-xs">
-                One secure document hub. Right version, right stakeholder, right time.
-              </p>
+
+              {/* Bottom Footer Link */}
+              <div className="px-5 sm:px-6 md:px-7 pb-5 sm:pb-6 pt-2 flex items-center justify-between border-t border-slate-100">
+                <span className="text-xs sm:text-sm font-bold text-brand flex items-center gap-1.5 group-hover:gap-2.5 transition-all">
+                  <span>Explore DMS</span>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                  </svg>
+                </span>
+              </div>
             </div>
 
             {/* Product 3: Deal Management System */}
-            <div className="flex flex-col items-center group p-8 sm:p-10 rounded-2xl bg-white border border-slate-200/90 hover:border-brand shadow-sm hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300" data-aos="fade-up" data-aos-delay="200">
-              <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-brand-50 text-brand border border-brand-200/70 flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 group-hover:bg-brand group-hover:text-white transition-all duration-300">
-                {/* Lightning Deal / Lightbulb Icon */}
-                <svg className="w-9 h-9" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
+            <div className="group bg-white rounded-2xl overflow-hidden border border-slate-200/90 hover:border-brand shadow-sm hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between" data-aos="fade-up" data-aos-delay="200">
+              <div>
+                {/* Product Image */}
+                <div className="relative h-44 sm:h-48 md:h-52 w-full overflow-hidden bg-slate-900">
+                  <img
+                    src="/images/products/deal_management_product.jpg"
+                    alt="Deal Management System"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute top-3 left-3">
+                    <span className="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider bg-black/60 text-white backdrop-blur-md border border-white/20 shadow-xs">
+                      Deal Flow
+                    </span>
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="p-5 sm:p-6 md:p-7">
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-black text-slate-900 group-hover:text-brand transition-colors mb-2 sm:mb-3 tracking-tight">
+                    Deal Management System
+                  </h3>
+                  <p className="text-slate-600 text-xs sm:text-sm md:text-[15px] font-medium leading-relaxed">
+                    Manage deals, due diligence tasks, and team workstreams from one integrated executive dashboard.
+                  </p>
+                </div>
               </div>
-              <h3 className="text-xl sm:text-2xl font-bold text-slate-900 group-hover:text-brand transition-colors mb-3 tracking-tight">
-                Deal Management System
-              </h3>
-              <p className="text-slate-500 text-sm sm:text-[15px] font-medium leading-relaxed max-w-xs">
-                Manage deals, tasks, and workstreams from one integrated dashboard.
-              </p>
+
+              {/* Bottom Footer Link */}
+              <div className="px-5 sm:px-6 md:px-7 pb-5 sm:pb-6 pt-2 flex items-center justify-between border-t border-slate-100">
+                <span className="text-xs sm:text-sm font-bold text-brand flex items-center gap-1.5 group-hover:gap-2.5 transition-all">
+                  <span>Explore Deals</span>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                  </svg>
+                </span>
+              </div>
             </div>
 
           </div>
