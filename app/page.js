@@ -185,25 +185,62 @@ export default function Home() {
             </a>
           </div>
 
-          {/* Features / Stats Bar (Fully Responsive 2x2 on Mobile, 4x1 on Tablet/Desktop) */}
-          <div className="bg-white/90 backdrop-blur-xs rounded-2xl p-4 sm:p-6 md:p-8 border border-slate-200/90 shadow-sm">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
-              <div className="p-3 sm:p-4 rounded-xl bg-slate-50/70 border border-slate-100 text-center">
-                <div className="text-xl sm:text-2xl md:text-3xl font-black text-[#0f172a] mb-0.5">AES-256</div>
-                <div className="text-xs sm:text-sm font-semibold text-slate-500">Data Encryption</div>
+          {/* Features / Capabilities Trust Bar */}
+          <div className="w-full max-w-5xl mx-auto bg-white/95 backdrop-blur-md rounded-2xl sm:rounded-3xl border border-slate-200/80 shadow-[0_10px_35px_-5px_rgba(0,0,0,0.05)] p-4 sm:p-6 lg:p-7">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-0 lg:divide-x lg:divide-slate-200/70">
+              
+              {/* Item 1: AES-256 */}
+              <div className="flex flex-col items-center text-center px-2 sm:px-4 py-2 group hover:-translate-y-0.5 transition-transform duration-300">
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-brand-50 text-brand border border-brand-200/60 flex items-center justify-center mb-2.5 shadow-2xs group-hover:scale-110 group-hover:bg-brand group-hover:text-white transition-all duration-300">
+                  <i className="fas fa-shield-alt text-base sm:text-lg"></i>
+                </div>
+                <div className="text-base sm:text-lg lg:text-xl font-black text-slate-900 tracking-tight">
+                  AES-256
+                </div>
+                <div className="text-xs sm:text-[13px] font-semibold text-slate-500 mt-0.5">
+                  Data Encryption
+                </div>
               </div>
-              <div className="p-3 sm:p-4 rounded-xl bg-slate-50/70 border border-slate-100 text-center">
-                <div className="text-xl sm:text-2xl md:text-3xl font-black text-[#0f172a] mb-0.5">Granular</div>
-                <div className="text-xs sm:text-sm font-semibold text-slate-500">Access Controls</div>
+
+              {/* Item 2: Granular Access */}
+              <div className="flex flex-col items-center text-center px-2 sm:px-4 py-2 group hover:-translate-y-0.5 transition-transform duration-300">
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-brand-50 text-brand border border-brand-200/60 flex items-center justify-center mb-2.5 shadow-2xs group-hover:scale-110 group-hover:bg-brand group-hover:text-white transition-all duration-300">
+                  <i className="fas fa-user-shield text-base sm:text-lg"></i>
+                </div>
+                <div className="text-base sm:text-lg lg:text-xl font-black text-slate-900 tracking-tight">
+                  Granular
+                </div>
+                <div className="text-xs sm:text-[13px] font-semibold text-slate-500 mt-0.5">
+                  Access Controls
+                </div>
               </div>
-              <div className="p-3 sm:p-4 rounded-xl bg-slate-50/70 border border-slate-100 text-center">
-                <div className="text-xl sm:text-2xl md:text-3xl font-black text-[#0f172a] mb-0.5">Dynamic</div>
-                <div className="text-xs sm:text-sm font-semibold text-slate-500">Watermarking</div>
+
+              {/* Item 3: Dynamic Watermarking */}
+              <div className="flex flex-col items-center text-center px-2 sm:px-4 py-2 group hover:-translate-y-0.5 transition-transform duration-300">
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-brand-50 text-brand border border-brand-200/60 flex items-center justify-center mb-2.5 shadow-2xs group-hover:scale-110 group-hover:bg-brand group-hover:text-white transition-all duration-300">
+                  <i className="fas fa-fingerprint text-base sm:text-lg"></i>
+                </div>
+                <div className="text-base sm:text-lg lg:text-xl font-black text-slate-900 tracking-tight">
+                  Dynamic
+                </div>
+                <div className="text-xs sm:text-[13px] font-semibold text-slate-500 mt-0.5">
+                  Watermarking
+                </div>
               </div>
-              <div className="p-3 sm:p-4 rounded-xl bg-slate-50/70 border border-slate-100 text-center">
-                <div className="text-xl sm:text-2xl md:text-3xl font-black text-[#0f172a] mb-0.5">Built-in</div>
-                <div className="text-xs sm:text-sm font-semibold text-slate-500">Redaction Tool</div>
+
+              {/* Item 4: Built-in Redaction */}
+              <div className="flex flex-col items-center text-center px-2 sm:px-4 py-2 group hover:-translate-y-0.5 transition-transform duration-300">
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-brand-50 text-brand border border-brand-200/60 flex items-center justify-center mb-2.5 shadow-2xs group-hover:scale-110 group-hover:bg-brand group-hover:text-white transition-all duration-300">
+                  <i className="fas fa-eraser text-base sm:text-lg"></i>
+                </div>
+                <div className="text-base sm:text-lg lg:text-xl font-black text-slate-900 tracking-tight">
+                  Built-in
+                </div>
+                <div className="text-xs sm:text-[13px] font-semibold text-slate-500 mt-0.5">
+                  Redaction Tool
+                </div>
               </div>
+
             </div>
           </div>
 

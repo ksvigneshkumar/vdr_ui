@@ -151,7 +151,7 @@ export default function FeaturesShowcaseCarousel() {
                       <span className="text-xs font-mono font-black px-2.5 py-1 rounded-md bg-slate-100 text-slate-600 group-hover:bg-brand-50 group-hover:text-brand transition-colors">
                         0{item.id}
                       </span>
-                      <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                      <span className="text-[11px] font-bold text-brand uppercase tracking-wider">
                         Feature Spotlight
                       </span>
                     </div>
