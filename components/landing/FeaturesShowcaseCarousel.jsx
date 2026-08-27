@@ -64,7 +64,7 @@ export default function FeaturesShowcaseCarousel() {
       } else {
         el.scrollBy({ left: cardWidth, behavior: "smooth" });
       }
-    }, 3500);
+    }, 1800);
 
     return () => clearInterval(interval);
   }, [isPaused]);
@@ -141,8 +141,8 @@ export default function FeaturesShowcaseCarousel() {
                 >
                   <div>
                     {/* Top Letter Indicator */}
-                    <div className="text-xs font-mono font-black text-slate-400 mb-4 tracking-widest uppercase">
-                      {item.letter}
+                    <div className="text-sm font-mono font-black text-slate-400 mb-4 tracking-widest uppercase">
+                      0{item.id}
                     </div>
 
                     {/* UI Screenshot Mockup Box */}
@@ -168,7 +168,7 @@ export default function FeaturesShowcaseCarousel() {
 
                   {/* Bottom Action Pill */}
                   <div className="pt-2">
-                    <span className="inline-block px-5 py-2 rounded-full font-bold text-xs bg-[#a3e635] text-slate-950 shadow-2xs group-hover:bg-brand group-hover:text-white transition-all duration-300">
+                    <span className="inline-block px-5 py-2 rounded-full font-bold text-xs bg-brand text-white shadow-md group-hover:scale-105 group-hover:shadow-brand-500/30 transition-all duration-300">
                       {item.buttonText}
                     </span>
                   </div>

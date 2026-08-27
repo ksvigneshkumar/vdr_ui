@@ -6,7 +6,7 @@ export default function SecurityCertBadges() {
   return (
     <div className="w-full bg-[#0cd8b6] py-4 sm:py-5 px-6 md:px-16 shadow-inner select-none">
       <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-center gap-6 sm:gap-12 md:gap-16">
-        
+
         {/* 1. AICPA SOC 2 Seal */}
         <div className="flex items-center gap-2.5 group cursor-pointer" title="AICPA SOC 2 Type II Certified">
           <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white shadow-md border-2 border-white flex items-center justify-center p-1.5 group-hover:scale-110 group-hover:shadow-lg transition-all duration-300">
@@ -32,12 +32,12 @@ export default function SecurityCertBadges() {
               {/* EU 12 Stars */}
               {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((deg, i) => {
                 const rad = (deg * Math.PI) / 180;
-                const cx = 50 + 35 * Math.sin(rad);
-                const cy = 50 - 35 * Math.cos(rad);
+                const cx = Number((50 + 35 * Math.sin(rad)).toFixed(3));
+                const cy = Number((50 - 35 * Math.cos(rad)).toFixed(3));
                 return (
                   <polygon
                     key={i}
-                    points={`${cx},${cy-3} ${cx+1},${cy-1} ${cx+3},${cy-1} ${cx+1.5},${cy+0.5} ${cx+2},${cy+2.5} ${cx},${cy+1} ${cx-2},${cy+2.5} ${cx-1.5},${cy+0.5} ${cx-3},${cy-1} ${cx-1},${cy-1}`}
+                    points={`${cx},${cy - 3} ${cx + 1},${cy - 1} ${cx + 3},${cy - 1} ${cx + 1.5},${cy + 0.5} ${cx + 2},${cy + 2.5} ${cx},${cy + 1} ${cx - 2},${cy + 2.5} ${cx - 1.5},${cy + 0.5} ${cx - 3},${cy - 1} ${cx - 1},${cy - 1}`}
                     fill="var(--brand)"
                   />
                 );

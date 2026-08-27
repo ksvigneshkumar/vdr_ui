@@ -113,7 +113,7 @@ export default function BusinessProcessesShowcase() {
             Purpose-Built Solutions
           </div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-brand-adaptive tracking-tight max-w-4xl mx-auto leading-tight">
-            One Virtual Data Room for Every Critical Business Process
+            One Virtual Data Room for Every <span className="text-brand">Critical Business Process</span>
           </h2>
           <p className="text-slate-500 font-medium text-sm sm:text-base md:text-lg mt-3.5 max-w-3xl mx-auto leading-relaxed">
             SecureVDR supports organisations, advisers, and transaction teams managing sensitive documents across deals and corporate projects.
@@ -264,36 +264,7 @@ export default function BusinessProcessesShowcase() {
           </div>
         </div>
 
-        {/* Quick Grid of all 7 Processes */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mt-8" data-aos="fade-up" data-aos-delay="300">
-          {PROCESSES.map((item) => (
-            <div
-              key={item.id}
-              onClick={() => setSelectedId(item.id)}
-              className={`p-4 rounded-2xl border transition-all duration-300 cursor-pointer flex items-center gap-3.5 ${
-                item.id === selectedId
-                  ? "bg-brand-50/70 border-brand shadow-sm"
-                  : "bg-white border-slate-200/80 hover:border-brand-200 hover:bg-slate-50"
-              }`}
-            >
-              <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
-                item.id === selectedId
-                  ? "bg-brand text-white"
-                  : "bg-slate-100 text-slate-700"
-              }`}>
-                {item.icon}
-              </div>
-              <div className="overflow-hidden">
-                <h4 className="text-xs sm:text-sm font-bold text-slate-900 truncate">
-                  {item.name}
-                </h4>
-                <p className="text-[11px] text-slate-500 truncate">
-                  {item.tag}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
+
 
       </div>
     </section>

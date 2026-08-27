@@ -57,7 +57,7 @@ export default function CustomerStoriesCarousel() {
     if (isPaused || activeModal) return;
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % STORIES.length);
-    }, 5500);
+    }, 3000);
 
     return () => clearInterval(interval);
   }, [isPaused, activeModal]);
@@ -82,7 +82,7 @@ export default function CustomerStoriesCarousel() {
             Customer Stories
           </div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-brand-adaptive tracking-tight">
-            Trusted by the best. Discover why.
+            Trusted by the best. <span className="text-brand">Discover why.</span>
           </h2>
           <p className="text-slate-500 font-medium text-sm sm:text-base mt-2.5 max-w-xl mx-auto">
             See how world-leading dealmakers, law firms, and corporations close high-stakes transactions.

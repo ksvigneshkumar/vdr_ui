@@ -8,6 +8,7 @@ import { FaBars, FaTimes, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import ProjectsShowcase from "@/components/landing/ProjectsShowcase";
 import InsightsResources from "@/components/landing/InsightsResources";
 import CustomerStoriesCarousel from "@/components/landing/CustomerStoriesCarousel";
+import InteractiveSecurityShowcase from "@/components/landing/InteractiveSecurityShowcase";
 import FeaturesShowcaseCarousel from "@/components/landing/FeaturesShowcaseCarousel";
 import SecurityCertBadges from "@/components/landing/SecurityCertBadges";
 import BusinessProcessesShowcase from "@/components/landing/BusinessProcessesShowcase";
@@ -163,7 +164,10 @@ export default function Home() {
       {/* 2.1 Important Projects Done On Platform (Auto-Scrolling Showcase) */}
       <ProjectsShowcase />
 
-      {/* 3. Next-Gen Security & Deal Protection Showcase (Ansarada-Style Auto-Scrolling Cards) */}
+      {/* 3. Next-Gen Security & Deal Protection Showcase (Interactive Tabs) */}
+      <InteractiveSecurityShowcase />
+
+      {/* 2.2 Features Showcase Carousel (Ansarada Style) */}
       <FeaturesShowcaseCarousel />
 
       {/* 6. Executive Customer Stories Carousel (Ansarada-Style Cinematic Slides) */}
@@ -178,7 +182,7 @@ export default function Home() {
               Enterprise Suite
             </div>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-brand-adaptive tracking-tight mb-4">
-              Our Products
+              Our <span className="text-brand">Products</span>
             </h2>
             <p className="text-slate-500 font-medium text-sm sm:text-base md:text-lg max-w-3xl mx-auto leading-relaxed">
               From secure document sharing to end-to-end deal execution, one platform, purpose-built for high-stakes transactions.
@@ -318,7 +322,7 @@ export default function Home() {
                 <svg className="w-4 h-4 text-slate-300 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
                 </svg>
-                <a href="mailto:contact@securevdr.com" className="hover:text-white transition-colors">
+                <a href="mailto:contact@securevdr.com" className="hover:text-brand transition-colors">
                   contact@securevdr.com
                 </a>
               </div>
@@ -348,14 +352,14 @@ export default function Home() {
             <div>
               <h4 className="text-white font-bold text-base mb-4 tracking-wide">Company</h4>
               <ul className="space-y-2.5 text-[13px] text-slate-300">
-                <li><a href="#" className="hover:text-white transition-colors">Why SecureVDR</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Case Studies</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Career</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Contact Us</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">SLA &amp; Terms</a></li>
-                <li><a href="#pricing" className="hover:text-white transition-colors">Pricing</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">Why SecureVDR</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">Case Studies</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">Blog</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">Career</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">Contact Us</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">Privacy Policy</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">SLA &amp; Terms</a></li>
+                <li><a href="#pricing" className="hover:text-brand transition-colors">Pricing</a></li>
               </ul>
             </div>
 
@@ -363,12 +367,12 @@ export default function Home() {
             <div>
               <h4 className="text-white font-bold text-base mb-4 tracking-wide">Products &amp; Solutions</h4>
               <ul className="space-y-2.5 text-[13px] text-slate-300">
-                <li><a href="#" className="hover:text-white transition-colors">Virtual Data Room</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Document Management System</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Deal Management System</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Security &amp; Compliance</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">IPO Advisory</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Legal Data Room</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">Virtual Data Room</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">Document Management System</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">Deal Management System</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">Security &amp; Compliance</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">IPO Advisory</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">Legal Data Room</a></li>
               </ul>
             </div>
 
@@ -376,13 +380,13 @@ export default function Home() {
             <div>
               <h4 className="text-white font-bold text-base mb-4 tracking-wide">Industry</h4>
               <ul className="space-y-2.5 text-[13px] text-slate-300">
-                <li><a href="#" className="hover:text-white transition-colors">Energy</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Real Estate</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Life Sciences</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Financial Services</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Technology, Media, &amp; Telecom</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Consumer Retail</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Oil &amp; Gas</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">Energy</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">Real Estate</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">Life Sciences</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">Financial Services</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">Technology, Media, &amp; Telecom</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">Consumer Retail</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">Oil &amp; Gas</a></li>
               </ul>
             </div>
 

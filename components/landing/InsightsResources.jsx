@@ -42,7 +42,7 @@ export default function InsightsResources() {
             Insights &amp; Market Intelligence
           </div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-brand-adaptive tracking-tight">
-            Latest News, Deals &amp; Podcasts
+            Latest News, Deals &amp; <span className="text-brand">Podcasts</span>
           </h2>
           <p className="text-slate-500 font-medium text-sm sm:text-base mt-3 max-w-xl mx-auto">
             Stay ahead with the latest industry intelligence, transaction trends, and M&amp;A innovation.
