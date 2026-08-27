@@ -69,7 +69,7 @@ export default function Home() {
           {/* Business Owner Button */}
           <Link 
             href="/business-owner/login" 
-            className="px-3.5 lg:px-4 py-2 border-2 border-brand text-brand rounded-full font-bold text-xs lg:text-sm flex items-center gap-1.5 hover:bg-brand hover:text-white transition-all duration-300"
+            className="btn-bo-hover px-3.5 lg:px-4 py-2 border-2 border-brand text-brand rounded-full font-bold text-xs lg:text-sm flex items-center gap-1.5 cursor-pointer shadow-xs"
           >
             <i className="fas fa-chart-line text-xs"></i> <span>Business Owner</span>
           </Link>
@@ -77,15 +77,15 @@ export default function Home() {
           {/* Login Button */}
           <a 
             href="/login" 
-            className="px-4 lg:px-5 py-2 border-2 border-slate-200 text-slate-700 rounded-full font-bold text-xs lg:text-sm hover:border-brand hover:text-brand transition-all duration-300"
+            className="btn-bo-hover px-4 lg:px-5 py-2 border-2 border-brand text-brand rounded-full font-bold text-xs lg:text-sm cursor-pointer shadow-xs"
           >
             Login
           </a>
 
-          {/* Register Button */}
+          {/* Register / Get Started Button */}
           <Link 
             href="/register" 
-            className="px-4 lg:px-5 py-2 bg-brand text-white rounded-full font-bold text-xs lg:text-sm shadow-md hover:opacity-95 hover:scale-105 active:scale-95 transition-all duration-300"
+            className="btn-bo-hover px-4 lg:px-5 py-2 border-2 border-brand text-brand rounded-full font-bold text-xs lg:text-sm cursor-pointer shadow-xs"
           >
             Get Started
           </Link>
@@ -130,10 +130,10 @@ export default function Home() {
             </Link>
 
             <div className="grid grid-cols-2 gap-3 mt-3 pt-2">
-              <a href="/login" className="w-full text-center px-4 py-2.5 border-2 border-slate-200 text-slate-700 rounded-full font-bold text-sm" onClick={() => setIsMobileMenuOpen(false)}>
+              <a href="/login" className="btn-bo-hover w-full text-center px-4 py-2.5 border-2 border-brand text-brand rounded-full font-bold text-sm" onClick={() => setIsMobileMenuOpen(false)}>
                 Log In
               </a>
-              <Link href="/register" className="w-full text-center px-4 py-2.5 bg-brand text-white rounded-full font-bold text-sm shadow-md" onClick={() => setIsMobileMenuOpen(false)}>
+              <Link href="/register" className="btn-bo-hover w-full text-center px-4 py-2.5 border-2 border-brand text-brand rounded-full font-bold text-sm" onClick={() => setIsMobileMenuOpen(false)}>
                 Get Started
               </Link>
             </div>
@@ -141,8 +141,8 @@ export default function Home() {
         </div>
       )}
 
-      {/* 2. Hero Section (Responsive for Mobile & Tablet) */}
-      <section className="relative min-h-[85vh] sm:min-h-[90vh] flex items-center justify-center px-4 sm:px-8 md:px-16 pt-28 sm:pt-32 md:pt-36 pb-14 sm:pb-20 overflow-hidden bg-white">
+      {/* 2. Hero Section (Full 100vh on Mobile & Desktop) */}
+      <section className="relative min-h-screen min-h-[100dvh] flex flex-col justify-center items-center px-4 sm:px-8 md:px-16 pt-20 sm:pt-28 md:pt-32 pb-12 sm:pb-20 overflow-hidden bg-white">
 
         {/* Premium SaaS Background: Aurora + Grid */}
         <div className="absolute inset-0 w-full h-full z-0 pointer-events-none overflow-hidden">
@@ -165,80 +165,36 @@ export default function Home() {
             Complete Control. <span className="text-brand">Zero Leaks.</span>
           </h1>
 
-          <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-500 mb-8 sm:mb-10 max-w-3xl mx-auto font-medium px-2 leading-relaxed">
-            Protect your sensitive files with built-in redaction, dynamic watermarking, and granular access controls built for high-stakes dealmaking.
+          <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-500 mb-10 sm:mb-12 max-w-3xl mx-auto font-medium px-2 leading-relaxed">
+            Protect your sensitive files with built-in redaction, dynamic watermarking, and granular access controls.
           </p>
 
-          {/* Hero Action CTA Buttons */}
-          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mb-10 sm:mb-14">
-            <Link
-              href="/register"
-              className="px-6 sm:px-8 py-3 sm:py-3.5 rounded-full bg-brand text-white font-bold text-sm sm:text-base shadow-lg hover:shadow-brand-500/30 hover:scale-105 active:scale-95 transition-all duration-300"
-            >
-              Start Free Trial →
-            </Link>
-            <a
-              href="#products"
-              className="px-6 sm:px-8 py-3 sm:py-3.5 rounded-full bg-slate-50 border border-slate-200 text-slate-700 font-bold text-sm sm:text-base hover:bg-white hover:border-brand hover:text-brand transition-all duration-300"
-            >
-              Explore Products
-            </a>
-          </div>
-
-          {/* Features / Capabilities Trust Bar */}
-          <div className="w-full max-w-5xl mx-auto bg-white/95 backdrop-blur-md rounded-2xl sm:rounded-3xl border border-slate-200/80 shadow-[0_10px_35px_-5px_rgba(0,0,0,0.05)] p-4 sm:p-6 lg:p-7">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-0 lg:divide-x lg:divide-slate-200/70">
+          {/* Features Bar (Symmetrical 2x2 on Mobile, 4x1 on Desktop) */}
+          <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 border border-slate-100 shadow-sm max-w-5xl mx-auto">
+            <div className="grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 divide-slate-100">
               
-              {/* Item 1: AES-256 */}
-              <div className="flex flex-col items-center text-center px-2 sm:px-4 py-2 group hover:-translate-y-0.5 transition-transform duration-300">
-                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-brand-50 text-brand border border-brand-200/60 flex items-center justify-center mb-2.5 shadow-2xs group-hover:scale-110 group-hover:bg-brand group-hover:text-white transition-all duration-300">
-                  <i className="fas fa-shield-alt text-base sm:text-lg"></i>
-                </div>
-                <div className="text-base sm:text-lg lg:text-xl font-black text-slate-900 tracking-tight">
-                  AES-256
-                </div>
-                <div className="text-xs sm:text-[13px] font-semibold text-slate-500 mt-0.5">
-                  Data Encryption
-                </div>
+              {/* Item 1 */}
+              <div className="p-3 sm:p-4 text-center border-r md:border-r border-slate-100 flex flex-col justify-center">
+                <div className="text-xl xs:text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-black text-[#0f172a] mb-1 tracking-tight">AES-256</div>
+                <div className="text-[11px] sm:text-xs md:text-sm font-medium text-slate-400">Data Encryption</div>
               </div>
 
-              {/* Item 2: Granular Access */}
-              <div className="flex flex-col items-center text-center px-2 sm:px-4 py-2 group hover:-translate-y-0.5 transition-transform duration-300">
-                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-brand-50 text-brand border border-brand-200/60 flex items-center justify-center mb-2.5 shadow-2xs group-hover:scale-110 group-hover:bg-brand group-hover:text-white transition-all duration-300">
-                  <i className="fas fa-user-shield text-base sm:text-lg"></i>
-                </div>
-                <div className="text-base sm:text-lg lg:text-xl font-black text-slate-900 tracking-tight">
-                  Granular
-                </div>
-                <div className="text-xs sm:text-[13px] font-semibold text-slate-500 mt-0.5">
-                  Access Controls
-                </div>
+              {/* Item 2 */}
+              <div className="p-3 sm:p-4 text-center md:border-r border-slate-100 flex flex-col justify-center">
+                <div className="text-xl xs:text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-black text-[#0f172a] mb-1 tracking-tight">Granular</div>
+                <div className="text-[11px] sm:text-xs md:text-sm font-medium text-slate-400">Access Controls</div>
               </div>
 
-              {/* Item 3: Dynamic Watermarking */}
-              <div className="flex flex-col items-center text-center px-2 sm:px-4 py-2 group hover:-translate-y-0.5 transition-transform duration-300">
-                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-brand-50 text-brand border border-brand-200/60 flex items-center justify-center mb-2.5 shadow-2xs group-hover:scale-110 group-hover:bg-brand group-hover:text-white transition-all duration-300">
-                  <i className="fas fa-fingerprint text-base sm:text-lg"></i>
-                </div>
-                <div className="text-base sm:text-lg lg:text-xl font-black text-slate-900 tracking-tight">
-                  Dynamic
-                </div>
-                <div className="text-xs sm:text-[13px] font-semibold text-slate-500 mt-0.5">
-                  Watermarking
-                </div>
+              {/* Item 3 */}
+              <div className="p-3 sm:p-4 pt-4 sm:pt-4 text-center border-r md:border-r border-slate-100 flex flex-col justify-center">
+                <div className="text-xl xs:text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-black text-[#0f172a] mb-1 tracking-tight">Dynamic</div>
+                <div className="text-[11px] sm:text-xs md:text-sm font-medium text-slate-400">Watermarking</div>
               </div>
 
-              {/* Item 4: Built-in Redaction */}
-              <div className="flex flex-col items-center text-center px-2 sm:px-4 py-2 group hover:-translate-y-0.5 transition-transform duration-300">
-                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-brand-50 text-brand border border-brand-200/60 flex items-center justify-center mb-2.5 shadow-2xs group-hover:scale-110 group-hover:bg-brand group-hover:text-white transition-all duration-300">
-                  <i className="fas fa-eraser text-base sm:text-lg"></i>
-                </div>
-                <div className="text-base sm:text-lg lg:text-xl font-black text-slate-900 tracking-tight">
-                  Built-in
-                </div>
-                <div className="text-xs sm:text-[13px] font-semibold text-slate-500 mt-0.5">
-                  Redaction Tool
-                </div>
+              {/* Item 4 */}
+              <div className="p-3 sm:p-4 pt-4 sm:pt-4 text-center flex flex-col justify-center">
+                <div className="text-xl xs:text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-black text-[#0f172a] mb-1 tracking-tight">Built-in</div>
+                <div className="text-[11px] sm:text-xs md:text-sm font-medium text-slate-400">Redaction Tool</div>
               </div>
 
             </div>
