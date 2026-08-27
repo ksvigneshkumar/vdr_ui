@@ -8,6 +8,7 @@ import { FaBars, FaTimes, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import ProjectsShowcase from "@/components/landing/ProjectsShowcase";
 import InsightsResources from "@/components/landing/InsightsResources";
 import CustomerStoriesCarousel from "@/components/landing/CustomerStoriesCarousel";
+import InteractiveSecurityShowcase from "@/components/landing/InteractiveSecurityShowcase";
 import FeaturesShowcaseCarousel from "@/components/landing/FeaturesShowcaseCarousel";
 import SecurityCertBadges from "@/components/landing/SecurityCertBadges";
 import BusinessProcessesShowcase from "@/components/landing/BusinessProcessesShowcase";
@@ -18,8 +19,8 @@ export default function Home() {
   useEffect(() => {
     AOS.init({
       duration: 800,
-      once: false,
-      mirror: true,
+      once: true,
+      mirror: false,
       offset: 50,
       easing: 'ease-out-cubic'
     });
@@ -50,65 +51,103 @@ export default function Home() {
     <main className="overflow-x-hidden relative w-full font-sans text-gray-800 bg-gray-50">
 
       {/* 1. Navigation */}
-      <nav className="fixed top-0 left-0 w-full bg-white shadow-sm z-50 py-4 px-6 md:px-16 flex justify-between items-center transition-all duration-300">
-        <div className="text-2xl font-black text-gray-900 tracking-tight flex items-center">
-          <i className="fas fa-shield-alt text-[var(--brand)] mr-2 text-3xl"></i> SecureVDR
+      <nav className="fixed top-0 left-0 w-full bg-white/95 backdrop-blur-md shadow-xs z-50 py-3.5 sm:py-4 px-4 sm:px-8 md:px-16 flex justify-between items-center transition-all duration-300 border-b border-slate-100">
+        <Link href="/" className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight flex items-center gap-2">
+          <i className="fas fa-shield-alt text-brand text-2xl sm:text-3xl"></i>
+          <span>SecureVDR</span>
+        </Link>
+
+        {/* Desktop / Large Tablet Navigation Links */}
+        <div className="hidden lg:flex gap-8 items-center font-medium text-gray-600 text-sm md:text-base">
+          <a href="#functions" className="hover:text-brand transition-colors">Functions</a>
+          <a href="#features" className="hover:text-brand transition-colors">Features</a>
+          <a href="#products" className="hover:text-brand transition-colors">Products</a>
+          <a href="#insights" className="hover:text-brand transition-colors">Insights</a>
         </div>
 
-        <div className="hidden lg:flex gap-8 items-center font-medium text-gray-600">
-          <a href="#features" className="hover:text-[var(--brand)] transition-colors">Features</a>
-          <a href="#products" className="hover:text-[var(--brand)] transition-colors">Products</a>
-          <a href="#insights" className="hover:text-[var(--brand)] transition-colors">Insights</a>
-        </div>
-
-        {/* Desktop Navigation Buttons */}
-        <div className="hidden md:flex gap-4 items-center">
+        {/* Desktop / Tablet Navigation Action Buttons */}
+        <div className="hidden md:flex gap-2.5 lg:gap-3.5 items-center">
           {/* Business Owner Button */}
           <Link 
             href="/business-owner/login" 
-            className="btn-bo-hover px-5 py-2 border-2 border-[var(--brand)] text-[var(--brand)] rounded-full font-semibold flex items-center gap-2 transition-all duration-700"
+            className="btn-bo-hover px-3.5 lg:px-4 py-2 border-2 border-brand text-brand rounded-full font-bold text-xs lg:text-sm flex items-center gap-1.5 cursor-pointer shadow-xs"
           >
-            <i className="fas fa-chart-line"></i> Business Owner
+            <i className="fas fa-chart-line text-xs"></i> <span>Business Owner</span>
           </Link>
 
           {/* Login Button */}
           <a 
             href="/login" 
-            className="btn-bo-hover px-5 py-2 border-2 border-[var(--brand)] text-[var(--brand)] rounded-full font-semibold transition-all duration-700"
+            className="btn-bo-hover px-4 lg:px-5 py-2 border-2 border-brand text-brand rounded-full font-bold text-xs lg:text-sm cursor-pointer shadow-xs"
           >
             Login
           </a>
 
-          {/* Register Button */}
+          {/* Register / Get Started Button */}
           <Link 
             href="/register" 
-            className="btn-bo-hover px-5 py-2 border-2 border-[var(--brand)] text-[var(--brand)] rounded-full font-semibold transition-all duration-700"
+            className="btn-bo-hover px-4 lg:px-5 py-2 border-2 border-brand text-brand rounded-full font-bold text-xs lg:text-sm cursor-pointer shadow-xs"
           >
-            Register
+            Get Started
           </Link>
         </div>
 
-        <button className="md:hidden text-2xl text-gray-800 focus:outline-none" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+        {/* Mobile Hamburger Button */}
+        <button 
+          aria-label="Toggle Navigation Menu"
+          className="md:hidden w-10 h-10 rounded-xl bg-slate-100 text-slate-800 flex items-center justify-center text-lg focus:outline-none cursor-pointer" 
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        >
           {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
         </button>
       </nav>
 
-      {/* Mobile Menu */}
+      {/* Mobile Drawer Overlay & Menu */}
       {isMobileMenuOpen && (
-        <div className="fixed top-[72px] left-0 w-full bg-white shadow-sm z-40 flex flex-col p-6 md:hidden gap-4 animate-fade-in border-t border-gray-100">
-          <a href="#features" className="text-lg font-medium text-gray-700 py-2 border-b border-gray-50" onClick={() => setIsMobileMenuOpen(false)}>Features</a>
-          <a href="#products" className="text-lg font-medium text-gray-700 py-2 border-b border-gray-50" onClick={() => setIsMobileMenuOpen(false)}>Products</a>
-          <a href="#insights" className="text-lg font-medium text-gray-700 py-2 border-b border-gray-50" onClick={() => setIsMobileMenuOpen(false)}>Insights</a>
-          <Link href="/business-owner/login" className="text-lg font-medium text-[var(--brand)] py-2 border-b border-gray-50 flex items-center gap-2" onClick={() => setIsMobileMenuOpen(false)}><i className="fas fa-chart-line"></i> Business Owner Login</Link>
-          <div className="flex flex-col gap-3 mt-4">
-            <a href="/login" className="w-full text-center px-6 py-3 border-2 border-[var(--brand)] text-[var(--brand)] rounded-full font-bold" onClick={() => setIsMobileMenuOpen(false)}>Log In</a>
-            <Link href="/register" className="w-full text-center px-6 py-3 bg-[var(--brand)] text-white rounded-full font-bold shadow-md" onClick={() => setIsMobileMenuOpen(false)}>Get Started</Link>
+        <div className="fixed inset-0 z-40 md:hidden animate-fade-in">
+          {/* Backdrop Blur */}
+          <div 
+            className="absolute inset-0 bg-black/40 backdrop-blur-xs"
+            onClick={() => setIsMobileMenuOpen(false)}
+          ></div>
+
+          {/* Menu Drawer Content */}
+          <div className="relative top-[60px] w-full bg-white shadow-2xl flex flex-col p-6 gap-3 border-b border-slate-200">
+            <a href="#functions" className="text-base font-bold text-slate-800 py-2.5 border-b border-slate-100 flex items-center justify-between" onClick={() => setIsMobileMenuOpen(false)}>
+              <span>Functions</span>
+              <span className="text-slate-400">→</span>
+            </a>
+            <a href="#features" className="text-base font-bold text-slate-800 py-2.5 border-b border-slate-100 flex items-center justify-between" onClick={() => setIsMobileMenuOpen(false)}>
+              <span>Features</span>
+              <span className="text-slate-400">→</span>
+            </a>
+            <a href="#products" className="text-base font-bold text-slate-800 py-2.5 border-b border-slate-100 flex items-center justify-between" onClick={() => setIsMobileMenuOpen(false)}>
+              <span>Products</span>
+              <span className="text-slate-400">→</span>
+            </a>
+            <a href="#insights" className="text-base font-bold text-slate-800 py-2.5 border-b border-slate-100 flex items-center justify-between" onClick={() => setIsMobileMenuOpen(false)}>
+              <span>Insights</span>
+              <span className="text-slate-400">→</span>
+            </a>
+            <Link href="/business-owner/login" className="text-base font-bold text-brand py-2.5 border-b border-slate-100 flex items-center gap-2" onClick={() => setIsMobileMenuOpen(false)}>
+              <i className="fas fa-chart-line"></i> 
+              <span>Business Owner Portal</span>
+            </Link>
+
+            <div className="grid grid-cols-2 gap-3 mt-3 pt-2">
+              <a href="/login" className="btn-bo-hover w-full text-center px-4 py-2.5 border-2 border-brand text-brand rounded-full font-bold text-sm" onClick={() => setIsMobileMenuOpen(false)}>
+                Log In
+              </a>
+              <Link href="/register" className="btn-bo-hover w-full text-center px-4 py-2.5 border-2 border-brand text-brand rounded-full font-bold text-sm" onClick={() => setIsMobileMenuOpen(false)}>
+                Get Started
+              </Link>
+            </div>
           </div>
         </div>
       )}
 
-      {/* 2. Hero Section (New Design) */}
-      <section className="relative min-h-[90vh] flex items-center justify-center px-6 md:px-16 pt-32 pb-20 overflow-hidden bg-white">
+      {/* 2. Hero Section (Full 100vh on Mobile & Desktop) */}
+      <section className="relative min-h-screen min-h-[100dvh] flex flex-col justify-center items-center px-4 sm:px-8 md:px-16 pt-20 sm:pt-28 md:pt-32 pb-12 sm:pb-20 overflow-hidden bg-white">
 
         {/* Premium SaaS Background: Aurora + Grid */}
         <div className="absolute inset-0 w-full h-full z-0 pointer-events-none overflow-hidden">
@@ -116,8 +155,8 @@ export default function Home() {
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+CjxwYXRoIGQ9Ik0wIDBoNDB2NDBIMHoiIGZpbGw9Im5vbmUiLz4KPGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMCwwLDAsMC4xKSIvPgo8L3N2Zz4=')] opacity-50"></div>
 
           {/* Aurora Glows */}
-          <div className="absolute -top-[20%] -left-[10%] w-[70vw] h-[70vh] rounded-full bg-gradient-to-br from-[#00e5a3]/20 to-[#3b82f6]/15 blur-[120px] animate-float"></div>
-          <div className="absolute top-[20%] -right-[10%] w-[50vw] h-[80vh] rounded-full bg-gradient-to-bl from-[#3b82f6]/10 to-[#8b5cf6]/10 blur-[150px] animate-float-delayed"></div>
+          <div className="absolute -top-[20%] -left-[10%] w-[70vw] h-[70vh] rounded-full bg-brand opacity-15 blur-[120px] animate-float"></div>
+          <div className="absolute top-[20%] -right-[10%] w-[50vw] h-[80vh] rounded-full bg-brand opacity-10 blur-[150px] animate-float-delayed"></div>
 
           {/* Bottom Fade Mask */}
           <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-white to-transparent"></div>
@@ -125,37 +164,46 @@ export default function Home() {
 
         <div className="max-w-5xl w-full mx-auto text-center relative z-10" data-aos="fade-up">
 
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-[#0f172a] leading-tight mb-4 tracking-tight">
-            Secure Document Sharing. Complete Control.<br />
-            <span className="text-[var(--brand)]">Zero Leaks.</span>
+          {/* Main Hero Headline */}
+          <h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-[#0f172a] leading-tight mb-4 sm:mb-6 tracking-tight">
+            Secure Document Sharing. <br className="hidden sm:inline" />
+            Complete Control. <span className="text-brand">Zero Leaks.</span>
           </h1>
 
-          <p className="text-lg sm:text-xl text-gray-500 mb-12 max-w-3xl mx-auto font-medium">
+          <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-500 mb-10 sm:mb-12 max-w-3xl mx-auto font-medium px-2 leading-relaxed">
             Protect your sensitive files with built-in redaction, dynamic watermarking, and granular access controls.
           </p>
 
-          {/* Features Bar */}
-          <div className="bg-white rounded-lg p-8 mb-12 border border-gray-100 shadow-sm">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 divide-x divide-gray-100">
-              <div className="px-4">
-                <div className="text-2xl md:text-3xl font-black text-[#0f172a] mb-1">AES-256</div>
-                <div className="text-sm font-medium text-gray-400">Data Encryption</div>
+          {/* Features Bar (Symmetrical 2x2 on Mobile, 4x1 on Desktop) */}
+          <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 border border-slate-100 shadow-sm max-w-5xl mx-auto">
+            <div className="grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 divide-slate-100">
+              
+              {/* Item 1 */}
+              <div className="p-3 sm:p-4 text-center border-r md:border-r border-slate-100 flex flex-col justify-center">
+                <div className="text-xl xs:text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-black text-[#0f172a] mb-1 tracking-tight">AES-256</div>
+                <div className="text-[11px] sm:text-xs md:text-sm font-medium text-slate-400">Data Encryption</div>
               </div>
-              <div className="px-4">
-                <div className="text-2xl md:text-3xl font-black text-[#0f172a] mb-1">Granular</div>
-                <div className="text-sm font-medium text-gray-400">Access Controls</div>
+
+              {/* Item 2 */}
+              <div className="p-3 sm:p-4 text-center md:border-r border-slate-100 flex flex-col justify-center">
+                <div className="text-xl xs:text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-black text-[#0f172a] mb-1 tracking-tight">Granular</div>
+                <div className="text-[11px] sm:text-xs md:text-sm font-medium text-slate-400">Access Controls</div>
               </div>
-              <div className="px-4">
-                <div className="text-2xl md:text-3xl font-black text-[#0f172a] mb-1">Dynamic</div>
-                <div className="text-sm font-medium text-gray-400">Watermarking</div>
+
+              {/* Item 3 */}
+              <div className="p-3 sm:p-4 pt-4 sm:pt-4 text-center border-r md:border-r border-slate-100 flex flex-col justify-center">
+                <div className="text-xl xs:text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-black text-[#0f172a] mb-1 tracking-tight">Dynamic</div>
+                <div className="text-[11px] sm:text-xs md:text-sm font-medium text-slate-400">Watermarking</div>
               </div>
-              <div className="px-4">
-                <div className="text-2xl md:text-3xl font-black text-[#0f172a] mb-1">Built-in</div>
-                <div className="text-sm font-medium text-gray-400">Redaction Tool</div>
+
+              {/* Item 4 */}
+              <div className="p-3 sm:p-4 pt-4 sm:pt-4 text-center flex flex-col justify-center">
+                <div className="text-xl xs:text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-black text-[#0f172a] mb-1 tracking-tight">Built-in</div>
+                <div className="text-[11px] sm:text-xs md:text-sm font-medium text-slate-400">Redaction Tool</div>
               </div>
+
             </div>
           </div>
-
 
         </div>
       </section>
@@ -163,82 +211,146 @@ export default function Home() {
       {/* 2.1 Important Projects Done On Platform (Auto-Scrolling Showcase) */}
       <ProjectsShowcase />
 
-      {/* 3. Next-Gen Security & Deal Protection Showcase (Ansarada-Style Auto-Scrolling Cards) */}
+      {/* 3. Next-Gen Security & Deal Protection Showcase (Interactive Tabs) */}
+      <InteractiveSecurityShowcase />
+
+      {/* 2.2 Features Showcase Carousel (Ansarada Style) */}
       <FeaturesShowcaseCarousel />
 
       {/* 6. Executive Customer Stories Carousel (Ansarada-Style Cinematic Slides) */}
       <CustomerStoriesCarousel />
 
-      {/* 7. Our Products Section (White Background with Teal Gradient Lettering) */}
-      <section id="products" className="py-20 sm:py-24 px-6 md:px-16 bg-white text-slate-900 relative border-t border-slate-100 select-none">
+      {/* 7. Our Products Section (Responsive Image Cards) */}
+      <section id="products" className="py-16 sm:py-20 md:py-24 px-4 sm:px-8 md:px-16 bg-white text-slate-900 relative border-t border-slate-100 select-none scroll-mt-16 sm:scroll-mt-20">
         <div className="max-w-7xl mx-auto text-center relative z-10">
           {/* Section Header */}
-          <div className="mb-16" data-aos="fade-up">
-            <div className="inline-block px-4 py-1 mb-3.5 rounded-full bg-emerald-50 text-[#00a877] font-bold text-xs uppercase tracking-widest border border-emerald-200/60 shadow-2xs">
-              Enterprise Suite
-            </div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black bg-gradient-to-r from-[#00a877] via-[#059669] to-[#088382] bg-clip-text text-transparent tracking-tight mb-4">
-              Our Products
+          <div className="mb-10 sm:mb-14 md:mb-16" data-aos="fade-up">
+            <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-brand-adaptive tracking-tight mb-3 sm:mb-4">
+              Our <span className="text-brand">Products</span>
             </h2>
-            <p className="text-slate-500 font-medium text-sm sm:text-base md:text-lg max-w-3xl mx-auto leading-relaxed">
+            <p className="text-slate-500 font-medium text-xs sm:text-sm md:text-base lg:text-lg max-w-3xl mx-auto px-2 leading-relaxed">
               From secure document sharing to end-to-end deal execution, one platform, purpose-built for high-stakes transactions.
             </p>
           </div>
 
           {/* 3 Products Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10 text-center items-stretch">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 lg:gap-10 text-left items-stretch">
             
             {/* Product 1: Virtual Data Room (VDR) */}
-            <div className="flex flex-col items-center group p-8 sm:p-10 rounded-2xl bg-white border border-slate-200/90 hover:border-emerald-300 shadow-sm hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300" data-aos="fade-up" data-aos-delay="0">
-              <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-emerald-50 text-[#00a877] border border-emerald-200/70 flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 group-hover:bg-[#00a877] group-hover:text-white transition-all duration-300">
-                {/* Filing Cabinet / VDR Icon */}
-                <svg className="w-9 h-9" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <rect x="3" y="3" width="18" height="18" rx="2" strokeWidth="2.2" />
-                  <line x1="3" y1="9" x2="21" y2="9" strokeWidth="2" />
-                  <line x1="3" y1="15" x2="21" y2="15" strokeWidth="2" />
-                  <line x1="10" y1="6" x2="14" y2="6" strokeWidth="2.5" strokeLinecap="round" />
-                  <line x1="10" y1="12" x2="14" y2="12" strokeWidth="2.5" strokeLinecap="round" />
-                  <line x1="10" y1="18" x2="14" y2="18" strokeWidth="2.5" strokeLinecap="round" />
-                </svg>
+            <div className="group bg-white rounded-2xl overflow-hidden border border-slate-200/90 hover:border-brand shadow-sm hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between" data-aos="fade-up" data-aos-delay="0">
+              <div>
+                {/* Product Image */}
+                <div className="relative h-44 sm:h-48 md:h-52 w-full overflow-hidden bg-slate-900">
+                  <img
+                    src="/images/products/vdr_product.jpg"
+                    alt="Virtual Data Room (VDR)"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute top-3 left-3">
+                    <span className="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider bg-black/60 text-white backdrop-blur-md border border-white/20 shadow-xs">
+                      Core Platform
+                    </span>
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="p-5 sm:p-6 md:p-7">
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-black text-slate-900 group-hover:text-brand transition-colors mb-2 sm:mb-3 tracking-tight">
+                    Virtual Data Room (VDR)
+                  </h3>
+                  <p className="text-slate-600 text-xs sm:text-sm md:text-[15px] font-medium leading-relaxed">
+                    DPDP-aligned virtual data room built for high-stakes M&amp;A, IPO, and fundraising with bank-grade encryption.
+                  </p>
+                </div>
               </div>
-              <h3 className="text-xl sm:text-2xl font-bold text-slate-900 group-hover:text-[#00a877] transition-colors mb-3 tracking-tight">
-                Virtual Data Room (VDR)
-              </h3>
-              <p className="text-slate-500 text-sm sm:text-[15px] font-medium leading-relaxed max-w-xs">
-                DPDP-aligned virtual data room built for M&amp;A, IPO, and fundraising.
-              </p>
+
+              {/* Bottom Footer Link */}
+              <div className="px-5 sm:px-6 md:px-7 pb-5 sm:pb-6 pt-2 flex items-center justify-between border-t border-slate-100">
+                <span className="text-xs sm:text-sm font-bold text-brand flex items-center gap-1.5 group-hover:gap-2.5 transition-all">
+                  <span>Explore VDR</span>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                  </svg>
+                </span>
+              </div>
             </div>
 
             {/* Product 2: Document Management System */}
-            <div className="flex flex-col items-center group p-8 sm:p-10 rounded-2xl bg-white border border-slate-200/90 hover:border-emerald-300 shadow-sm hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300" data-aos="fade-up" data-aos-delay="100">
-              <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-emerald-50 text-[#00a877] border border-emerald-200/70 flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 group-hover:bg-[#00a877] group-hover:text-white transition-all duration-300">
-                {/* Archive / Document Safe Icon */}
-                <svg className="w-9 h-9" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                </svg>
+            <div className="group bg-white rounded-2xl overflow-hidden border border-slate-200/90 hover:border-brand shadow-sm hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between" data-aos="fade-up" data-aos-delay="100">
+              <div>
+                {/* Product Image */}
+                <div className="relative h-44 sm:h-48 md:h-52 w-full overflow-hidden bg-slate-900">
+                  <img
+                    src="/images/products/dms_product.jpg"
+                    alt="Document Management System"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute top-3 left-3">
+                    <span className="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider bg-black/60 text-white backdrop-blur-md border border-white/20 shadow-xs">
+                      Document Safe
+                    </span>
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="p-5 sm:p-6 md:p-7">
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-black text-slate-900 group-hover:text-brand transition-colors mb-2 sm:mb-3 tracking-tight">
+                    Document Management System
+                  </h3>
+                  <p className="text-slate-600 text-xs sm:text-sm md:text-[15px] font-medium leading-relaxed">
+                    One secure centralized document hub. Right version, right stakeholder, and automated folder indexing.
+                  </p>
+                </div>
               </div>
-              <h3 className="text-xl sm:text-2xl font-bold text-slate-900 group-hover:text-[#00a877] transition-colors mb-3 tracking-tight">
-                Document Management System
-              </h3>
-              <p className="text-slate-500 text-sm sm:text-[15px] font-medium leading-relaxed max-w-xs">
-                One secure document hub. Right version, right stakeholder, right time.
-              </p>
+
+              {/* Bottom Footer Link */}
+              <div className="px-5 sm:px-6 md:px-7 pb-5 sm:pb-6 pt-2 flex items-center justify-between border-t border-slate-100">
+                <span className="text-xs sm:text-sm font-bold text-brand flex items-center gap-1.5 group-hover:gap-2.5 transition-all">
+                  <span>Explore DMS</span>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                  </svg>
+                </span>
+              </div>
             </div>
 
             {/* Product 3: Deal Management System */}
-            <div className="flex flex-col items-center group p-8 sm:p-10 rounded-2xl bg-white border border-slate-200/90 hover:border-emerald-300 shadow-sm hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300" data-aos="fade-up" data-aos-delay="200">
-              <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-emerald-50 text-[#00a877] border border-emerald-200/70 flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 group-hover:bg-[#00a877] group-hover:text-white transition-all duration-300">
-                {/* Lightning Deal / Lightbulb Icon */}
-                <svg className="w-9 h-9" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
+            <div className="group bg-white rounded-2xl overflow-hidden border border-slate-200/90 hover:border-brand shadow-sm hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between" data-aos="fade-up" data-aos-delay="200">
+              <div>
+                {/* Product Image */}
+                <div className="relative h-44 sm:h-48 md:h-52 w-full overflow-hidden bg-slate-900">
+                  <img
+                    src="/images/products/deal_management_product.jpg"
+                    alt="Deal Management System"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute top-3 left-3">
+                    <span className="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider bg-black/60 text-white backdrop-blur-md border border-white/20 shadow-xs">
+                      Deal Flow
+                    </span>
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="p-5 sm:p-6 md:p-7">
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-black text-slate-900 group-hover:text-brand transition-colors mb-2 sm:mb-3 tracking-tight">
+                    Deal Management System
+                  </h3>
+                  <p className="text-slate-600 text-xs sm:text-sm md:text-[15px] font-medium leading-relaxed">
+                    Manage deals, due diligence tasks, and team workstreams from one integrated executive dashboard.
+                  </p>
+                </div>
               </div>
-              <h3 className="text-xl sm:text-2xl font-bold text-slate-900 group-hover:text-[#00a877] transition-colors mb-3 tracking-tight">
-                Deal Management System
-              </h3>
-              <p className="text-slate-500 text-sm sm:text-[15px] font-medium leading-relaxed max-w-xs">
-                Manage deals, tasks, and workstreams from one integrated dashboard.
-              </p>
+
+              {/* Bottom Footer Link */}
+              <div className="px-5 sm:px-6 md:px-7 pb-5 sm:pb-6 pt-2 flex items-center justify-between border-t border-slate-100">
+                <span className="text-xs sm:text-sm font-bold text-brand flex items-center gap-1.5 group-hover:gap-2.5 transition-all">
+                  <span>Explore Deals</span>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                  </svg>
+                </span>
+              </div>
             </div>
 
           </div>
@@ -252,7 +364,7 @@ export default function Home() {
       <InsightsResources />
 
       {/* 8. Pre-Footer Seamless CTA Banner (Slim & Compact in Vibrant Teal Gradient) */}
-      <section className="w-full bg-gradient-to-r from-[#00a877] via-[#059669] to-[#088382] py-7 sm:py-9 px-6 md:px-16 text-white relative shadow-inner overflow-hidden border-b border-white/10">
+      <section className="w-full bg-brand py-7 sm:py-9 px-6 md:px-16 text-white relative shadow-inner overflow-hidden border-b border-white/10">
         {/* Ambient Subtle Glow */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.18),transparent_70%)] pointer-events-none"></div>
 
@@ -295,7 +407,7 @@ export default function Home() {
             <div className="flex flex-col gap-4">
               {/* Logo */}
               <div className="flex items-center gap-2.5 text-white font-black text-2xl tracking-wider">
-                <i className="fas fa-shield-alt text-[var(--brand)] text-2xl"></i>
+                <i className="fas fa-shield-alt text-brand text-2xl"></i>
                 <span className="font-extrabold tracking-tight text-2xl text-white">SecureVDR</span>
               </div>
 
@@ -318,7 +430,7 @@ export default function Home() {
                 <svg className="w-4 h-4 text-slate-300 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
                 </svg>
-                <a href="mailto:contact@securevdr.com" className="hover:text-white transition-colors">
+                <a href="mailto:contact@securevdr.com" className="hover:text-brand transition-colors">
                   contact@securevdr.com
                 </a>
               </div>
@@ -328,7 +440,7 @@ export default function Home() {
                 {/* X (Twitter) */}
                 <a 
                   href="#" 
-                  className="w-8 h-8 rounded-lg bg-[#00d09c] text-[#020b33] font-black flex items-center justify-center hover:bg-emerald-400 hover:scale-105 transition-all shadow-xs"
+                  className="w-8 h-8 rounded-lg bg-brand text-[#020b33] font-black flex items-center justify-center hover:bg-brand hover:scale-105 transition-all shadow-xs"
                   aria-label="X (Twitter)"
                 >
                   <span className="font-mono text-sm font-black">X</span>
@@ -336,7 +448,7 @@ export default function Home() {
                 {/* LinkedIn */}
                 <a 
                   href="#" 
-                  className="w-8 h-8 rounded-lg bg-[#00d09c] text-[#020b33] font-black flex items-center justify-center hover:bg-emerald-400 hover:scale-105 transition-all shadow-xs"
+                  className="w-8 h-8 rounded-lg bg-brand text-[#020b33] font-black flex items-center justify-center hover:bg-brand hover:scale-105 transition-all shadow-xs"
                   aria-label="LinkedIn"
                 >
                   <span className="font-sans text-xs font-black">in</span>
@@ -348,14 +460,14 @@ export default function Home() {
             <div>
               <h4 className="text-white font-bold text-base mb-4 tracking-wide">Company</h4>
               <ul className="space-y-2.5 text-[13px] text-slate-300">
-                <li><a href="#" className="hover:text-white transition-colors">Why SecureVDR</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Case Studies</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Career</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Contact Us</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">SLA &amp; Terms</a></li>
-                <li><a href="#pricing" className="hover:text-white transition-colors">Pricing</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">Why SecureVDR</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">Case Studies</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">Blog</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">Career</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">Contact Us</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">Privacy Policy</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">SLA &amp; Terms</a></li>
+                <li><a href="#pricing" className="hover:text-brand transition-colors">Pricing</a></li>
               </ul>
             </div>
 
@@ -363,12 +475,12 @@ export default function Home() {
             <div>
               <h4 className="text-white font-bold text-base mb-4 tracking-wide">Products &amp; Solutions</h4>
               <ul className="space-y-2.5 text-[13px] text-slate-300">
-                <li><a href="#" className="hover:text-white transition-colors">Virtual Data Room</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Document Management System</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Deal Management System</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Security &amp; Compliance</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">IPO Advisory</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Legal Data Room</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">Virtual Data Room</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">Document Management System</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">Deal Management System</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">Security &amp; Compliance</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">IPO Advisory</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">Legal Data Room</a></li>
               </ul>
             </div>
 
@@ -376,13 +488,13 @@ export default function Home() {
             <div>
               <h4 className="text-white font-bold text-base mb-4 tracking-wide">Industry</h4>
               <ul className="space-y-2.5 text-[13px] text-slate-300">
-                <li><a href="#" className="hover:text-white transition-colors">Energy</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Real Estate</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Life Sciences</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Financial Services</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Technology, Media, &amp; Telecom</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Consumer Retail</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Oil &amp; Gas</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">Energy</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">Real Estate</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">Life Sciences</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">Financial Services</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">Technology, Media, &amp; Telecom</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">Consumer Retail</a></li>
+                <li><a href="#" className="hover:text-brand transition-colors">Oil &amp; Gas</a></li>
               </ul>
             </div>
 
@@ -399,7 +511,7 @@ export default function Home() {
       </footer>
 
       {/* Scroll to Top Button */}
-      <div id="scrollTopBtn" className="fixed bottom-6 right-6 bg-gray-900 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-md cursor-pointer opacity-0 invisible transition-all duration-300 hover:bg-[var(--brand)] hover:-translate-y-1 z-50 [&.show]:opacity-100 [&.show]:visible">
+      <div id="scrollTopBtn" className="fixed bottom-6 right-6 bg-gray-900 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-md cursor-pointer opacity-0 invisible transition-all duration-300 hover:bg-brand hover:-translate-y-1 z-50 [&.show]:opacity-100 [&.show]:visible">
         <FaChevronUp />
       </div>
 

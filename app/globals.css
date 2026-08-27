@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+html {
+  scroll-behavior: smooth;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -63,7 +67,9 @@ button.brand-button:hover {
   color: var(--brand-dark) !important;
 }
 
-.bg-brand, button.brand-button, .bg-\[var\(--brand\)\] {
+.bg-brand,
+button.brand-button,
+.bg-\[var\(--brand\)\] {
   background: var(--brand-bg, var(--brand)) !important;
   background-image: var(--brand-gradient, none) !important;
 }
@@ -71,6 +77,15 @@ button.brand-button:hover {
 .bg-brand-soft {
   background-color: var(--brand-soft) !important;
 }
+
+.text-brand-adaptive {
+  background-color: var(--brand) !important;
+  background-image: var(--brand-gradient, none) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
 
 .bg-brand-50 {
   background-color: var(--brand-50) !important;
@@ -676,7 +691,7 @@ textarea {
   left: -2px; 
   right: -2px;
   border-radius: inherit;
-  background: linear-gradient(to right, var(--brand), var(--brand-secondary));
+  background: var(--brand-bg, var(--brand));
   z-index: -1;
   transition: clip-path 0.8s ease-out, -webkit-clip-path 0.8s ease-out;
   clip-path: circle(0% at 50% 100%);
@@ -708,8 +723,11 @@ textarea {
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
 /* Hide scrollbar for IE, Edge and Firefox */
 .no-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
