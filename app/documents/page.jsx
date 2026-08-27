@@ -1850,25 +1850,7 @@ function UnifiedWorkspace() {
                                         <svg className="w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-colors shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6" /></svg>
                                     </button>
 
-                                    {/* BOOKMARK */}
-                                    <button 
-                                        onClick={(e) => { 
-                                            const item = mobileItemActionSheet;
-                                            setMobileItemActionSheet(null); 
-                                            handleToggleBookmark(item, e);
-                                        }}
-                                        className="w-full text-left px-4.5 py-3.5 text-[13px] font-semibold text-slate-700 hover:bg-slate-50/90 active:bg-slate-100/80 flex items-center justify-between transition-colors cursor-pointer group"
-                                    >
-                                        <div className="flex items-center gap-3 min-w-0">
-                                            <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-500 border border-amber-100/80 flex items-center justify-center shrink-0 shadow-2xs">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill={bookmarkedIds.has(mobileItemActionSheet.id) ? "#f59e0b" : "none"} stroke={bookmarkedIds.has(mobileItemActionSheet.id) ? "#f59e0b" : "currentColor"} strokeWidth="2.5">
-                                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                                                </svg>
-                                            </div>
-                                            <span className="font-bold text-slate-800 group-hover:text-slate-950">{bookmarkedIds.has(mobileItemActionSheet.id) ? 'Remove Bookmark' : 'Add to Bookmarks'}</span>
-                                        </div>
-                                        <svg className="w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-colors shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6" /></svg>
-                                    </button>
+
 
                                     {/* MOVE */}
                                     {canMergeFolder && (

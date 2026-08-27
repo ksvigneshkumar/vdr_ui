@@ -3,7 +3,35 @@
 import React, { useState, useEffect, useCallback, Suspense, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { hasPermission } from '@/lib/access/permissions';
-import { FaEye, FaEdit, FaUpload, FaShieldAlt, FaDownload } from 'react-icons/fa';
+import { FaEye, FaEdit, FaUpload, FaShieldAlt, FaDownload, FaFilePdf, FaFileWord, FaFileExcel, FaFilePowerpoint, FaFileImage, FaFileVideo, FaFileArchive, FaFileAlt, FaFile } from 'react-icons/fa';
+
+const getFileIcon = (filename) => {
+    if (!filename) return <FaFile className="text-slate-400 text-base" />;
+    const ext = filename.split('.').pop().toLowerCase();
+    switch (ext) {
+        case 'pdf': return <FaFilePdf className="text-red-500 text-lg" />;
+        case 'doc':
+        case 'docx': return <FaFileWord className="text-blue-600 text-lg" />;
+        case 'xls':
+        case 'xlsx':
+        case 'csv': return <FaFileExcel className="text-emerald-600 text-lg" />;
+        case 'ppt':
+        case 'pptx': return <FaFilePowerpoint className="text-orange-500 text-lg" />;
+        case 'jpg':
+        case 'jpeg':
+        case 'png':
+        case 'gif':
+        case 'svg': return <FaFileImage className="text-emerald-500 text-lg" />;
+        case 'mp4':
+        case 'mov':
+        case 'avi': return <FaFileVideo className="text-purple-500 text-lg" />;
+        case 'zip':
+        case 'rar':
+        case '7z': return <FaFileArchive className="text-amber-500 text-lg" />;
+        case 'txt': return <FaFileAlt className="text-slate-500 text-lg" />;
+        default: return <FaFile className="text-slate-400 text-lg" />;
+    }
+};
 
 export default function AccessPage() {
     return (
@@ -383,46 +411,15 @@ function AccessPageContent() {
                             </svg>
                         </button>
 
-                        {/* Mobile Group Dropdown Switcher */}
-                        <div className="relative md:hidden flex-1 min-w-0">
-                            <button
-                                onClick={() => setMobileGroupDropdownOpen(!mobileGroupDropdownOpen)}
-                                className="flex items-center gap-2 px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200/70 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 transition-all cursor-pointer truncate max-w-full"
-                            >
-                                <span className="w-5 h-5 rounded-lg bg-[var(--brand)] text-white flex items-center justify-center text-[10px] shrink-0">👥</span>
-                                <span className="truncate">{activeGroup?.name || 'Select Group'}</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className={`transition-transform shrink-0 ${mobileGroupDropdownOpen ? 'rotate-180' : ''}`}><polyline points="6 9 12 15 18 9" /></svg>
-                            </button>
-
-                            {mobileGroupDropdownOpen && (
-                                <>
-                                    <div className="fixed inset-0 z-40 bg-slate-900/10" onClick={() => setMobileGroupDropdownOpen(false)}></div>
-                                    <div className="absolute left-0 top-full mt-1.5 w-64 bg-white border border-slate-200 rounded-2xl shadow-xl p-1.5 z-50 animate-scale-up flex flex-col max-h-80 overflow-y-auto">
-                                        <div className="px-3 py-1.5 text-[10px] font-extrabold uppercase text-slate-400 border-b border-slate-100 mb-1">Switch Group</div>
-                                        {groups.map(g => (
-                                            <button
-                                                key={g.id}
-                                                onClick={() => { setSelectedGroup(g.id); setMobileGroupDropdownOpen(false); }}
-                                                className={`w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center justify-between transition-colors ${selectedGroup === g.id ? 'bg-[var(--brand)] text-white font-bold' : 'hover:bg-slate-50 text-slate-700'}`}
-                                            >
-                                                <span className="truncate">{g.name}</span>
-                                                <span className="text-[10px] opacity-75">{(groupMembers[g.id] || []).length} users</span>
-                                            </button>
-                                        ))}
-                                    </div>
-                                </>
-                            )}
-                        </div>
-
-                        {/* Desktop Group Label */}
+                        {/* Active Group Label */}
                         {activeGroup && (
-                            <div className="hidden md:flex items-center gap-2.5 min-w-0">
+                            <div className="flex items-center gap-2 min-w-0">
                                 <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-[var(--brand)] flex items-center justify-center text-[12px] font-black text-white shrink-0 shadow-xs">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                                 </div>
                                 <div className="min-w-0">
                                     <p className="text-[13px] sm:text-[14px] font-black text-slate-800 truncate">{activeGroup.name}</p>
-                                    <p className="text-[10px] sm:text-[11px] text-slate-400 truncate">Group Access Rules ({(groupMembers[activeGroup.id] || []).length} users)</p>
+                                    <p className="text-[10px] sm:text-[11px] text-slate-400 truncate">{(groupMembers[activeGroup.id] || []).length} users</p>
                                 </div>
                             </div>
                         )}
@@ -568,16 +565,14 @@ function AccessPageContent() {
                                             {displayDocs.map((doc) => {
                                                 const key = `${selectedGroup}_doc_${doc.id}`;
                                                 const perm = permissions[key] || { can_view: false, can_edit: false, can_upload: false, can_download_secure: false, can_download_original: false, can_delete: false };
-                                                const ext = doc.name.split('.').pop().toLowerCase();
-                                                const iconClass = 'bg-slate-100 border-slate-200 text-slate-600';
 
                                                 return (
                                                     <tr key={doc.id} className="group hover:bg-slate-50/60 transition-all duration-150">
                                                         <td className="py-3.5 px-4 text-center font-mono text-[11.5px] font-semibold text-slate-400">{doc.displayIndex}</td>
                                                         <td className="py-3.5 px-3">
                                                             <div className="flex items-center gap-3">
-                                                                <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-[9px] font-black border ${iconClass}`}>
-                                                                    {ext.toUpperCase().slice(0, 3)}
+                                                                <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 bg-slate-50 border border-slate-200/80 text-base">
+                                                                    {getFileIcon(doc.name)}
                                                                 </div>
                                                                 <p className="font-semibold text-[13px] text-slate-700 truncate max-w-[240px]">{doc.name}</p>
                                                             </div>
@@ -621,25 +616,35 @@ function AccessPageContent() {
                                     const isNone = count === 0;
 
                                     return (
-                                        <div key={folder.id} className="p-3.5 bg-white rounded-2xl border border-slate-200 shadow-2xs flex items-center justify-between gap-3">
+                                        <div key={folder.id} className="p-3 bg-white rounded-2xl border border-slate-200 shadow-2xs hover:border-[var(--brand)]/40 hover:shadow-xs transition-all flex items-center justify-between gap-3">
                                             <div className="flex items-center gap-3 min-w-0 flex-1 cursor-pointer" onClick={() => setCurrentFolderId(folder.id)}>
-                                                <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center shrink-0 text-amber-500 shadow-2xs">
+                                                <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200/70 flex items-center justify-center shrink-0 text-amber-500 shadow-2xs">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#fcd34d"><path d="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z" /></svg>
                                                 </div>
                                                 <div className="min-w-0 flex-1">
                                                     <div className="flex items-center gap-1.5 mb-1">
-                                                        <span className="text-[10px] font-mono font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded shrink-0">{folder.displayIndex}</span>
-                                                        <p className="text-[13px] font-bold text-slate-900 truncate">{folder.name}</p>
+                                                        <span className="text-[10px] font-mono font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded-md shrink-0">{folder.displayIndex}</span>
+                                                        <p className="text-[13.5px] font-bold text-slate-900 truncate leading-snug">{folder.name}</p>
                                                     </div>
-                                                    <div className="flex items-center gap-1.5">
-                                                        <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                                                            isFull ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' :
-                                                            isNone ? 'bg-slate-100 text-slate-400 border border-slate-200' :
-                                                            'bg-slate-100 text-slate-700 border border-slate-200'
-                                                        }`}>
-                                                            {isFull ? '● Full Access' : isNone ? '○ No Access' : `● ${count}/7 Permissions`}
-                                                        </span>
-                                                        <span className="text-[10px] text-slate-400 font-medium">Tap to open</span>
+                                                    <div className="flex items-center gap-2 text-[11.5px] font-medium leading-none">
+                                                        {isFull ? (
+                                                            <span className="text-emerald-600 font-bold flex items-center gap-1.5">
+                                                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
+                                                                Full Access
+                                                            </span>
+                                                        ) : isNone ? (
+                                                            <span className="text-slate-400 font-semibold flex items-center gap-1.5">
+                                                                <span className="w-1.5 h-1.5 rounded-full bg-slate-300 inline-block" />
+                                                                No Access
+                                                            </span>
+                                                        ) : (
+                                                            <span className="text-[var(--brand)] font-bold flex items-center gap-1.5">
+                                                                <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand)] inline-block" />
+                                                                {count}/7 Permissions
+                                                            </span>
+                                                        )}
+                                                        <span className="text-slate-300">•</span>
+                                                        <span className="text-slate-400 font-medium">Folder</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -647,9 +652,9 @@ function AccessPageContent() {
                                             {/* Direct Manage Button */}
                                             <button
                                                 onClick={() => setMobileItemConfigSheet(folder)}
-                                                className="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 transition-all font-bold text-xs flex items-center gap-1.5 shrink-0 cursor-pointer shadow-2xs border border-slate-200/60"
+                                                className="h-8 px-3 rounded-xl bg-[var(--brand)] hover:opacity-90 active:scale-95 text-white transition-all font-bold text-xs flex items-center gap-1.5 shrink-0 cursor-pointer shadow-xs"
                                             >
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" /></svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2-2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" /></svg>
                                                 <span>Access</span>
                                             </button>
                                         </div>
@@ -662,27 +667,37 @@ function AccessPageContent() {
                                     const isFull = count >= 6;
                                     const isNone = count === 0;
                                     const ext = doc.name.split('.').pop().toLowerCase();
-                                    const iconClass = 'bg-slate-100 border-slate-200 text-slate-600';
 
                                     return (
-                                        <div key={doc.id} className="p-3.5 bg-white rounded-2xl border border-slate-200 shadow-2xs flex items-center justify-between gap-3">
+                                        <div key={doc.id} className="p-3 bg-white rounded-2xl border border-slate-200 shadow-2xs hover:border-[var(--brand)]/40 hover:shadow-xs transition-all flex items-center justify-between gap-3">
                                             <div className="flex items-center gap-3 min-w-0 flex-1 cursor-pointer" onClick={() => setMobileItemConfigSheet(doc)}>
-                                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 text-[10px] font-black border ${iconClass} shadow-2xs`}>
-                                                    {ext.toUpperCase().slice(0, 3)}
+                                                <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-center shrink-0 text-base shadow-2xs">
+                                                    {getFileIcon(doc.name)}
                                                 </div>
                                                 <div className="min-w-0 flex-1">
                                                     <div className="flex items-center gap-1.5 mb-1">
-                                                        <span className="text-[10px] font-mono font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded shrink-0">{doc.displayIndex}</span>
-                                                        <p className="text-[13px] font-bold text-slate-900 truncate">{doc.name}</p>
+                                                        <span className="text-[10px] font-mono font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded-md shrink-0">{doc.displayIndex}</span>
+                                                        <p className="text-[13.5px] font-bold text-slate-900 truncate leading-snug">{doc.name}</p>
                                                     </div>
-                                                    <div className="flex items-center gap-1.5">
-                                                        <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                                                            isFull ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' :
-                                                            isNone ? 'bg-slate-100 text-slate-400 border border-slate-200' :
-                                                            'bg-slate-100 text-slate-700 border border-slate-200'
-                                                        }`}>
-                                                            {isFull ? '● Full Access' : isNone ? '○ No Access' : `● ${count}/7 Permissions`}
-                                                        </span>
+                                                    <div className="flex items-center gap-2 text-[11.5px] font-medium leading-none">
+                                                        {isFull ? (
+                                                            <span className="text-emerald-600 font-bold flex items-center gap-1.5">
+                                                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
+                                                                Full Access
+                                                            </span>
+                                                        ) : isNone ? (
+                                                            <span className="text-slate-400 font-semibold flex items-center gap-1.5">
+                                                                <span className="w-1.5 h-1.5 rounded-full bg-slate-300 inline-block" />
+                                                                No Access
+                                                            </span>
+                                                        ) : (
+                                                            <span className="text-[var(--brand)] font-bold flex items-center gap-1.5">
+                                                                <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand)] inline-block" />
+                                                                {count}/7 Permissions
+                                                            </span>
+                                                        )}
+                                                        <span className="text-slate-300">•</span>
+                                                        <span className="text-slate-400 font-mono font-semibold uppercase text-[10px]">{ext}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -690,7 +705,7 @@ function AccessPageContent() {
                                             {/* Direct Manage Button */}
                                             <button
                                                 onClick={() => setMobileItemConfigSheet(doc)}
-                                                className="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 transition-all font-bold text-xs flex items-center gap-1.5 shrink-0 cursor-pointer shadow-2xs border border-slate-200/60"
+                                                className="h-8 px-3 rounded-xl bg-[var(--brand)] hover:opacity-90 active:scale-95 text-white transition-all font-bold text-xs flex items-center gap-1.5 shrink-0 cursor-pointer shadow-xs"
                                             >
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" /></svg>
                                                 <span>Access</span>
