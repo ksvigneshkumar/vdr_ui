@@ -23,7 +23,7 @@ const FEATURES_DATA = [
   },
   {
     id: 4,
-    title: "Analytics",
+    title: "BI Analytics",
     description: "Provides real-time insights into document engagement, including viewers, views, downloads, and user activity, enabling organizations to monitor document usage and engagement effectively.",
     image: "/analytics.PNG"
   },
@@ -64,12 +64,9 @@ export default function InteractiveSecurityShowcase() {
         
         {/* Section Header */}
         <div className="text-center mb-12 sm:mb-16" data-aos="fade-up">
-          <h2 className="text-3xl sm:text-4xl md:text-[42px] font-black text-[#0f172a] tracking-tight mb-3 sm:mb-4">
-            Simplicity and speed <span className="text-brand">reimagined</span>
+          <h2 className="text-3xl sm:text-4xl md:text-[42px] font-black text-[#0f172a] tracking-tight max-w-3xl mx-auto leading-tight">
+            The intelligence data room functions <span className="text-brand">designed for best winning deals</span>
           </h2>
-          <p className="text-slate-500 font-medium text-sm sm:text-base md:text-lg max-w-2xl mx-auto leading-relaxed px-2">
-            In a world where precision drives progress, we empower leaders to accelerate their projects with confidence
-          </p>
         </div>
 
         {/* Interactive Layout */}
