@@ -16,6 +16,43 @@ import BusinessProcessesShowcase from "@/components/landing/BusinessProcessesSho
 export default function Home() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  const animatedPhrases = [
+    "Secure Document Sharing",
+    "Complete Access Control",
+    "Zero Data Leaks"
+  ];
+  const [textIndex, setTextIndex] = useState(0);
+  const [displayText, setDisplayText] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    const currentPhrase = animatedPhrases[textIndex];
+    let timeout;
+
+    if (!isDeleting) {
+      if (displayText.length < currentPhrase.length) {
+        timeout = setTimeout(() => {
+          setDisplayText(currentPhrase.slice(0, displayText.length + 1));
+        }, 75);
+      } else {
+        timeout = setTimeout(() => {
+          setIsDeleting(true);
+        }, 2000);
+      }
+    } else {
+      if (displayText.length > 0) {
+        timeout = setTimeout(() => {
+          setDisplayText(currentPhrase.slice(0, displayText.length - 1));
+        }, 35);
+      } else {
+        setIsDeleting(false);
+        setTextIndex((prev) => (prev + 1) % animatedPhrases.length);
+      }
+    }
+
+    return () => clearTimeout(timeout);
+  }, [displayText, isDeleting, textIndex]);
+
   useEffect(() => {
     AOS.init({
       duration: 800,
@@ -167,12 +204,16 @@ export default function Home() {
           {/* Main Hero Headline */}
           <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-[42px] lg:text-[48px] font-black text-[#0f172a] leading-tight sm:leading-[1.2] mb-3 sm:mb-5 tracking-tight max-w-4xl mx-auto">
             Protect Your Sensitive Files with Built-in Redaction, <br className="hidden md:inline" />
-            Dynamic Watermarking &amp; <span className="text-brand">Granular Access Controls.</span>
+            Dynamic Watermarking &amp; Granular Access Controls.
           </h1>
 
-          <p className="text-sm sm:text-base md:text-lg text-gray-500 mb-8 sm:mb-10 max-w-2xl mx-auto font-medium px-2 leading-relaxed">
-            Secure Document Sharing. Complete access control. <span className="text-brand font-bold">Zero data leaks.</span>
-          </p>
+          {/* Animated Dynamic Sub-Headline (Typewriter Effect) */}
+          <div className="mb-8 sm:mb-10 min-h-[44px] sm:min-h-[56px] flex items-center justify-center">
+            <div className="inline-flex items-center text-xl xs:text-2xl sm:text-3xl md:text-4xl font-black text-brand tracking-tight">
+              <span>{displayText}</span>
+              <span className="inline-block w-[3px] sm:w-[4px] h-[1em] bg-brand ml-1.5 animate-pulse rounded-full" />
+            </div>
+          </div>
 
           {/* Features Bar (Symmetrical 2x2 on Mobile, 4x1 on Desktop) */}
           <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 border border-slate-100 shadow-sm max-w-5xl mx-auto">

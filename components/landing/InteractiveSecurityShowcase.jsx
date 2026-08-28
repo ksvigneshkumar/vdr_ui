@@ -23,7 +23,7 @@ const FEATURES_DATA = [
   },
   {
     id: 4,
-    title: "BI Analytics",
+    title: "BI & Analytics",
     description: "Provides real-time insights into document engagement, including viewers, views, downloads, and user activity, enabling organizations to monitor document usage and engagement effectively.",
     image: "/analytics.PNG"
   },
