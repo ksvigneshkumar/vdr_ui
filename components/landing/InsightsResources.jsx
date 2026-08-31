@@ -75,7 +75,7 @@ export default function InsightsResources() {
                   </div>
 
                   {/* Title */}
-                  <h3 className="text-lg sm:text-xl font-bold text-slate-900 leading-snug tracking-tight mb-6 group-hover:text-brand transition-colors">
+                  <h3 className="text-lg sm:text-xl font-bold text-brand leading-snug tracking-tight mb-6">
                     {item.title}
                   </h3>
                 </div>

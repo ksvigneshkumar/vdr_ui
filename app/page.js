@@ -202,7 +202,9 @@ export default function Home() {
 
           {/* Main Hero Headline */}
           <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-[42px] lg:text-[48px] font-black text-[#0f172a] leading-tight sm:leading-[1.2] mb-3 sm:mb-5 tracking-tight max-w-4xl mx-auto">
-            Reliable and scalable VDR designed for secure document sharing
+            Reliable and Secure VDR <br />
+            Built for High-Stakes Deals. <br />
+            Faster Due Diligence.
           </h1>
 
           {/* Animated Dynamic Sub-Headline (Typewriter Effect) */}
@@ -294,7 +296,7 @@ export default function Home() {
 
                 {/* Content */}
                 <div className="p-5 sm:p-6 md:p-7">
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-black text-slate-900 group-hover:text-brand transition-colors mb-2 sm:mb-3 tracking-tight">
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-black text-brand mb-2 sm:mb-3 tracking-tight">
                     Virtual Data Room (VDR)
                   </h3>
                   <p className="text-slate-600 text-xs sm:text-sm md:text-[15px] font-medium leading-relaxed">
@@ -333,7 +335,7 @@ export default function Home() {
 
                 {/* Content */}
                 <div className="p-5 sm:p-6 md:p-7">
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-black text-slate-900 group-hover:text-brand transition-colors mb-2 sm:mb-3 tracking-tight">
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-black text-brand mb-2 sm:mb-3 tracking-tight">
                     Document Management System
                   </h3>
                   <p className="text-slate-600 text-xs sm:text-sm md:text-[15px] font-medium leading-relaxed">
@@ -372,7 +374,7 @@ export default function Home() {
 
                 {/* Content */}
                 <div className="p-5 sm:p-6 md:p-7">
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-black text-slate-900 group-hover:text-brand transition-colors mb-2 sm:mb-3 tracking-tight">
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-black text-brand mb-2 sm:mb-3 tracking-tight">
                     Deal Management System
                   </h3>
                   <p className="text-slate-600 text-xs sm:text-sm md:text-[15px] font-medium leading-relaxed">

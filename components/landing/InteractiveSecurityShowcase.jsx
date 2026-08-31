@@ -142,7 +142,7 @@ export default function InteractiveSecurityShowcase() {
                       <div className="flex-1">
                         <h3
                           className={`text-xl sm:text-2xl font-bold tracking-tight transition-colors duration-300 ${
-                            isActive ? "text-slate-900" : "text-gray-400"
+                            isActive ? "text-brand" : "text-gray-400"
                           }`}
                         >
                           {feature.title}

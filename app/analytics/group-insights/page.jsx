@@ -777,7 +777,7 @@ export default function GroupInsightsPage() {
                         </div>
                         <div>
                             <p className="text-[11px] text-gray-400 font-medium">Logins</p>
-                            <p className="text-[15px] font-bold text-gray-800 underline decoration-dotted underline-offset-2">
+                            <p className="text-[16px] font-bold text-blue-600 underline hover:text-blue-800">
                                 {loadingChart ? "..." : totalLogins}
                             </p>
                         </div>
@@ -794,7 +794,7 @@ export default function GroupInsightsPage() {
                         </div>
                         <div>
                             <p className="text-[11px] text-gray-400 font-medium">Downloaded</p>
-                            <p className="text-[15px] font-bold text-gray-800 underline decoration-dotted underline-offset-2">
+                            <p className="text-[16px] font-bold text-blue-600 underline hover:text-blue-800">
                                 {loadingChart ? "..." : totalDownloads}
                             </p>
                         </div>
@@ -811,7 +811,7 @@ export default function GroupInsightsPage() {
                         </div>
                         <div>
                             <p className="text-[11px] text-gray-400 font-medium">Doc Viewed</p>
-                            <p className="text-[15px] font-bold text-gray-800 underline decoration-dotted underline-offset-2">
+                            <p className="text-[16px] font-bold text-blue-600 underline hover:text-blue-800">
                                 {loadingChart ? "..." : totalDocViews}
                             </p>
                         </div>
@@ -828,7 +828,7 @@ export default function GroupInsightsPage() {
                         </div>
                         <div>
                             <p className="text-[11px] text-gray-400 font-medium whitespace-nowrap">Questions</p>
-                            <p className="text-[15px] font-bold text-gray-800 underline decoration-dotted underline-offset-2">
+                            <p className="text-[16px] font-bold text-blue-600 underline hover:text-blue-800">
                                 {loadingChart ? "..." : totalQuestions}
                             </p>
                         </div>

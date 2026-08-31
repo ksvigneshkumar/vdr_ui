@@ -617,9 +617,9 @@ export default function FileActivityPage() {
                                 key={file.id}
                                 className="grid grid-cols-6 gap-4 px-6 py-4 border-b border-slate-200 items-center bg-white hover:bg-slate-50 transition-colors"
                             >
-                                <div className="text-slate-800 font-bold truncate pr-4 text-[13px]" title={file.name}>{file.name}</div>
+                                <div className="text-slate-800 font-bold pr-4 text-[13px] break-words whitespace-normal" title={file.name}>{file.name}</div>
                                 <div
-                                    className="text-emerald-600 cursor-pointer hover:text-emerald-700 hover:underline font-semibold text-[13px]"
+                                    className="text-blue-600 underline cursor-pointer hover:text-blue-800 font-semibold text-[13px]"
                                     onClick={() => handleOpenModal(file, 'view')}
                                 >
                                     {file.viewCount}
@@ -629,19 +629,19 @@ export default function FileActivityPage() {
                                     {file.formattedDuration}
                                 </div>
                                 <div
-                                    className="text-emerald-600 cursor-pointer hover:text-emerald-700 hover:underline font-semibold text-[13px]"
+                                    className="text-blue-600 underline cursor-pointer hover:text-blue-800 font-semibold text-[13px]"
                                     onClick={() => handleOpenModal(file, 'download_original')}
                                 >
                                     {file.downloadOriginalCount}
                                 </div>
                                 <div
-                                    className="text-emerald-600 cursor-pointer hover:text-emerald-700 hover:underline font-semibold text-[13px]"
+                                    className="text-blue-600 underline cursor-pointer hover:text-blue-800 font-semibold text-[13px]"
                                     onClick={() => handleOpenModal(file, 'download_secure')}
                                 >
                                     {file.downloadSecureCount}
                                 </div>
                                 <div
-                                    className="text-slate-800 cursor-pointer hover:text-slate-900 hover:underline font-bold text-[13px]"
+                                    className="text-blue-600 underline cursor-pointer hover:text-blue-800 font-bold text-[13px]"
                                     onClick={() => handleOpenModal(file, 'total')}
                                 >
                                     {file.totalActivityCount}

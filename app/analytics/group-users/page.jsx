@@ -281,7 +281,7 @@ export default function GroupUsersPage() {
                             >
                                 <div className="text-gray-500">{group.name}</div>
                                 <div 
-                                    className="text-gray-600 underline cursor-pointer hover:text-gray-900 font-medium"
+                                    className="text-blue-600 underline cursor-pointer hover:text-blue-800 font-medium"
                                     onClick={() => handleOpenLoginModal(group)}
                                 >
                                     {group.loginCount}
