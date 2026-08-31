@@ -100,6 +100,9 @@ export default function FeaturesShowcaseCarousel() {
           <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-brand-adaptive tracking-tight max-w-4xl mx-auto leading-tight px-2">
             Experience the future of deal management with AI-driven features
           </h2>
+          <p className="mt-4 text-lg sm:text-xl text-slate-600 font-medium max-w-3xl mx-auto px-4">
+            Smart VDR built in Features for complex M&A and capital raises
+          </p>
         </div>
 
         {/* Carousel Container with Left/Right Arrows */}

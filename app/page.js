@@ -203,8 +203,8 @@ export default function Home() {
 
           {/* Main Hero Headline */}
           <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-[42px] lg:text-[48px] font-black text-[#0f172a] leading-tight sm:leading-[1.2] mb-3 sm:mb-5 tracking-tight max-w-4xl mx-auto">
-            Protect Your Sensitive Files with Built-in Redaction, <br className="hidden md:inline" />
-            Dynamic Watermarking &amp; Granular Access Controls.
+            Ideal for handling large volumes of sensitive documents during M&A <br className="hidden md:inline" />
+            with customizable permissions and transparent audit tracking.
           </h1>
 
           {/* Animated Dynamic Sub-Headline (Typewriter Effect) */}
