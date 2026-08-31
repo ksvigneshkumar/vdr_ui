@@ -94,7 +94,7 @@ export default function FeaturesShowcaseCarousel() {
   return (
     <section id="features" className="w-full bg-white py-16 sm:py-20 md:py-24 select-none relative overflow-hidden border-t border-slate-100 scroll-mt-16 sm:scroll-mt-20">
       <div className="max-w-[1560px] mx-auto px-4 sm:px-6 md:px-8 relative z-10">
-        
+
         {/* Section Header */}
         <div className="text-center mb-10 sm:mb-14 md:mb-16" data-aos="fade-up">
           <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-brand-adaptive tracking-tight max-w-4xl mx-auto leading-tight px-2">
@@ -106,7 +106,7 @@ export default function FeaturesShowcaseCarousel() {
         </div>
 
         {/* Carousel Container with Left/Right Arrows */}
-        <div 
+        <div
           className="relative group/carousel"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}

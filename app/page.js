@@ -171,13 +171,10 @@ export default function Home() {
               <span>Business Owner Portal</span>
             </Link>
 
-            <div className="grid grid-cols-2 gap-3 mt-3 pt-2">
-              <a href="/login" className="btn-bo-hover w-full text-center px-4 py-2.5 border-2 border-brand text-brand rounded-full font-bold text-sm" onClick={() => setIsMobileMenuOpen(false)}>
+            <div className="flex flex-col mt-3 pt-2 items-center">
+              <a href="/login" className="btn-bo-hover w-[80%] max-w-xs text-center px-6 py-3 border-2 border-brand text-brand rounded-full font-black text-lg" onClick={() => setIsMobileMenuOpen(false)}>
                 Log In
               </a>
-              <Link href="/register" className="btn-bo-hover w-full text-center px-4 py-2.5 border-2 border-brand text-brand rounded-full font-bold text-sm" onClick={() => setIsMobileMenuOpen(false)}>
-                Get Started
-              </Link>
             </div>
           </div>
         </div>

@@ -170,6 +170,12 @@ export default function LoginPage() {
             </div>
           )}
 
+          {/* Demo Info */}
+          <div className="mb-6 bg-blue-50 border border-blue-100 text-blue-700 px-4 py-3 rounded-xl text-sm flex items-start gap-3">
+            <FiShield className="mt-0.5 text-lg shrink-0" />
+            <p><strong>Demo Mode:</strong> You can enter any dummy email and password to log in and explore the platform.</p>
+          </div>
+
           <form onSubmit={handleLogin} className="space-y-5">
 
             {/* Email */}
