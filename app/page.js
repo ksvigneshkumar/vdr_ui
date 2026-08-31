@@ -219,26 +219,26 @@ export default function Home() {
               
               {/* Item 1 */}
               <div className="p-3 sm:p-5 text-center border-r md:border-r border-slate-100 flex flex-col justify-center items-center">
-                <div className="text-xl xs:text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-black text-[#0f172a] mb-1.5 tracking-tight">AES-256</div>
-                <div className="text-sm xs:text-base sm:text-lg md:text-lg font-bold text-brand tracking-tight">Data Encryption</div>
+                <div className="text-base sm:text-lg md:text-xl lg:text-2xl font-black text-[#0f172a] mb-1 tracking-tight">AES-256</div>
+                <div className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-brand tracking-tight">Data Encryption</div>
               </div>
 
               {/* Item 2 */}
               <div className="p-3 sm:p-5 text-center md:border-r border-slate-100 flex flex-col justify-center items-center">
-                <div className="text-xl xs:text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-black text-[#0f172a] mb-1.5 tracking-tight">Granular</div>
-                <div className="text-sm xs:text-base sm:text-lg md:text-lg font-bold text-brand tracking-tight">Access Controls</div>
+                <div className="text-base sm:text-lg md:text-xl lg:text-2xl font-black text-[#0f172a] mb-1 tracking-tight">Granular</div>
+                <div className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-brand tracking-tight">Access Controls</div>
               </div>
 
               {/* Item 3 */}
               <div className="p-3 sm:p-5 pt-4 sm:pt-5 text-center border-r md:border-r border-slate-100 flex flex-col justify-center items-center">
-                <div className="text-xl xs:text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-black text-[#0f172a] mb-1.5 tracking-tight">Dynamic</div>
-                <div className="text-sm xs:text-base sm:text-lg md:text-lg font-bold text-brand tracking-tight">Watermarking</div>
+                <div className="text-base sm:text-lg md:text-xl lg:text-2xl font-black text-[#0f172a] mb-1 tracking-tight">Dynamic</div>
+                <div className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-brand tracking-tight">Watermarking</div>
               </div>
 
               {/* Item 4 */}
               <div className="p-3 sm:p-5 pt-4 sm:pt-5 text-center flex flex-col justify-center items-center">
-                <div className="text-xl xs:text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-black text-[#0f172a] mb-1.5 tracking-tight">Built-in</div>
-                <div className="text-sm xs:text-base sm:text-lg md:text-lg font-bold text-brand tracking-tight">Redaction Tool</div>
+                <div className="text-base sm:text-lg md:text-xl lg:text-2xl font-black text-[#0f172a] mb-1 tracking-tight">Built-in</div>
+                <div className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-brand tracking-tight">Redaction Tool</div>
               </div>
 
             </div>
