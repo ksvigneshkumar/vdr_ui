@@ -418,17 +418,11 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Right Action CTA Buttons (Compact & Sleek) */}
-          <div className="flex flex-wrap items-center justify-center lg:justify-end gap-3 shrink-0" data-aos="fade-left">
+          {/* Right Action CTA Button */}
+          <div className="flex items-center justify-center shrink-0" data-aos="fade-left">
             <Link
-              href="/register"
-              className="px-5 py-2.5 sm:px-6 sm:py-3 rounded-full border border-white text-white font-bold hover:bg-white hover:text-slate-900 transition-all duration-300 text-xs sm:text-sm shadow-xs"
-            >
-              Get a Demo
-            </Link>
-            <Link
-              href="/register"
-              className="px-5 py-2.5 sm:px-6 sm:py-3 rounded-full bg-[#020b33] text-white font-bold hover:bg-black hover:scale-105 transition-all duration-300 text-xs sm:text-sm shadow-md"
+              href="/login"
+              className="px-6 py-3 sm:px-8 sm:py-3.5 rounded-full bg-[#020b33] text-white font-bold hover:bg-black hover:scale-105 transition-all duration-300 text-xs sm:text-sm shadow-md"
             >
               Start for Free
             </Link>
@@ -452,8 +446,7 @@ export default function Home() {
 
               {/* Address */}
               <p className="text-[13px] text-slate-300 leading-relaxed mt-1">
-                8th Floor, GM IT Park, 32-33, Sector 142,<br />
-                Noida, Uttar Pradesh 201304
+                Thiruppalai, Madurai - 625014
               </p>
 
               {/* Phone */}
