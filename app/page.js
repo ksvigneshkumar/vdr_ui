@@ -19,7 +19,9 @@ export default function Home() {
   const animatedPhrases = [
     "Secure Document Sharing",
     "Complete Access Control",
-    "Zero Data Leaks"
+    "Zero Data Leaks",
+    "Customizable Permissions",
+    "Transparent Audit Tracking"
   ];
   const [textIndex, setTextIndex] = useState(0);
   const [displayText, setDisplayText] = useState("");
@@ -200,8 +202,7 @@ export default function Home() {
 
           {/* Main Hero Headline */}
           <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-[42px] lg:text-[48px] font-black text-[#0f172a] leading-tight sm:leading-[1.2] mb-3 sm:mb-5 tracking-tight max-w-4xl mx-auto">
-            Ideal for handling large volumes of sensitive documents during M&A <br className="hidden md:inline" />
-            with customizable permissions and transparent audit tracking.
+            Reliable and scalable VDR designed for secure document sharing
           </h1>
 
           {/* Animated Dynamic Sub-Headline (Typewriter Effect) */}
