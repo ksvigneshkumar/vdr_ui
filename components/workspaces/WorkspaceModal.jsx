@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { WORKSPACE_TYPES, DEAL_TYPES, CURRENCIES, DEFAULT_WORKSPACE_FORM } from "@/lib/workspaces/constants";
+import { CURRENCIES, DEFAULT_WORKSPACE_FORM } from "@/lib/workspaces/constants";
 import { validateWorkspaceForm } from "@/lib/workspaces/validation";
 import { FaTimes, FaShieldAlt, FaExclamationCircle, FaCheckCircle } from "react-icons/fa";
 
@@ -14,24 +14,21 @@ export default function WorkspaceModal({
   workspaces = [],
 }) {
   const [formData, setFormData] = useState({
-    type: "Virtual Data Room",
     name: "",
-    dealType: "",
+    description: "",
   });
 
   React.useEffect(() => {
     if (isOpen) {
       if (mode === "edit" && initialData) {
         setFormData({
-          type: initialData.type || "Virtual Data Room",
           name: initialData.name || "",
-          dealType: initialData.dealType || "",
+          description: initialData.description || "",
         });
       } else {
         setFormData({
-          type: "Virtual Data Room",
           name: "",
-          dealType: "",
+          description: "",
         });
       }
       setErrors({});
@@ -111,28 +108,6 @@ export default function WorkspaceModal({
 
         {/* Modal Body Form - Compact spacing */}
         <form onSubmit={handleFormSubmit} className="p-5 space-y-4" noValidate>
-          {/* 1. Workspace Type */}
-          <div>
-            <label className="block text-[11px] font-bold uppercase tracking-wider text-gray-700 mb-1">
-              Workspace Type
-            </label>
-            <div className="relative">
-              <select
-                value={formData.type}
-                onChange={(e) => handleChange("type", e.target.value)}
-                className="w-full h-10 px-3 bg-gray-50/50 border border-gray-200 rounded-xl text-sm font-medium text-gray-800 focus:bg-white focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/10 outline-none transition-all appearance-none cursor-pointer"
-              >
-                {WORKSPACE_TYPES.map((type) => (
-                  <option key={type} value={type}>
-                    {type}
-                  </option>
-                ))}
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-400 text-xs">
-                ▼
-              </div>
-            </div>
-          </div>
 
           {/* 2. Workspace Name */}
           <div>
@@ -182,28 +157,17 @@ export default function WorkspaceModal({
             )}
           </div>
 
-          {/* 3. Deal Type */}
+          {/* Description */}
           <div>
             <label className="block text-[11px] font-bold uppercase tracking-wider text-gray-700 mb-1">
-              Deal Type <span className="text-gray-400 font-normal">(Optional)</span>
+              Description <span className="text-gray-400 font-normal">(Optional)</span>
             </label>
-            <div className="relative">
-              <select
-                value={formData.dealType}
-                onChange={(e) => handleChange("dealType", e.target.value)}
-                className="w-full h-10 px-3 bg-gray-50/50 border border-gray-200 rounded-xl text-sm font-medium text-gray-800 focus:bg-white focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/10 outline-none transition-all appearance-none cursor-pointer"
-              >
-                <option value="">Select a deal type...</option>
-                {DEAL_TYPES.map((deal) => (
-                  <option key={deal} value={deal}>
-                    {deal}
-                  </option>
-                ))}
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-400 text-xs">
-                ▼
-              </div>
-            </div>
+            <textarea
+              placeholder="Brief description of the workspace..."
+              value={formData.description}
+              onChange={(e) => handleChange("description", e.target.value)}
+              className="w-full min-h-[80px] p-3 bg-gray-50/50 border border-gray-200 rounded-xl text-sm font-medium text-gray-800 placeholder-gray-400 focus:bg-white focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/10 outline-none transition-all resize-none"
+            />
           </div>
 
 
